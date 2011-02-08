@@ -6,6 +6,7 @@
 #include <QAbstractButton>
 #include <QAbstractTableModel>
 #include <QSortFilterProxyModel>
+#include <QMap>
 
 #include "qcamotor.h"
 #include "qcamotorgui-additional.h"
@@ -134,14 +135,24 @@ private:
   QDialog * pvDialog;           ///< "Choose PV" dialog.
   QDialog * relativeDialog;     ///< "Move relatively" dialog.
 
-  /// Base name of the files to read the list of the known motor PVs from.
+
+  /// Base name of the files containing the list of the known motor PVs.
   static const QString pvListBaseName;
 
-  /// Reads the list of known PVs from the files and constructs the ::knownPVs table model.
-  /// @param parent parent of the ::knownPVs model.
-  static KnownPVTable * readKnownPVs(QWidget *parent=0);
+  static const QString configsSearchBaseDir;
+  static const QString configsExt;
 
+  static QMap<QString,QString> knownConfigs;
   static KnownPVTable * knownPVs; ///< Table model for the table view in the "Choose PV".
+
+  static bool inited;
+
+  /// Constructs the ::knownPVs and ::knownConfigs.
+  ///
+  /// The function cannot be called before the application has inited and therefore
+  /// is called from within the constructor.
+  static void init();
+
 
   QSortFilterProxyModel *proxyModel; ///< Sort/filter proxy for the table view in the "Choose PV".
 
@@ -149,6 +160,7 @@ private:
 
   /// Lock status of the motor. If the motor is locked, then the PV cannot be changed.
   bool locked;
+
 
 
 public:
@@ -235,6 +247,10 @@ private slots:
   /// @param newpv new PV.
   void updatePvGui(const QString & newpv = "");
 
+  void onSave() ;
+
+  void onLoad(const QString & text) ;
+
   /// \brief Updates main GUIs when a new text in the ::step widget is activated/edited.
   ///
   /// The ::step widget is multifunctional: it can be either the step or one of the
@@ -320,8 +336,8 @@ private slots:
   // next slot is needed to address the bug described in
   // QCaMotor::setResolution().
   // WARNING: BUG
-  /// Updates GUIs with the new motor resolution.
-  void updateMotorResolutionGui();
+  // Updates GUIs with the new motor resolution.
+  //void updateMotorResolutionGui();
 
   /// Updates GUIs with the new maximum speed.
   void updateMaximumSpeedGui(double maxSpeed);

@@ -3,6 +3,7 @@
 
 #include <QProcess>
 #include <QTimer>
+#include <QFile>
 
 
 using namespace std;
@@ -197,6 +198,72 @@ QCaMotor::QCaMotor(QObject *parent) :
               SLOT(updatePowerConnection(bool)));
 
   }
+
+
+
+void QCaMotor::saveConfiguration(const QString & fileName) const {
+
+  if ( ! this->isConnected() ) {
+    printError("Cannot save configuration of the motor because it is not connected." );
+    return;
+  }
+
+  QFile file(fileName);
+  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+    printError("Cannot open file \"" + fileName + "\" for writing.");
+    return;
+  }
+
+  QTextStream out(&file);
+  out
+      << "MRES " << getMotorResolution() << "\n"
+      << "RRES " << getReadbackResolution() << "\n"
+      << "ERES " << getEncoderResolution() << "\n"
+      << "PREC " << getPrecision() << "\n"
+      << "EGU " << getUnits() << "\n"
+      << "DLLM " << getDialLoLimit() << "\n"
+      << "DHLM " << getDialHiLimit() << "\n"
+      << "VMAX " << getMaximumSpeed() << "\n"
+      << "VELO " << getNormalSpeed() << "\n"
+      << "BVEL " << getBacklashSpeed() << "\n"
+      << "JVEL " << getJogSpeed() << "\n"
+      << "ACCL " << getAcceleration() << "\n"
+      << "BACC " << getBacklashAcceleration() << "\n"
+      << "JAR " << getJogAcceleration() << "\n"
+      << "BDST " << getBacklash() << "\n";
+
+}
+
+
+void QCaMotor::loadConfiguration(const QString & fileName) {
+
+  if ( ! this->isConnected() ) {
+    printError("Cannot load configuration of the motor because it is not connected.");
+    return;
+  }
+
+  QFile file(fileName);
+  if ( ! file.open(QIODevice::ReadOnly) ) {
+    printError("Cannot open file \"" + fileName + "\" for reading.");
+    return;
+  }
+
+  QTextStream in(&file);
+  QString line = in.readLine();
+  while (!line.isNull()) {
+    int idx=line.indexOf(' ');
+    if ( idx > 0 ) {
+      QString fld = "." + line.left(idx) ;
+      QString val = line.mid(idx+1);
+      if ( ! fld.isEmpty()  &&  ! val.isEmpty()  &&  motor.contains(fld) )
+        motor[fld]->set(val);
+    }
+    line = in.readLine();
+  }
+
+}
+
+
 
 
 void QCaMotor::preSetPv(){
@@ -690,12 +757,14 @@ void QCaMotor::setDialLoLimit(double limit){
 
 
 void QCaMotor::setMotorResolution(double res){
+  /*
   if (res < 0.0) {
     setOffsetDirection(NEGATIVE);
     res = -res;
   } else {
     setOffsetDirection(POSITIVE);
   }
+  */
   setField(".MRES", res);
 }
 

@@ -65,6 +65,12 @@ private slots:
   /// the separate slot
   void initialize();
 
+  void stopAll();
+
+  void powerOnAll();
+
+  void powerOffAll();
+
 
 public:
 

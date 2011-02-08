@@ -35,6 +35,10 @@ void QMotorStack::initialize() {
 
   ui->setupUi(this);
   connect(ui->add, SIGNAL(clicked()), this, SLOT(addMotor()));
+  connect(ui->stopAll, SIGNAL(clicked()), this, SLOT(stopAll()));
+  connect(ui->onAll, SIGNAL(clicked()), this, SLOT(powerOnAll()));
+  connect(ui->offAll, SIGNAL(clicked()), this, SLOT(powerOffAll()));
+
 
   if ( motorsFile.open(QIODevice::ReadWrite | QIODevice::Text) &&
        motorsFile.isReadable() )
@@ -183,3 +187,21 @@ void QMotorStack::lock(bool lck) {
     motor.second->setVisible(!lck);
   ui->add->setVisible(!lck);
 }
+
+
+
+void QMotorStack::stopAll(){
+  foreach(MotBut motor, motors)
+    motor.first->stop();
+}
+
+void QMotorStack::powerOnAll(){
+  foreach(MotBut motor, motors)
+    motor.first->setPower(true);
+}
+
+void QMotorStack::powerOffAll(){
+  foreach(MotBut motor, motors)
+    motor.first->setPower(false);
+}
+

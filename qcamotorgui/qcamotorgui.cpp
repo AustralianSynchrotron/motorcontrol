@@ -3,6 +3,7 @@
 #include <math.h>
 #include <QProcess>
 #include <QFile>
+#include <QFileDialog>
 #include <QStringListModel>
 
 
@@ -123,6 +124,17 @@ bool KeyPressEater::eventFilter(QObject *obj, QEvent *event) {
 
 
 
+
+
+
+bool QCaMotorGUI::inited=false;
+QMap<QString,QString> QCaMotorGUI::knownConfigs;
+KnownPVTable * QCaMotorGUI::knownPVs = 0;
+const QString QCaMotorGUI::configsSearchBaseDir="motormx";
+const QString QCaMotorGUI::configsExt="motorConfig";
+const QString QCaMotorGUI::pvListBaseName = "listOfKnownMotorPVs.txt";
+
+
 QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   QCaMotor(parent),
   theWidget(new QWidget),
@@ -136,8 +148,7 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   proxyModel(new QSortFilterProxyModel(this))
 {
 
-  if ( ! knownPVs )
-    knownPVs = QCaMotorGUI::readKnownPVs();
+  QCaMotorGUI::init();
 
   locked=false;
 
@@ -177,6 +188,8 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
 
   sUi->dirGroup->setId(sUi->dirPos, POSITIVE);
   sUi->dirGroup->setId(sUi->dirNeg, NEGATIVE);
+
+  sUi->loadConfig->addItems(knownConfigs.keys());
 
   //
   // Connect GUI Actions
@@ -226,6 +239,10 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
 
   connect(sUi->viewMode, SIGNAL(activated(int)),
           SLOT(setViewMode(int)));
+  connect(sUi->loadConfig, SIGNAL(activated(QString)),
+          SLOT(onLoad(QString)));
+  connect(sUi->saveConfig, SIGNAL(clicked()),
+          SLOT(onSave()));
 
   connect(sUi->description, SIGNAL(textEdited(QString)),
           SLOT(setDescription(QString)));
@@ -396,8 +413,8 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
           SLOT(updateDirGroup(int)));
   // next connection is needed to address the bug described in
   // QCaMotor::setResolution().
-  connect(this, SIGNAL(changedOffsetDirection(int)),
-          SLOT(updateMotorResolutionGui()));
+  //connect(this, SIGNAL(changedOffsetDirection(int)),
+  //        SLOT(updateMotorResolutionGui()));
   connect(this, SIGNAL(changedSuMode(SuMode)),
           SLOT(updateSetGroup(SuMode)));
 
@@ -436,8 +453,8 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   // sUi->resolution->setValue(double) is needed to
   // address the bug described in QCaMotor::setResolution().
   connect(this, SIGNAL(changedMotorResolution(double)),
-          //sUi->resolution, SLOT(setValue(double)));
-          SLOT(updateMotorResolutionGui()));
+          sUi->resolution, SLOT(setValue(double)));
+          //SLOT(updateMotorResolutionGui()));
   connect(this, SIGNAL(changedReadbackResolution(double)),
           sUi->readbackResolution, SLOT(setValue(double)));
   connect(this, SIGNAL(changedEncoderResolution(double)),
@@ -508,6 +525,9 @@ QCaMotorGUI::~QCaMotorGUI() {
 }
 
 
+
+
+
 void QCaMotorGUI::filterPV(const QString & _text){
   proxyModel->setFilterRegExp( QRegExp(
       QString(".*%1.*").arg(_text), Qt::CaseInsensitive) );
@@ -576,17 +596,21 @@ void QCaMotorGUI::positionInLayout(QHBoxLayout * layout) {
 }
 
 
-const QString QCaMotorGUI::pvListBaseName = "listOfKnownMotorPVs.txt";
-KnownPVTable * QCaMotorGUI::knownPVs = 0; // To be inited on the first instance's construction.
 
-KnownPVTable * QCaMotorGUI::readKnownPVs(QWidget *parent) {
+
+void QCaMotorGUI::init() {
+
+  if (inited)
+    return;
+  inited = true;
+
+  // Known PVs
 
   // WARING: PORTING ISSUE.
   QStringList fileNames;
   fileNames
-    << pvListBaseName
-    << "/etc/" + pvListBaseName
-    << QString(getenv("HOME")) + "/." + pvListBaseName;
+    << "/etc/" + configsSearchBaseDir + "/" + pvListBaseName
+    << QString(getenv("HOME")) + "/." + configsSearchBaseDir + "/" + pvListBaseName;
 
   QStringList readPVs;
 
@@ -605,7 +629,28 @@ KnownPVTable * QCaMotorGUI::readKnownPVs(QWidget *parent) {
 
   readPVs.removeDuplicates();
 
-  return new KnownPVTable(readPVs, parent);
+  knownPVs = new KnownPVTable(readPVs);
+
+
+  // Known stage configurations.
+
+  fileNames.clear();
+
+  // WARING: PORTING ISSUE.
+  QDir dir;
+  dir.setPath( "/etc/"+configsSearchBaseDir );
+  fileNames << dir.entryList(QDir::Files).replaceInStrings(QRegExp("^"), dir.path()+"/");
+  dir.setPath( QString(getenv("HOME")) + "/." + configsSearchBaseDir );
+  fileNames << dir.entryList(QDir::Files).replaceInStrings(QRegExp("^"), dir.path()+"/");
+
+  foreach (const QString filename , fileNames) {
+    if ( filename.endsWith("."+configsExt) ) {
+      // WARING: PORTING ISSUE.
+      QString entry = filename.section('/',-1);
+      entry.chop(configsExt.length()+1);
+      knownConfigs[ entry ] = filename;
+    }
+  }
 
 }
 
@@ -619,6 +664,19 @@ void QCaMotorGUI::onSetupClicked() {
 }
 
 
+
+
+void QCaMotorGUI::onSave() {
+  QString fileName = QFileDialog::getSaveFileName(0, "Save configuration");
+  saveConfiguration(fileName);
+}
+
+void QCaMotorGUI::onLoad(const QString & text) {
+  QString fileName =  ( text == sUi->loadConfig->itemText(0) ) ?
+        QFileDialog::getOpenFileName(0, "Load configuration") :
+        knownConfigs[text];
+  loadConfiguration(fileName);
+}
 
 
 
@@ -656,12 +714,14 @@ void QCaMotorGUI::setStepGui(const QString & _text){
 }
 
 
+/*
 void QCaMotorGUI::updateMotorResolutionGui() {
   double vRes = getMotorResolution();
   if ( getOffsetDirection() == NEGATIVE )
     vRes *= -1.0;
   sUi->resolution->setValue(vRes);
 }
+*/
 
 
 void QCaMotorGUI::setViewMode(ViewMode mode){
@@ -1135,8 +1195,8 @@ void QCaMotorGUI::updatePowerGui(bool pwr) {
   sUi->power->setText( pwr ? "ON" : "OFF" );
   sUi->power->setStyleSheet
     ( pwr ?
-      "background-color: rgb(0, 128, 0); color: rgb(255, 255, 255);" :
-      "background-color: rgb(128, 0, 0);   color: rgb(255, 255, 255);" );
+       "background-color: rgb(128, 0, 0);   color: rgb(255, 255, 255);" :
+       "background-color: rgb(0, 128, 0); color: rgb(255, 255, 255);" );
   updateAllElements();
 }
 

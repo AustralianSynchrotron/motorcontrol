@@ -54,6 +54,9 @@ public:
   /// Qt-aware function which returns only after any motion of the motor has finished.
   void wait_stop();
 
+  void saveConfiguration(const QString & fileName) const;
+  void loadConfiguration(const QString & fileName);
+
 
 private:
 
@@ -554,9 +557,6 @@ public slots:
   /// Currently there is a bug in the EPICS motor driver:
   /// after changing the resolution to a negative value
   /// the motor stops reacting to any moving command.
-  /// Therefore, here instead of setting a negative
-  /// resolution, I set it to the absolute value and set
-  /// the offset direction to the sign of the resolution.
   ///
   /// WARNING: BUG (in EPICS's motor)
   ///
@@ -645,7 +645,7 @@ public slots:
 
   /// Prints an error message to the stderr.
   /// @param err Error message.
-  inline void printError(const QString & err){ qDebug() << "ERROR!" << err; }
+  inline void printError(const QString & err) const { qDebug() << "ERROR!" << err; }
 
 
 
