@@ -503,12 +503,15 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
           sUi->label_23, SLOT(setVisible(bool)));
   connect(this, SIGNAL(changedPower(bool)),
           SLOT(updatePowerGui(bool)));
+  connect(this, SIGNAL(changedWired(bool)),
+          SLOT(updateWiredGui(bool)));
   connect(this, SIGNAL(changedMoving(bool)),
           SLOT(updateStopButtonStyle()));
 
   setViewMode(MICRO);
   setupDialog->update();
   updatePowerGui(getPower());
+  updateWiredGui(isWired());
 
 }
 
@@ -1089,15 +1092,12 @@ void QCaMotorGUI::updateStepGui(double step){
 void QCaMotorGUI::updateConnectionGui(bool suc) {
   sUi->message->setText
       ( suc ? "Connection established." : "Connection lost.");
+  updateStopButtonStyle();
   updateAllElements();
   if ( suc ) {
     if ( sUi->viewMode->currentIndex() == MILI ||
          sUi->viewMode->currentIndex() == MACRO )
       setOffsetMode(FROZEN);
-  } else {
-    updateDescriptionGui("Disconnected");
-    mUi->stop->setToolTip("");
-    sUi->stop->setToolTip("");
   }
 }
 
@@ -1169,15 +1169,39 @@ void QCaMotorGUI::updateMovingGui(bool mov){
 }
 
 void QCaMotorGUI::updateStopButtonStyle() {
+
   static const QString
-    movstyle("background-color: rgb(128, 0, 0); color: rgb(255, 255, 255);");
-  if (isMoving()) {
+      movstyle("background-color: rgb(128, 0, 0); color: rgb(255, 255, 255);"),
+      wrdstyle("color: rgb(255, 0, 0);"),
+      pwrstyle("background-color: rgb(0, 128, 0); color: rgb(255, 255, 255);");
+
+  if ( ! isConnected() ) {
+    mUi->stop->setStyleSheet("");
+    sUi->stop->setStyleSheet("");
+    mUi->stop->setText("Disconnected");
+    sUi->stop->setText("Disconnected");
+  } else if (isMoving()) {
     mUi->stop->setStyleSheet(movstyle);
     sUi->stop->setStyleSheet(movstyle);
     mUi->stop->setText("STOP");
     sUi->stop->setText("STOP");
     mUi->stop->setToolTip("Stop motion");
     sUi->stop->setToolTip("Stop motion");
+  } else if ( ! getPower() ) {
+    mUi->stop->setStyleSheet(pwrstyle);
+    sUi->stop->setStyleSheet(pwrstyle);
+    mUi->stop->setText("POWER ON");
+    sUi->stop->setText("POWER ON");
+    const QString txt("Click to turn power on");
+    mUi->stop->setToolTip(txt);
+    sUi->stop->setToolTip(txt);
+  } else if ( ! isWired() ) {
+    mUi->stop->setStyleSheet(wrdstyle);
+    sUi->stop->setStyleSheet(wrdstyle);
+    mUi->stop->setText("No cable");
+    sUi->stop->setText("No cable");
+    mUi->stop->setToolTip("");
+    sUi->stop->setToolTip("");
   } else {
     mUi->stop->setStyleSheet("");
     sUi->stop->setStyleSheet("");
@@ -1188,6 +1212,7 @@ void QCaMotorGUI::updateStopButtonStyle() {
     mUi->stop->setToolTip(txt);
     sUi->stop->setToolTip(txt);
   }
+
 }
 
 void QCaMotorGUI::updatePowerGui(bool pwr) {
@@ -1197,6 +1222,16 @@ void QCaMotorGUI::updatePowerGui(bool pwr) {
     ( pwr ?
        "background-color: rgb(128, 0, 0);   color: rgb(255, 255, 255);" :
        "background-color: rgb(0, 128, 0); color: rgb(255, 255, 255);" );
+  updateStopButtonStyle();
+  updateAllElements();
+}
+
+void QCaMotorGUI::updateWiredGui(bool wr) {
+  if (wr)
+    sUi->message->setText("Cable connected.");
+  else
+    sUi->message->setText("Cable disconnected.");
+  updateStopButtonStyle();
   updateAllElements();
 }
 
@@ -1320,41 +1355,42 @@ void QCaMotorGUI::updateSpmgGroup(SpmgMode mode){
 void QCaMotorGUI::updateAllElements(){
 
   bool
-    pwr = getPower(),
-    mv  = isMoving(),
-    cn  = isConnected(),
-    std = cn && pwr && !mv;
+      pwr = getPower(),
+      mv  = isMoving(),
+      cn  = isConnected(),
+      wr  = isWired(),
+      std = cn && pwr && !mv;
 
 
-  rUi->goRelative             ->setEnabled(std);
-  mUi->goM                    ->setEnabled(std);
-  mUi->goP                    ->setEnabled(std);
-  mUi->limitM                 ->setEnabled(std);
-  mUi->limitP                 ->setEnabled(std);
+  rUi->goRelative             ->setEnabled(std && wr);
+  mUi->goM                    ->setEnabled(std && wr);
+  mUi->goP                    ->setEnabled(std && wr);
+  mUi->limitM                 ->setEnabled(std && wr);
+  mUi->limitP                 ->setEnabled(std && wr);
   mUi->jogM                   ->setEnabled
-    (cn && pwr && ( ! mv || mUi->jogM->isDown()) );
+    (cn && pwr && wr && ( ! mv || mUi->jogM->isDown()) );
   mUi->jogP                   ->setEnabled
-    (cn && pwr && ( ! mv || mUi->jogP->isDown()) );
-  mUi->userPosition           ->setEnabled(std);
-  mUi->step                   ->setEnabled(std);
-  mUi->stop                   ->setEnabled(cn && pwr);
-  sUi->goLimitM               ->setEnabled(std);
-  sUi->goLimitP               ->setEnabled(std);
-  sUi->goM                    ->setEnabled(std);
-  sUi->goP                    ->setEnabled(std);
+    (cn && pwr && wr && ( ! mv || mUi->jogP->isDown()) );
+  mUi->userPosition           ->setEnabled(std && wr);
+  mUi->step                   ->setEnabled(std && wr);
+  mUi->stop                   ->setEnabled(cn && pwr && wr);
+  sUi->goLimitM               ->setEnabled(std && wr);
+  sUi->goLimitP               ->setEnabled(std && wr);
+  sUi->goM                    ->setEnabled(std && wr);
+  sUi->goP                    ->setEnabled(std && wr);
   sUi->stepD2                 ->setEnabled(std);
   sUi->stepD10                ->setEnabled(std);
   sUi->stepM2                 ->setEnabled(std);
   sUi->stepM10                ->setEnabled(std);
   sUi->jogM                   ->setEnabled
-    (cn && pwr && ( ! mv || sUi->jogM->isDown()) );
+    (cn && pwr && wr && ( ! mv || sUi->jogM->isDown()) );
   sUi->jogP                   ->setEnabled
-    (cn && pwr && ( ! mv || sUi->jogP->isDown()) );
+    (cn && pwr && wr && ( ! mv || sUi->jogP->isDown()) );
   sUi->userPosition           ->setEnabled(std);
   sUi->dialPosition           ->setEnabled(std);
   sUi->rawPosition            ->setEnabled(std);
   sUi->step                   ->setEnabled(std);
-  sUi->stop                   ->setEnabled(cn && pwr);
+  sUi->stop                   ->setEnabled(cn && pwr && wr);
   sUi->speed                  ->setEnabled(std);
   sUi->revSpeed               ->setEnabled(std);
   sUi->acceleration           ->setEnabled(std);

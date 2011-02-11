@@ -49,6 +49,7 @@ QCaMotor::QCaMotor(QObject *parent) :
   backlash(0),
   iAmPowered(true),
   powerIsConnected(false),
+  iaAmWired(true),
   lastMotion(0)
 {
 
@@ -187,10 +188,15 @@ QCaMotor::QCaMotor(QObject *parent) :
   connect(motor["_ON_STATUS"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updatePower(QVariant)));
   motor.insert("_ON_CMD",    new QEpicsPV(this));
+  motor.insert("_CONNECTED_STATUS", new QEpicsPV(this));
+  connect(motor["_CONNECTED_STATUS"], SIGNAL(valueUpdated(QVariant)),
+          this, SLOT(updateWired(QVariant)));
+
 
 
   foreach ( QString key, motor.keys() )
-    if ( key != "_ON_STATUS" && key != "_ON_CMD" ) // Two nonstandard fields
+    if ( key != "_ON_STATUS"  &&  key != "_ON_CMD"  &&
+        key != "_CONNECTED_STATUS" ) // Nonstandard fields
       connect(motor[key], SIGNAL(connectionChanged(bool)),
               SLOT(updateConnection(bool)));
     else
@@ -347,7 +353,8 @@ void QCaMotor::updateConnection(bool suc){
   suc = true;
   foreach(QString key, motor.keys())
     if ( suc &&
-         key != "_ON_STATUS" && key != "_ON_CMD" ) // Two nonstandard fields
+        key != "_ON_STATUS" && key != "_ON_CMD" &&
+        key != "_CONNECTED_STATUS" ) // Nonstandard fields
       suc &= motor[key]->isConnected();
   if (suc != iAmConnected)
     emit changedConnected(iAmConnected = suc);
@@ -564,6 +571,11 @@ void QCaMotor::updatePowerConnection(bool){
 
 void QCaMotor::updatePower(const QVariant & data){
   emit changedPower(iAmPowered = data.toBool());
+}
+
+
+void QCaMotor::updateWired(const QVariant & data) {
+  emit changedWired(iaAmWired = data.toBool());
 }
 
 

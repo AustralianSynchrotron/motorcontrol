@@ -139,8 +139,9 @@ private:
   double backlash;              ///< current value of the BDST field
   SpmgMode spmgMode;            ///< current value of the SPMG field
 
-  bool iAmPowered;              ///< true if the motor is powered (pv + _ON_STATUS record)
-  bool powerIsConnected;        ///< true if the record pv + _ON_STATUS is connected
+  bool iAmPowered;              ///< true if the motor is powered ("pv + _ON_STATUS" record)
+  bool powerIsConnected;        ///< true if the record "pv + _ON_STATUS" is connected
+  bool iaAmWired;               ///< true if the motor is wired ("pv + _CONNECTED_STATUS" record)
 
   double lastMotion;            ///< last motion of the motor (in raw coordinates)
 
@@ -392,6 +393,13 @@ private slots:
   /// from the corresponding field (a member of ::motor).
   /// @param data new status.
   void updatePowerConnection(bool suc);
+
+  /// \brief Updates isWired status (::iAmWired)
+  /// Used to catch the signal valueUpdated(QVariant)
+  /// from the corresponding field (a member of ::motor).
+  /// @param data new status.
+  void updateWired(const QVariant & data);
+
 
 
   /// Used by ::setPv() through QTimer::singleShot()
@@ -832,6 +840,11 @@ public:
   /// @return ::powerIsConnected
   inline bool      getPowerConnection() const {return powerIsConnected; }
 
+  /// Returns current "is wired" status
+  /// @return ::iAmWired
+  inline bool      isWired() const {return iaAmWired; }
+
+
 
 signals:
 
@@ -1010,6 +1023,11 @@ signals:
   /// The signal is emitted whenever power connection status is changed.
   /// @param status new status
   void changedPowerConnection(bool status);
+
+  /// The signal is emitted whenever isWired status is changed.
+  /// @param status new status
+  void changedWired(bool status);
+
 
   /// The signal is emitted on any error
   /// @param msg error message.

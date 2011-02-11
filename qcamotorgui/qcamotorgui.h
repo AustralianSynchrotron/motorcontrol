@@ -376,6 +376,9 @@ private slots:
   /// Sets style of the power button.
   void updatePowerGui(bool pwr);
 
+  /// Updates the GUI in accordance with new isWired status.
+  void updateWiredGui(bool wr);
+
   /// Catches Stop/Undo commands from GUIs.
   ///
   /// Stops the motion if the motor is moving or undos last motion if it does not.
