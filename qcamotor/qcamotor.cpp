@@ -193,17 +193,18 @@ QCaMotor::QCaMotor(QObject *parent) :
           this, SLOT(updateWired(QVariant)));
 
 
-
   foreach ( QString key, motor.keys() )
-    if ( key != "_ON_STATUS"  &&  key != "_ON_CMD"  &&
-        key != "_CONNECTED_STATUS" ) // Nonstandard fields
+    if ( key == "_CONNECTED_STATUS" )
       connect(motor[key], SIGNAL(connectionChanged(bool)),
-              SLOT(updateConnection(bool)));
-    else
+              this, SLOT(updateWired()));
+    else if ( key == "_ON_STATUS"  ||  key == "_ON_CMD")
       connect(motor[key], SIGNAL(connectionChanged(bool)),
               SLOT(updatePowerConnection(bool)));
+    else
+      connect(motor[key], SIGNAL(connectionChanged(bool)),
+              SLOT(updateConnection(bool)));
 
-  }
+}
 
 
 
@@ -575,7 +576,9 @@ void QCaMotor::updatePower(const QVariant & data){
 
 
 void QCaMotor::updateWired(const QVariant & data) {
-  emit changedWired(iaAmWired = data.toBool());
+  emit changedWired( iaAmWired =
+                    ! motor["_CONNECTED_STATUS"]->isConnected()  ||
+                    data.toBool() );
 }
 
 

@@ -398,7 +398,7 @@ private slots:
   /// Used to catch the signal valueUpdated(QVariant)
   /// from the corresponding field (a member of ::motor).
   /// @param data new status.
-  void updateWired(const QVariant & data);
+  void updateWired(const QVariant & data = QVariant() );
 
 
 
