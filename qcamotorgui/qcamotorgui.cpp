@@ -1207,8 +1207,10 @@ void QCaMotorGUI::updateStopButtonStyle() {
     sUi->stop->setStyleSheet("");
     mUi->stop->setText("UNDO");
     sUi->stop->setText("UNDO");
+    double undo = - ( getOffsetDirection() == NEGATIVE ? -1.0 : 1.0) *
+        getMotorResolution() * getLastMotion();
     const QString txt("Undo last motion ("
-                      + QString::number((int)getLastMotion()) + " steps)");
+                      + QString::number(undo) + getUnits() + ")");
     mUi->stop->setToolTip(txt);
     sUi->stop->setToolTip(txt);
   }

@@ -91,6 +91,11 @@ private:
   ///
   void setField(const QString & key, const QVariant & value);
 
+
+  // Here I've got a member for each field to avoid conversion
+  // from QVariant (returned by the QEpicsPV::get() )
+  // each time the value is required.
+
   QString pv;                   ///< Motor's PV
 
   QString description;          ///< current value of the DESC field
