@@ -1,4 +1,6 @@
 #include "qmotorstack.h"
+#include <QSettings>
+#include <QFileDialog>
 
 QMotorStack::QMotorStack(const QString & _motorsFile, QWidget *parent) :
     QWidget(parent),
@@ -23,10 +25,7 @@ QMotorStack::QMotorStack(QWidget *parent) :
 
 QMotorStack::~QMotorStack() {
   motorsFile.close();
-  foreach(MotBut motor, motors) {
-    delete motor.first;
-    delete motor.second;
-  }
+  clear();
   delete ui;
 }
 
@@ -34,11 +33,28 @@ QMotorStack::~QMotorStack() {
 void QMotorStack::initialize() {
 
   ui->setupUi(this);
-  connect(ui->add, SIGNAL(clicked()), this, SLOT(addMotor()));
-  connect(ui->stopAll, SIGNAL(clicked()), this, SLOT(stopAll()));
-  connect(ui->onAll, SIGNAL(clicked()), this, SLOT(powerOnAll()));
-  connect(ui->offAll, SIGNAL(clicked()), this, SLOT(powerOffAll()));
 
+  ui->table->verticalHeader()->setMovable(true);
+  ui->table->verticalHeader()->setClickable(true);
+  ui->table->verticalHeader()->setResizeMode(QHeaderView::Fixed);
+
+  //ui->table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+
+  ui->table->horizontalHeader()->setResizeMode(0, QHeaderView::ResizeToContents);
+  ui->table->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+  ui->table->horizontalHeader()->setResizeMode(2, QHeaderView::ResizeToContents);
+  ui->table->horizontalHeader()->setResizeMode(3, QHeaderView::Stretch);
+  ui->table->horizontalHeader()->setResizeMode(4, QHeaderView::ResizeToContents);
+  ui->table->horizontalHeader()->setResizeMode(5, QHeaderView::ResizeToContents);
+  ui->table->horizontalHeader()->setResizeMode(6, QHeaderView::ResizeToContents);
+
+  connect(ui->add, SIGNAL(clicked()), SLOT(addMotor()));
+  connect(ui->stopAll, SIGNAL(clicked()), SLOT(stopAll()));
+  connect(ui->onAll, SIGNAL(clicked()), SLOT(powerOnAll()));
+  connect(ui->offAll, SIGNAL(clicked()), SLOT(powerOffAll()));
+  connect(ui->clear, SIGNAL(clicked()), SLOT(clear()));
+  connect(ui->table->verticalHeader(), SIGNAL(sectionDoubleClicked(int)),
+          SLOT(removeRow(int)));
 
   if ( motorsFile.open(QIODevice::ReadWrite | QIODevice::Text) &&
        motorsFile.isReadable() )
@@ -49,109 +65,90 @@ void QMotorStack::initialize() {
   if ( ! motorsFile.isWritable() )
     motorsFile.close();
 
-}
-
-
-void QMotorStack::constructLayout() {
-  QStringList list;
-  foreach(MotBut motor, motors){
-    list << motor.first->getPv();
-    int position = motors.indexOf(motor);
-    ui->scrollLayout->addWidget(motor.second, position, 0);
-    motor.first->positionInLayout(ui->scrollLayout, position, 1);
-  }
-  update();
-}
-
-
-void QMotorStack::upMotor(interbutt * button){
-
-  int mIndex = indexOf(button);
-  if (mIndex<1)
-    return;
-  motors.swap(mIndex,mIndex-1);
-
-  QPoint mouseCursor = button->mapFromGlobal(QCursor::pos());
-  constructLayout();
-  // Is it a Qt bug? The repaint() does not do the job;
-  button->setVisible(false);
-  button->setVisible(true);
-  //button->repaint();
-  QCursor::setPos(button->mapToGlobal(mouseCursor));
-
-  updateMotorsFile();
+  updatePowerConnections();
 
 }
 
-void QMotorStack::downMotor(interbutt * button){
 
-  int mIndex = indexOf(button);
-  if (mIndex<0 || mIndex >= motors.size() - 1)
-    return;
-  motors.swap(mIndex,mIndex+1);
-
-  QPoint mouseCursor = button->mapFromGlobal(QCursor::pos());
-  constructLayout();
-  // Is it a Qt bug? The repaint() does not do the job;
-  button->setVisible(false);
-  button->setVisible(true);
-  //button->repaint(;)
-  QCursor::setPos(button->mapToGlobal(mouseCursor));
-
-  updateMotorsFile();
-
-}
-
-void QMotorStack::addMotor(const QString & presetpv, bool lock, bool noFileSave){
+QCaMotorGUI * QMotorStack::addMotor(const QString & presetpv, bool lock, bool noFileSave){
 
   QCaMotorGUI * motor = new QCaMotorGUI(this);
   motor->setPv(presetpv);
+  motor->lock(lock);
 
-  interbutt * button = new interbutt(ui->scrollAreaWidgetContents);
-  connect(button, SIGNAL(remove(interbutt*)), this, SLOT(removeMotor(interbutt*)));
-  connect(button, SIGNAL(up(interbutt*)), this, SLOT(upMotor(interbutt*)));
-  connect(button, SIGNAL(down(interbutt*)), this, SLOT(downMotor(interbutt*)));
+  int idx = ui->table->rowCount();
+  ui->table->insertRow(idx);
+  ui->table->setCellWidget(idx,0,motor->mainButton());
+  ui->table->setCellWidget(idx,1,motor->positionBox());
+  ui->table->setCellWidget(idx,2,motor->mButtons());
+  ui->table->setCellWidget(idx,3,motor->stepBox());
+  ui->table->setCellWidget(idx,4,motor->pButtons());
+  ui->table->setCellWidget(idx,5,motor->stopButton());
+  ui->table->setCellWidget(idx,6,motor->powerButton());
 
-  motors << MotBut(motor,button);
+  connect(motor, SIGNAL(changedPowerConnection(bool)),
+          SLOT(updatePowerConnections(bool)));
 
-  if (lock) {
-    motor->lock(true);
-    button->setVisible(false);
-  } else
-    connect( motor, SIGNAL(changedPv(QString)), this, SLOT(updateMotorsFile()));
+  motors[motor->mainButton()] = motor;
 
-  constructLayout();
+  QTableWidgetItem * itm = new QTableWidgetItem("-");
+  itm->setToolTip("Drag to reorganize, double-click to remove.");
+  ui->table->setVerticalHeaderItem( idx, itm );
+
   if ( ! noFileSave )
     updateMotorsFile();
 
+  return motor;
+
 }
 
-void QMotorStack::removeMotor(interbutt * button){
+void QMotorStack::removeRow(int idx){
 
-  int mIndex = indexOf(button);
-  if (mIndex<0)
+  if (idx<0)
     return;
 
-  delete motors[mIndex].first;
-  delete motors[mIndex].second;
-  motors.removeAt(mIndex);
+  QPushButton * mbtn = (QPushButton*) ui->table->cellWidget(idx, 0);
+  ui->table->removeRow( idx );
+  delete motors[mbtn];
+  motors.remove(mbtn);
 
-  constructLayout();
   updateMotorsFile();
+
+}
+
+void QMotorStack::removeMotor(QCaMotorGUI * motor){
+
+  if (!motor)
+    return;
+
+  const QPushButton * mbtn = motor->mainButton();
+  const int rowCount = ui->table->rowCount();
+  int idx=0;
+  while ( idx < rowCount )
+    if (ui->table->cellWidget(idx,0) == mbtn)
+      break;
+    else
+      idx++;
+
+  if (idx < rowCount )
+    removeRow(idx);
 
 }
 
 
 void QMotorStack::clear(){
-  foreach(MotBut motor, motors)
-    removeMotor(motor.second);
+  for (int crow = ui->table->rowCount() - 1 ;  crow >= 0 ; --crow )
+    removeRow(crow);
 }
 
 
-QList < const QCaMotor * > QMotorStack::motorList() const {
-  QList < const QCaMotor * > list;
-  foreach(MotBut motor, motors)
-    list << motor.first;
+QList < QCaMotorGUI * > QMotorStack::motorList() const {
+  QList<QCaMotorGUI*> list;
+  for (int vidx = 0 ;  vidx < ui->table->rowCount() ; ++vidx ) {
+    int lidx = ui->table->verticalHeader()->logicalIndex(vidx);
+    QWidget * mbtn = ui->table->cellWidget(lidx, 0);
+    list << motors[ (QPushButton*) mbtn ];
+  }
   return list;
 }
 
@@ -161,47 +158,72 @@ void QMotorStack::updateMotorsFile() {
     return;
   motorsFile.reset();
   motorsFile.resize(0);
-  foreach (MotBut motor, motors)
-    motorsFile.write( ( motor.first->getPv() + "\n" ).toAscii());
+  foreach (QCaMotorGUI * motor, motorList() )
+    motorsFile.write( ( motor->getPv() + "\n" ).toAscii());
   motorsFile.flush();
 }
 
 
-int QMotorStack::indexOf(interbutt* but) {
-  foreach(MotBut motor, motors)
-    if (motor.second == but)
-      return motors.indexOf(motor);
-  return -1;
-}
-
-int QMotorStack::indexOf(QCaMotorGUI* mot) {
-  foreach(MotBut motor, motors)
-    if (motor.first == mot)
-      return motors.indexOf(motor);
-  return -1;
-}
-
-
 void QMotorStack::lock(bool lck) {
-  foreach(MotBut motor, motors)
-    motor.second->setVisible(!lck);
-  ui->add->setVisible(!lck);
+  ui->table->verticalHeader()->setVisible(!lck);
+  ui->manipulate->setVisible(!lck);
 }
 
 
 
-void QMotorStack::stopAll(){
-  foreach(MotBut motor, motors)
-    motor.first->stop();
+void QMotorStack::stopAll() {
+  foreach(QCaMotorGUI * motor, motors)
+    motor->stop();
 }
 
 void QMotorStack::powerOnAll(){
-  foreach(MotBut motor, motors)
-    motor.first->setPower(true);
+  foreach(QCaMotorGUI * motor, motors)
+    motor->setPower(true);
 }
 
 void QMotorStack::powerOffAll(){
-  foreach(MotBut motor, motors)
-    motor.first->setPower(false);
+  foreach(QCaMotorGUI * motor, motors)
+    motor->setPower(false);
 }
 
+void QMotorStack::updatePowerConnections(bool pwr) {
+
+  if (pwr) {
+    ui->table->setColumnHidden(6,true);
+    ui->powerW->setVisible(true);
+    return;
+  }
+
+  bool powerCon = false;
+  foreach(QCaMotorGUI * motor, motors)
+    powerCon |= motor->getPowerConnection();
+  ui->table->setColumnHidden(6, ! powerCon );
+  ui->powerW->setVisible(powerCon);
+
+}
+
+void QMotorStack::resetHeader() {
+  ui->table->horizontalHeader()->reset();
+}
+
+void QMotorStack::saveConfiguration(const QString & fileName) {
+  QFile file(fileName);
+  if ( file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate) &&
+      file.isWritable() )
+    foreach (QCaMotorGUI * motor, motorList() )
+      file.write( ( motor->getPv() + "\n" ).toAscii());
+  file.close();
+}
+
+void QMotorStack::loadConfiguration(const QString & fileName) {
+  QFile file(fileName);
+  if ( file.open(QIODevice::ReadOnly | QIODevice::Text) &&
+      file.isReadable() ) {
+    clear();
+    while (!file.atEnd()) {
+      QByteArray line = file.readLine();
+      addMotor(line.trimmed(), false, true);
+    }
+  }
+  file.close();
+}

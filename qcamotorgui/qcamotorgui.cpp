@@ -204,7 +204,6 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
 
   connect(mUi->userPosition, SIGNAL(valueChanged(QString)),
           SIGNAL(ioPositionChanged(QString)));
-
   connect(mUi->setup, SIGNAL(clicked()),
           SLOT(onSetupClicked()) );
 
@@ -235,6 +234,8 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
           SLOT(goStepM()));
   connect(mUi->goP, SIGNAL(clicked()),
           SLOT(goStepP()));
+  connect(mUi->power, SIGNAL(clicked(bool)),
+          SLOT(setPower(bool)));
 
 
   connect(sUi->viewMode, SIGNAL(activated(int)),
@@ -496,13 +497,9 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
           SLOT(updateSpmgGroup(SpmgMode)));
 
   connect(this, SIGNAL(changedPowerConnection(bool)),
-          sUi->power, SLOT(setVisible(bool)));
-  connect(this, SIGNAL(changedPowerConnection(bool)),
-          sUi->label_19, SLOT(setVisible(bool)));
-  connect(this, SIGNAL(changedPowerConnection(bool)),
-          sUi->label_23, SLOT(setVisible(bool)));
+          SLOT(updatePowerGui()));
   connect(this, SIGNAL(changedPower(bool)),
-          SLOT(updatePowerGui(bool)));
+          SLOT(updatePowerGui()));
   connect(this, SIGNAL(changedWired(bool)),
           SLOT(updateWiredGui(bool)));
   connect(this, SIGNAL(changedMoving(bool)),
@@ -510,8 +507,9 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
 
   setViewMode(MICRO);
   setupDialog->update();
-  updatePowerGui(getPower());
+  updatePowerGui();
   updateWiredGui(isWired());
+  setStepGui();
 
 }
 
@@ -557,6 +555,7 @@ void QCaMotorGUI::updatePvGui(const QString & newpv){
   } else {
     connect(mUi->setup, SIGNAL(clicked()),
             setupDialog, SLOT(show()) );
+    updateDescriptionGui(newpv);
   }
 }
 
@@ -1217,13 +1216,28 @@ void QCaMotorGUI::updateStopButtonStyle() {
 
 }
 
-void QCaMotorGUI::updatePowerGui(bool pwr) {
+void QCaMotorGUI::updatePowerGui() {
+
+  bool pwrC = getPowerConnection(), pwr = getPower();
+
+  sUi->power->setVisible(pwrC);
+  sUi->label_19->setVisible(pwrC);
+  sUi->label_23->setVisible(pwrC);
+  mUi->power->setVisible(pwrC);
+
   sUi->power->setChecked(pwr);
   sUi->power->setText( pwr ? "ON" : "OFF" );
   sUi->power->setStyleSheet
-    ( pwr ?
-       "background-color: rgb(128, 0, 0);   color: rgb(255, 255, 255);" :
-       "background-color: rgb(0, 128, 0); color: rgb(255, 255, 255);" );
+      ( pwr ?
+         "background-color: rgb(0, 128, 0);   color: rgb(255, 255, 255);" :
+         "background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);" );
+
+  mUi->power->setChecked(pwr);
+  mUi->power->setStyleSheet
+      ( pwr ?
+         "background-color: rgb(0, 128, 0)" :
+         "background-color: rgb(0, 0, 0)" );
+
   updateStopButtonStyle();
   updateAllElements();
 }
@@ -1430,6 +1444,7 @@ void QCaMotorGUI::updateAllElements(){
   sUi->units                  ->setEnabled(std);
   sUi->callRelative           ->setEnabled(std);
   sUi->power                  ->setEnabled(cn && !mv);
+  mUi->power                  ->setEnabled(cn && !mv);
 
 
 }

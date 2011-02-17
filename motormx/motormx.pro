@@ -8,12 +8,15 @@ TEMPLATE = app
 
 INCLUDEPATH += ../qcamotor ../qcamotorgui ../motorstack
 
-SOURCES += main.cpp \
-    mainwindow.cpp
+SOURCES += \
+    motormx_mainwindow.cpp \
+    motormx.cpp
 
-HEADERS += mainwindow.h
+HEADERS += \
+    motormx_mainwindow.h
 
-FORMS += mainwindow.ui
+FORMS += \
+    motormx_mainwindow.ui
 
 LIBS += -L../qcamotor -lqcamotor \
     -L../qcamotorgui -lqcamotorgui \

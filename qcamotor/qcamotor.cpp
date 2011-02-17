@@ -275,16 +275,18 @@ void QCaMotor::loadConfiguration(const QString & fileName) {
 
 void QCaMotor::preSetPv(){
 
-  if ( QEpicsPV::get(pv+".RTYP").toString() != "motor") {
+  QVariant rtype = QEpicsPV::get(pv+".RTYP");
+  if ( ! rtype.isValid() ) {
+    emit error("Can't connect to the \"" + pv + "\" PV.");
+  } else if ( rtype.toString() != "motor") {
     setPv();
-    emit error("Unexpected record type.");
+    emit error("Unexpected record type \"" + rtype.toString() + "\""
+               " of the \"" + pv + "\" PV.");
     return;
   }
 
   foreach ( QString key, motor.keys() )
     motor[key]->setPV(pv+key);
-
-  emit changedPv(pv);
 
 }
 
@@ -295,14 +297,13 @@ void QCaMotor::setPv(const QString & pvName) {
     emit changedConnected(iAmConnected=false);
   pv = pvName.trimmed();
 
-  if (pv.isEmpty()) {
+  emit changedPv(pv);
+
+  if (pv.isEmpty())
     foreach ( QString key, motor.keys() )
       motor[key]->setPV();
-    emit changedPv();
-    return;
-  }
-
-  QTimer::singleShot(0, this, SLOT(preSetPv()));
+  else
+    QTimer::singleShot(0, this, SLOT(preSetPv()));
 
 }
 

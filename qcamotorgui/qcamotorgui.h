@@ -201,6 +201,12 @@ public:
   /// @return Setup button of the main interface.
   ///
   inline QPushButton * mainButton() {return mUi->setup; }
+  inline QMDoubleSpinBox * positionBox() {return mUi->userPosition; }
+  inline QWidget * pButtons() {return mUi->pButtons;}
+  inline QMultiComboBox * stepBox() {return mUi->step;}
+  inline QWidget * mButtons() {return mUi->mButtons;}
+  inline QWidget * stopButton() {return mUi->stop;}
+  inline QWidget * powerButton() {return mUi->powerW;} // have to introduce and return powerW, not power because new parent may reset the visibility.
 
 signals:
 
@@ -374,7 +380,7 @@ private slots:
   void updateStopButtonStyle();
 
   /// Sets style of the power button.
-  void updatePowerGui(bool pwr);
+  void updatePowerGui();
 
   /// Updates the GUI in accordance with new isWired status.
   void updateWiredGui(bool wr);

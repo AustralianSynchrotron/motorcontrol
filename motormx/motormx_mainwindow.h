@@ -30,6 +30,12 @@ public:
 private:
   Ui::MainWindow *ui;           ///< UI.
   QMotorStack * ms;
+
+private slots:
+
+  void onSave();
+  void onLoad();
+
 };
 
 #endif // MAINWINDOW_H
