@@ -71,10 +71,15 @@ void QMotorStack::initialize() {
 
 
 QCaMotorGUI * QMotorStack::addMotor(const QString & presetpv, bool lock, bool noFileSave){
-
   QCaMotorGUI * motor = new QCaMotorGUI(this);
   motor->setPv(presetpv);
   motor->lock(lock);
+  addMotor(motor, noFileSave);
+  return motor;
+}
+
+
+void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
 
   int idx = ui->table->rowCount();
   ui->table->insertRow(idx);
@@ -97,8 +102,6 @@ QCaMotorGUI * QMotorStack::addMotor(const QString & presetpv, bool lock, bool no
 
   if ( ! noFileSave )
     updateMotorsFile();
-
-  return motor;
 
 }
 

@@ -71,6 +71,13 @@ public slots:
   ///
   QCaMotorGUI * addMotor(const QString & presetpv = "", bool lock = false, bool noFileSave = false);
 
+  /// Adds existing motor into the UI.
+  ///
+  /// @param motor existing motor.
+  /// @param noFileSave Does not update the motorsFile if true.
+  ///
+  void addMotor(QCaMotorGUI *, bool noFileSave = false);
+
   /// Removes the motor with the button from the UI.
   /// @param button button assigned to the motor.
   void removeMotor(QCaMotorGUI * motor);
