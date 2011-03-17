@@ -18,13 +18,6 @@
 
 
 
-namespace Ui {
-  class MotorControl;
-  class MotorSetup;
-  class GoRelative;
-  class PVtable;
-}
-
 
 /// The table model containing the descriptions of all motors
 /// PVs known to the program. Used for the "Choose PV" dialog (Ui::PVtable)
@@ -88,7 +81,6 @@ public:
 
 private slots:
 
-
   void updateData();            ///< Slot used to catch the data change.
 
 };
@@ -116,6 +108,13 @@ protected:
 };
 
 
+
+namespace Ui {
+  class MotorControl;
+  class MotorSetup;
+  class GoRelative;
+  class PVtable;
+}
 
 
 /// Graphical user interface for the motor.
@@ -176,37 +175,9 @@ public:
   /// @param lck new lock status
   void lock(bool lck);
 
-  /// Puts the widgets from the ::theWidget into the grid layout.
-  ///
-  /// Used to leave the ::mUi in private part of the class
-  ///
-  /// @param layout The layout to put the elements into.
-  /// @param vPosition row of the grid layout to put the elements into.
-  /// @param hPosition horizontal position of the first element in the layout.
-  ///
-  void positionInLayout(QGridLayout * layout, int vPosition, int hPosition=0);
-
-  /// Puts the widgets from the ::theWidget into the horizontal layout.
-  ///
-  /// Used to leave the ::mUi in private part of the class
-  ///
-  /// @param layout The layout to put the elements into.
-  ///
-  void positionInLayout(QHBoxLayout * layout);
-
-  /// The setup button widget from the ::theWidget.
-  ///
-  /// Used to leave the ::mUi in private part of the class
-  ///
-  /// @return Setup button of the main interface.
-  ///
-  inline QPushButton * mainButton() {return mUi->setup; }
-  inline QMDoubleSpinBox * positionBox() {return mUi->userPosition; }
-  inline QWidget * pButtons() {return mUi->pButtons;}
-  inline QMultiComboBox * stepBox() {return mUi->step;}
-  inline QWidget * mButtons() {return mUi->mButtons;}
-  inline QWidget * stopButton() {return mUi->stop;}
-  inline QWidget * powerButton() {return mUi->powerW;} // have to introduce and return powerW, not power because new parent may reset the visibility.
+  /// Gives an external application access to the widgets of the
+  /// basic control UI.
+  inline Ui::MotorControl * basicUI() {return mUi;}
 
 signals:
 
@@ -252,6 +223,10 @@ private slots:
   /// Updates all GUIs when the motor PV has changed.
   /// @param newpv new PV.
   void updatePvGui(const QString & newpv = "");
+
+
+  // WARNING: Save/Load configuration was NOT tested at all
+  // To be done when the electricity is back to the beamline.
 
   void onSave() ;
 

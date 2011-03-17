@@ -514,7 +514,6 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
 }
 
 QCaMotorGUI::~QCaMotorGUI() {
-  positionInLayout(mUi->horizontalLayout);
   delete mUi;
   delete sUi;
   delete rUi;
@@ -567,6 +566,7 @@ void QCaMotorGUI::lock(bool lck){
 }
 
 
+/*
 void QCaMotorGUI::positionInLayout(QGridLayout * layout, int vPosition, int hPosition) {
   layout->addWidget(mUi->setup,        vPosition, hPosition + 0);
   layout->addWidget(mUi->line_1,       vPosition, hPosition + 1);
@@ -596,7 +596,7 @@ void QCaMotorGUI::positionInLayout(QHBoxLayout * layout) {
   layout->addWidget(mUi->line_2);
   layout->addWidget(mUi->stop);
 }
-
+*/
 
 
 

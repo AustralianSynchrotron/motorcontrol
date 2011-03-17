@@ -38,6 +38,10 @@ private slots:
   /// the separate slot
   void initialize();
 
+
+  // WARNING: *All() and updatePowerConnections() functions were NOT tested at all
+  // To be done when the electricity is back to the beamline.
+
   void stopAll();
 
   void powerOnAll();
@@ -75,8 +79,13 @@ public slots:
   /// Removes all motors from stack.
   void clear();
 
-
+  // To address a bug (is it a bug?) in Qt which does not resizes the
+  // column widths when the context of the column elements is changed.
   void resetHeader();
+
+
+  // WARNING: Save/Load configuration was NOT tested at all
+  // To be done when the electricity is back to the beamline.
 
   void saveConfiguration(const QString & fileName);
 

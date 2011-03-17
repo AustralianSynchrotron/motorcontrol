@@ -78,18 +78,18 @@ QCaMotorGUI * QMotorStack::addMotor(const QString & presetpv, bool lock, bool no
 
   int idx = ui->table->rowCount();
   ui->table->insertRow(idx);
-  ui->table->setCellWidget(idx,0,motor->mainButton());
-  ui->table->setCellWidget(idx,1,motor->positionBox());
-  ui->table->setCellWidget(idx,2,motor->mButtons());
-  ui->table->setCellWidget(idx,3,motor->stepBox());
-  ui->table->setCellWidget(idx,4,motor->pButtons());
-  ui->table->setCellWidget(idx,5,motor->stopButton());
-  ui->table->setCellWidget(idx,6,motor->powerButton());
+  ui->table->setCellWidget(idx,0,motor->basicUI()->setup);
+  ui->table->setCellWidget(idx,1,motor->basicUI()->userPosition);
+  ui->table->setCellWidget(idx,2,motor->basicUI()->mButtons);
+  ui->table->setCellWidget(idx,3,motor->basicUI()->step);
+  ui->table->setCellWidget(idx,4,motor->basicUI()->pButtons);
+  ui->table->setCellWidget(idx,5,motor->basicUI()->stop);
+  ui->table->setCellWidget(idx,6,motor->basicUI()->powerW);
 
   connect(motor, SIGNAL(changedPowerConnection(bool)),
           SLOT(updatePowerConnections(bool)));
 
-  motors[motor->mainButton()] = motor;
+  motors[motor->basicUI()->setup] = motor;
 
   QTableWidgetItem * itm = new QTableWidgetItem("-");
   itm->setToolTip("Drag to reorganize, double-click to remove.");
@@ -121,7 +121,7 @@ void QMotorStack::removeMotor(QCaMotorGUI * motor){
   if (!motor)
     return;
 
-  const QPushButton * mbtn = motor->mainButton();
+  const QPushButton * mbtn = motor->basicUI()->setup;
   const int rowCount = ui->table->rowCount();
   int idx=0;
   while ( idx < rowCount )

@@ -54,6 +54,11 @@ public:
   /// Qt-aware function which returns only after any motion of the motor has finished.
   void wait_stop();
 
+
+
+  // WARNING: Save/Load configuration was NOT tested at all
+  // To be done when the electricity is back to the beamline.
+
   void saveConfiguration(const QString & fileName) const;
   void loadConfiguration(const QString & fileName);
 
