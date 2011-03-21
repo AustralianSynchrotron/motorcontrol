@@ -93,6 +93,10 @@ void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
 
   connect(motor, SIGNAL(changedPowerConnection(bool)),
           SLOT(updatePowerConnections(bool)));
+  connect(motor, SIGNAL(changedDescription(QString)),
+          SLOT(resetHeader()));
+  connect(motor, SIGNAL(changedPv()),
+          SLOT(resetHeader()));
 
   motors[motor->basicUI()->setup] = motor;
 
@@ -206,7 +210,9 @@ void QMotorStack::updatePowerConnections(bool pwr) {
 }
 
 void QMotorStack::resetHeader() {
-  ui->table->horizontalHeader()->reset();
+  // Here the delay of 100 msec is set to allow the setup button's text be
+  // updated before resetting the header.
+  QTimer::singleShot(100, ui->table->horizontalHeader(), SLOT(reset()));
 }
 
 void QMotorStack::saveConfiguration(const QString & fileName) {

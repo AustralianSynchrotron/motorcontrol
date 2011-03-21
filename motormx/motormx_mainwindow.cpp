@@ -35,15 +35,7 @@ MainWindow::MainWindow(QWidget *parent)  :
   connect(load, SIGNAL(clicked()), SLOT(onLoad()));
   ui->statusBar->addPermanentWidget(load);
 
-
-  ui->statusBar->addPermanentWidget(new QLabel("  GUI:"));
-
-  QPushButton * reset = new QPushButton("Reset");
-  reset->setFlat(true);
-  connect(reset, SIGNAL(clicked()), ms, SLOT(resetHeader()));
-  ui->statusBar->addPermanentWidget(reset);
-
-  QCheckBox * lock = new QCheckBox("Lock");
+  QCheckBox * lock = new QCheckBox("Lock GUI");
   connect(lock, SIGNAL(toggled(bool)), ms, SLOT(lock(bool)));
   connect(lock, SIGNAL(toggled(bool)), save, SLOT(setHidden(bool)));
   connect(lock, SIGNAL(toggled(bool)), load, SLOT(setHidden(bool)));

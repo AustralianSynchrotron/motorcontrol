@@ -810,6 +810,9 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(false);
     sUi->label_2->setVisible(false);
     sUi->label_20->setVisible(false);
+    sUi->label_52->setVisible(false);
+    sUi->saveConfig->setVisible(false);
+    sUi->loadConfig->setVisible(false);
 
     sUi->generalSetup->setVisible(false);
     sUi->line_5->setVisible(true);
@@ -853,6 +856,9 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(false);
     sUi->label_2->setVisible(false);
     sUi->label_20->setVisible(false);
+    sUi->label_52->setVisible(false);
+    sUi->saveConfig->setVisible(false);
+    sUi->loadConfig->setVisible(false);
 
     sUi->generalSetup->setVisible(false);
     sUi->line_5->setVisible(true);
@@ -904,6 +910,10 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(false);
     sUi->label_2->setVisible(false);
     sUi->label_20->setVisible(false);
+    sUi->label_52->setVisible(false);
+    sUi->saveConfig->setVisible(false);
+    sUi->loadConfig->setVisible(false);
+
 
     sUi->generalSetup->setVisible(false);
     sUi->line_5->setVisible(true);
@@ -960,6 +970,9 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(true);
     sUi->label_2->setVisible(true);
     sUi->label_20->setVisible(true);
+    sUi->label_52->setVisible(true);
+    sUi->saveConfig->setVisible(true);
+    sUi->loadConfig->setVisible(true);
 
     sUi->generalSetup->setVisible(true);
     sUi->line_5->setVisible(true);
@@ -1016,6 +1029,9 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(true);
     sUi->label_2->setVisible(true);
     sUi->label_20->setVisible(true);
+    sUi->label_52->setVisible(true);
+    sUi->saveConfig->setVisible(true);
+    sUi->loadConfig->setVisible(true);
 
     sUi->generalSetup->setVisible(true);
     sUi->line_5->setVisible(true);
