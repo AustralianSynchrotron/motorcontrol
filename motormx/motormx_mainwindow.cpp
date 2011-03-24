@@ -1,5 +1,5 @@
 #include "motormx_mainwindow.h"
-#include "ui_mainwindow.h"
+#include "ui_motormx_mainwindow.h"
 
 #include <iostream>
 
