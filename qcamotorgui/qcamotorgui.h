@@ -148,7 +148,8 @@ private:
 
   /// Constructs the ::knownPVs and ::knownConfigs.
   ///
-  /// The function cannot be called before the application has inited and therefore
+  /// The function cannot be called before the application has inited
+  /// (needs Qt event loop running), and therefore
   /// is called from within the constructor.
   static void init();
 

@@ -566,40 +566,6 @@ void QCaMotorGUI::lock(bool lck){
 }
 
 
-/*
-void QCaMotorGUI::positionInLayout(QGridLayout * layout, int vPosition, int hPosition) {
-  layout->addWidget(mUi->setup,        vPosition, hPosition + 0);
-  layout->addWidget(mUi->line_1,       vPosition, hPosition + 1);
-  layout->addWidget(mUi->userPosition, vPosition, hPosition + 2);
-  layout->addWidget(mUi->goM,          vPosition, hPosition + 3);
-  layout->addWidget(mUi->jogM,         vPosition, hPosition + 3);
-  layout->addWidget(mUi->limitM,       vPosition, hPosition + 3);
-  layout->addWidget(mUi->step,         vPosition, hPosition + 4);
-  layout->addWidget(mUi->goP,          vPosition, hPosition + 5);
-  layout->addWidget(mUi->jogP,         vPosition, hPosition + 5);
-  layout->addWidget(mUi->limitP,       vPosition, hPosition + 5);
-  layout->addWidget(mUi->line_2,       vPosition, hPosition + 6);
-  layout->addWidget(mUi->stop,         vPosition, hPosition + 7);
-}
-
-void QCaMotorGUI::positionInLayout(QHBoxLayout * layout) {
-  layout->addWidget(mUi->setup);
-  layout->addWidget(mUi->line_1);
-  layout->addWidget(mUi->userPosition);
-  layout->addWidget(mUi->goM);
-  layout->addWidget(mUi->jogM);
-  layout->addWidget(mUi->limitM);
-  layout->addWidget(mUi->step);
-  layout->addWidget(mUi->goP);
-  layout->addWidget(mUi->jogP);
-  layout->addWidget(mUi->limitP);
-  layout->addWidget(mUi->line_2);
-  layout->addWidget(mUi->stop);
-}
-*/
-
-
-
 void QCaMotorGUI::init() {
 
   if (inited)
