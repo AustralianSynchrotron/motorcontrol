@@ -4,8 +4,7 @@
 
 QMotorStack::QMotorStack(const QString & _motorsFile, QWidget *parent) :
     QWidget(parent),
-    motorsFile  (  _motorsFile.isEmpty()  ?
-                   QString()  :  QString(getenv("HOME")) + "/." + _motorsFile ),
+    motorsFile(_motorsFile),
     ui(new Ui::MotorStack)
 {
   //QTimer::singleShot(0, this, SLOT(initialize()));
@@ -37,8 +36,6 @@ void QMotorStack::initialize() {
   ui->table->verticalHeader()->setMovable(true);
   ui->table->verticalHeader()->setClickable(true);
   ui->table->verticalHeader()->setResizeMode(QHeaderView::Fixed);
-
-  //ui->table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 
   ui->table->horizontalHeader()->setResizeMode(0, QHeaderView::ResizeToContents);
   ui->table->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
@@ -97,6 +94,8 @@ void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
           SLOT(resetHeader()));
   connect(motor, SIGNAL(changedPv()),
           SLOT(resetHeader()));
+  connect(motor, SIGNAL(changedPv()),
+          SLOT(updateMotorsFile()));
 
   motors[motor->basicUI()->setup] = motor;
 
@@ -119,6 +118,7 @@ void QMotorStack::removeRow(int idx){
   delete motors[mbtn];
   motors.remove(mbtn);
 
+  updatePowerConnections();
   updateMotorsFile();
 
 }
@@ -196,7 +196,7 @@ void QMotorStack::powerOffAll(){
 void QMotorStack::updatePowerConnections(bool pwr) {
 
   if (pwr) {
-    ui->table->setColumnHidden(6,true);
+    ui->table->setColumnHidden(6,false);
     ui->powerW->setVisible(true);
     return;
   }

@@ -121,6 +121,14 @@ namespace Ui {
 class QCaMotorGUI : public QCaMotor {
   Q_OBJECT;
 
+public:
+
+  /// Base name of the files containing the list of the known motor PVs.
+  static const QString pvListBaseName;
+
+  static const QString configsSearchBaseDir;
+  static const QString configsExt;
+
 private:
 
   QWidget * theWidget;          ///< Motor's main widget.
@@ -134,12 +142,6 @@ private:
   QDialog * pvDialog;           ///< "Choose PV" dialog.
   QDialog * relativeDialog;     ///< "Move relatively" dialog.
 
-
-  /// Base name of the files containing the list of the known motor PVs.
-  static const QString pvListBaseName;
-
-  static const QString configsSearchBaseDir;
-  static const QString configsExt;
 
   static QMap<QString,QString> knownConfigs;
   static KnownPVTable * knownPVs; ///< Table model for the table view in the "Choose PV".
@@ -224,10 +226,6 @@ private slots:
   /// Updates all GUIs when the motor PV has changed.
   /// @param newpv new PV.
   void updatePvGui(const QString & newpv = "");
-
-
-  // WARNING: Save/Load configuration was NOT tested at all
-  // To be done when the electricity is back to the beamline.
 
   void onSave() ;
 
