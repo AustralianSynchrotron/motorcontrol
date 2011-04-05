@@ -313,12 +313,6 @@ private slots:
   /// Updates GUIs with the new user limit
   void updateUserLimitGui();
 
-  // next slot is needed to address the bug described in
-  // QCaMotor::setResolution().
-  // WARNING: BUG
-  // Updates GUIs with the new motor resolution.
-  //void updateMotorResolutionGui();
-
   /// Updates GUIs with the new maximum speed.
   void updateMaximumSpeedGui(double maxSpeed);
 
