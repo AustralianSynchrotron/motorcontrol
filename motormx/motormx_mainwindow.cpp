@@ -15,9 +15,14 @@
 
 MainWindow::MainWindow(QWidget *parent)  :
   QMainWindow(parent),
-  ui(new Ui::MainWindow),
-  ms(new QMotorStack("motormxListOfMotors.txt", this))
+  ui(new Ui::MainWindow)
 {
+
+  const QString configPath = QString(getenv("HOME")) + "/." + QCaMotorGUI::configsSearchBaseDir;
+  QDir configDir(configPath);
+  if ( ! configDir.exists() )
+    configDir.mkpath(configPath);
+  ms = new QMotorStack( configPath +  "/listOfMotorsInUI.txt", this);
 
   ui->setupUi(this);
   setCentralWidget(ms);

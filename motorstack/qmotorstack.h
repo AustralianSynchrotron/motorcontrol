@@ -38,16 +38,9 @@ private slots:
   /// the separate slot
   void initialize();
 
-
-  // WARNING: *All() and updatePowerConnections() functions were NOT tested at all
-  // To be done when the electricity is back to the beamline.
-
   void stopAll();
-
   void powerOnAll();
-
   void powerOffAll();
-
   void updatePowerConnections(bool pwr=false);
 
 public:

@@ -158,8 +158,8 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   pUi->setupUi(pvDialog);
 
   pvDialog->setWindowTitle("Choose motor PV");
-  setupDialog->setWindowTitle("MotorMx setup");
-  relativeDialog->setWindowTitle("MotorMx move relative");
+  setupDialog->setWindowTitle("MotorMx, setup");
+  relativeDialog->setWindowTitle("Move relatively");
 
 
   proxyModel->setSourceModel(knownPVs);
@@ -605,7 +605,11 @@ void QCaMotorGUI::init() {
   fileNames.clear();
 
   // WARING: PORTING ISSUE.
+  fileNames << "*."+configsExt;
   QDir dir;
+  dir.setNameFilters(fileNames);
+  fileNames.clear();
+
   dir.setPath( "/etc/"+configsSearchBaseDir );
   fileNames << dir.entryList(QDir::Files).replaceInStrings(QRegExp("^"), dir.path()+"/");
   dir.setPath( QString(getenv("HOME")) + "/." + configsSearchBaseDir );
@@ -635,13 +639,17 @@ void QCaMotorGUI::onSetupClicked() {
 
 
 void QCaMotorGUI::onSave() {
-  QString fileName = QFileDialog::getSaveFileName(0, "Save configuration");
+  QString fileName = QFileDialog::getSaveFileName
+                     (0, "Save configuration", "",
+                      "All files (*);;Motor configuration files (*." + configsExt + ")");
   saveConfiguration(fileName);
 }
 
 void QCaMotorGUI::onLoad(const QString & text) {
   QString fileName =  ( text == sUi->loadConfig->itemText(0) ) ?
-        QFileDialog::getOpenFileName(0, "Load configuration") :
+        QFileDialog::getOpenFileName
+        (0, "Load configuration", "",
+         "Motor configuration files (*." + configsExt + ");;All files (*)") :
         knownConfigs[text];
   loadConfiguration(fileName);
 }
@@ -776,9 +784,7 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(false);
     sUi->label_2->setVisible(false);
     sUi->label_20->setVisible(false);
-    sUi->label_52->setVisible(false);
-    sUi->saveConfig->setVisible(false);
-    sUi->loadConfig->setVisible(false);
+    sUi->loadSave->setVisible(false);
 
     sUi->generalSetup->setVisible(false);
     sUi->line_5->setVisible(true);
@@ -822,9 +828,7 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(false);
     sUi->label_2->setVisible(false);
     sUi->label_20->setVisible(false);
-    sUi->label_52->setVisible(false);
-    sUi->saveConfig->setVisible(false);
-    sUi->loadConfig->setVisible(false);
+    sUi->loadSave->setVisible(false);
 
     sUi->generalSetup->setVisible(false);
     sUi->line_5->setVisible(true);
@@ -876,10 +880,7 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(false);
     sUi->label_2->setVisible(false);
     sUi->label_20->setVisible(false);
-    sUi->label_52->setVisible(false);
-    sUi->saveConfig->setVisible(false);
-    sUi->loadConfig->setVisible(false);
-
+    sUi->loadSave->setVisible(false);
 
     sUi->generalSetup->setVisible(false);
     sUi->line_5->setVisible(true);
@@ -936,9 +937,7 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(true);
     sUi->label_2->setVisible(true);
     sUi->label_20->setVisible(true);
-    sUi->label_52->setVisible(true);
-    sUi->saveConfig->setVisible(true);
-    sUi->loadConfig->setVisible(true);
+    sUi->loadSave->setVisible(true);
 
     sUi->generalSetup->setVisible(true);
     sUi->line_5->setVisible(true);
@@ -995,9 +994,7 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(true);
     sUi->label_2->setVisible(true);
     sUi->label_20->setVisible(true);
-    sUi->label_52->setVisible(true);
-    sUi->saveConfig->setVisible(true);
-    sUi->loadConfig->setVisible(true);
+    sUi->loadSave->setVisible(true);
 
     sUi->generalSetup->setVisible(true);
     sUi->line_5->setVisible(true);
@@ -1234,7 +1231,8 @@ void QCaMotorGUI::updateWiredGui(bool wr) {
 }
 
 void QCaMotorGUI::pressStop(){
-  if (isMoving()) stop();
+  if ( ! getPower() ) setPower(true);
+  else if (isMoving()) stop();
   else undoLastMotion();
 }
 
@@ -1371,7 +1369,9 @@ void QCaMotorGUI::updateAllElements(){
     (cn && pwr && wr && ( ! mv || mUi->jogP->isDown()) );
   mUi->userPosition           ->setEnabled(std && wr);
   mUi->step                   ->setEnabled(std && wr);
-  mUi->stop                   ->setEnabled(cn && pwr && wr);
+  mUi->stop                   ->setEnabled(cn && wr);
+  sUi->saveConfig             ->setEnabled(cn && !mv);
+  sUi->loadConfig             ->setEnabled(cn && !mv);
   sUi->goLimitM               ->setEnabled(std && wr);
   sUi->goLimitP               ->setEnabled(std && wr);
   sUi->goM                    ->setEnabled(std && wr);
@@ -1388,7 +1388,7 @@ void QCaMotorGUI::updateAllElements(){
   sUi->dialPosition           ->setEnabled(std);
   sUi->rawPosition            ->setEnabled(std);
   sUi->step                   ->setEnabled(std);
-  sUi->stop                   ->setEnabled(cn && pwr && wr);
+  sUi->stop                   ->setEnabled(cn && wr);
   sUi->speed                  ->setEnabled(std);
   sUi->revSpeed               ->setEnabled(std);
   sUi->acceleration           ->setEnabled(std);
