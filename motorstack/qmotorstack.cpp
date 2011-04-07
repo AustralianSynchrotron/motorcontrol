@@ -120,6 +120,7 @@ void QMotorStack::removeRow(int idx){
   motors.remove(mbtn);
 
   updateMotorsFile();
+  updatePowerConnections();
 
 }
 
@@ -196,7 +197,7 @@ void QMotorStack::powerOffAll(){
 void QMotorStack::updatePowerConnections(bool pwr) {
 
   if (pwr) {
-    ui->table->setColumnHidden(6,true);
+    ui->table->setColumnHidden(6,false);
     ui->powerW->setVisible(true);
     return;
   }
