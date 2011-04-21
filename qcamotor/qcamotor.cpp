@@ -308,36 +308,6 @@ void QCaMotor::setPv(const QString & pvName) {
 }
 
 
-
-
-
-void QCaMotor::caput(const QString & fieldname, const QString & value){
-
-  if ( ! iAmConnected )
-    return;
-
-  QEventLoop q;
-  QTimer tT;
-  tT.setSingleShot(true);
-
-  connect(&tT, SIGNAL(timeout()), &q, SLOT(quit()));
-  connect(motor[fieldname], SIGNAL(valueUpdated(QVariant)), &q, SLOT(quit()));
-  connect(motor[fieldname], SIGNAL(connectionChanged(bool)), &q, SLOT(quit()));
-
-  // WARING: PORTING ISSUE.
-  QProcess::execute
-    ("/bin/sh -c \"caput "
-     + pv + fieldname + " " + value
-     + " > /dev/null\"");
-
-  tT.start(100);
-  q.exec();
-
-  if(tT.isActive())
-    tT.stop();
-
-}
-
 void QCaMotor::updateDouble(const QVariant & data,
                             double & parameter, const QString & parameter_name,
                             void (QCaMotor::* changedDouble)(double) ) {
@@ -691,7 +661,7 @@ void QCaMotor::goStep(int direction, bool wait){
 
   SuMode mode = getSuMode();
   setSuMode(USE);
-  setField( ( direction > 0 ) ? ".TWF" : ".TWR", (qlonglong) 1);
+  setField( ( direction > 0 ) ? ".TWF" : ".TWR", 1);
   if (wait)
     wait_stop();
   setSuMode(mode);
@@ -709,8 +679,7 @@ void QCaMotor::goRelative(double dist, bool wait){
 void QCaMotor::jog(bool jg, int direction){
   SuMode mode = getSuMode();
   setSuMode(USE);
-  caput( ( direction > 0 ) ? ".JOGF" : ".JOGR", ( jg ? "1" : "0" ));
-  //setField( ( direction > 0 ) ? ".JOGF" : ".JOGR", (qlonglong) jg );
+  setField( ( direction > 0 ) ? ".JOGF" : ".JOGR", jg ? 1 : 0 );
   setSuMode(mode);
 }
 
@@ -736,21 +705,7 @@ void QCaMotor::setOffsetDirection(Direction direction){
 }
 
 void QCaMotor::setSuMode(SuMode mode) {
-  caput(".SET", mode == SET ? "1" : "0");
-
-  // The following string works well when this function is called
-  // from the setMode(QAbstractButton* but)
-  // i.e. when the clicked() signal is emited by the corresponding
-  // button.
-  // But when this function is called directly from one of the set...()
-  // functions (f.e. setPostion() or goPosition() ) it won't return to the
-  // initial mode and I have to use ::caput() function above.
-  // Might happen because of very short time interval between two calls
-  // of this function from those set..() and go...().
-  //
-  // WARNING: BUG
-  //
-  //setField(".SET", mode);
+  setField(".SET", mode);
 }
 
 
@@ -832,8 +787,7 @@ void QCaMotor::setJogAcceleration(double acc){
 
 
 void QCaMotor::stop(bool wait){
-  caput(".STOP", "1");
-  //setField(".STOP", 1);
+  setField(".STOP", 1);
   if (wait)
     wait_stop();
 }
