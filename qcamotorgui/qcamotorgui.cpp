@@ -9,7 +9,6 @@
 
 
 
-
 KnownPVTable::KnownPVTable(const QStringList &list, QObject *parent)
   : QAbstractTableModel(parent){
   foreach(QString pvname, list) {

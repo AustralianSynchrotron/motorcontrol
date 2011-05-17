@@ -37,7 +37,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Line" name="line_1">
+    <widget class="Line" name="line_0">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>

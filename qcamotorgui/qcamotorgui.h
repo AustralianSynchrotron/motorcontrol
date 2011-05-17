@@ -19,7 +19,6 @@
 
 
 
-
 /// The table model containing the descriptions of all motors
 /// PVs known to the program. Used for the "Choose PV" dialog (Ui::PVtable)
 ///

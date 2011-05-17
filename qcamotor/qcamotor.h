@@ -7,7 +7,6 @@
 #include <qepicspv.h>
 
 
-
 /// \brief Class representing the EPICS motor.
 ///
 /// This class stores all the EPICS motor record's fields, provides methods for manipulating,
