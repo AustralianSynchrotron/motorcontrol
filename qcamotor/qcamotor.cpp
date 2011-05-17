@@ -322,12 +322,12 @@ void QCaMotor::updateDouble(const QVariant & data,
 
 
 void QCaMotor::updateConnection(bool suc){
-  suc = true;
-  foreach(QString key, motor.keys())
-    if ( suc &&
-        key != "_ON_STATUS" && key != "_ON_CMD" &&
-        key != "_CONNECTED_STATUS" ) // Nonstandard fields
-      suc &= motor[key]->isConnected();
+  if (suc)
+    foreach(QString key, motor.keys())
+      if ( suc &&
+           key != "_ON_STATUS" && key != "_ON_CMD" &&
+           key != "_CONNECTED_STATUS" ) // Nonstandard fields
+        suc &= motor[key]->isConnected();
   if (suc != iAmConnected)
     emit changedConnected(iAmConnected = suc);
 }
@@ -489,7 +489,7 @@ void QCaMotor::updateBacklash(const QVariant & data){
 }
 
 
-void QCaMotor::updateMoving(const QVariant & data){
+void QCaMotor::updateMoving(const QVariant & data) {
 
   bool newMov = ! data.toBool();
 
@@ -502,6 +502,22 @@ void QCaMotor::updateMoving(const QVariant & data){
   emit changedMoving(iAmMoving);
   if ( ! iAmMoving )
     emit stopped();
+
+  // detect the bug described at the motionAttempt declaration.
+  if ( ! iAmMoving  &&  abs( getRawGoal() - getRawPosition() ) >=2  &&
+       ! getLoLimitStatus()  &&  ! getHiLimitStatus()  &&
+       getSpmgMode() != PAUSE  &&  getSpmgMode() != STOP  &&
+       getUserGoal() >= getUserLoLimit()  &&  getUserGoal() <= getUserHiLimit() )
+    ) {
+
+    if (secondMotionAttempt) // it is second time when the bug manifests itself
+      qDebug() << "The undone motion bug happened twice. Something is wrong. Please report to the developers.";
+    else
+      goRawPosition(getRawGoal()); // do second attempt
+    secondMotionAttempt = ! secondMotionAttempt;
+
+  } else if ( ! iAmMoving ) // stopped without the bug
+    secondMotionAttempt = false;
 
 }
 

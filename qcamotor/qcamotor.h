@@ -138,6 +138,17 @@ private:
 
   double lastMotion;            ///< last motion of the motor (in raw coordinates)
 
+  // WARNING: BUG (in EPICS's motor)
+  // Sometimes, very rarely, after the request to move the motor, the .DMOV field goes to 0 and immidiately 1,
+  // but no actual motion happens. After this the values of .VAL and .RBV are different.
+  // In this case it is enough to repeat the motion request and the motor will move. In order to address this issue
+  // I introduce the additional member secondMotionAttempt which sets to false on first motion attempt and then is checked on
+  // motion stop. If the described bug is detected on stop, then the member is set to true and second attempt to
+  // move the motor is requested. If the motor did not move after the second attempt, means something strange is happening.
+  //
+  // Just found that the bug can be reproduced with high probability after re-fusing the motor channel.
+  bool secondMotionAttempt;
+
 private slots:
 
   /// \brief Updates connection status (::iAmConnected)
@@ -467,7 +478,7 @@ public slots:
   ///
   /// @param direction direction to move in (defined by the sign)
   /// @param wait if false then sends the command and returns immediately,
-  /// if true then waits for the motion to complete and then returns
+  /// if true then waits for the   /// WARNING: BUG (in EPICS's motor)motion to complete and then returns
   /// (waiting is Qt-aware).
   ///
   void goLimit(int direction, bool wait=false);
