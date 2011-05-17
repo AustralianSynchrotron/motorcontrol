@@ -211,10 +211,10 @@ private slots:
   /// \brief Copies motor's PV into clipboard.
   void copyPV();
 
-  /// \brief Copies motor's PV into clipboard.
+  /// \brief Copies motor's description into clipboard.
   void copyDescription();
 
-  /// \brief Copies motor's PV into clipboard.
+  /// \brief Copies motor's user position into clipboard.
   void copyPosition();
 
   /*
