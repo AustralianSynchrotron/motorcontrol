@@ -504,11 +504,10 @@ void QCaMotor::updateMoving(const QVariant & data) {
     emit stopped();
 
   // detect the bug described at the motionAttempt declaration.
-  if ( ! iAmMoving  &&  abs( getRawGoal() - getRawPosition() ) >=2  &&
+  if ( ! iAmMoving  &&  qAbs( getRawGoal() - getRawPosition() ) >=2  &&
        ! getLoLimitStatus()  &&  ! getHiLimitStatus()  &&
        getSpmgMode() != PAUSE  &&  getSpmgMode() != STOP  &&
-       getUserGoal() >= getUserLoLimit()  &&  getUserGoal() <= getUserHiLimit() )
-    ) {
+       getUserGoal() >= getUserLoLimit()  &&  getUserGoal() <= getUserHiLimit() )  {
 
     if (secondMotionAttempt) // it is second time when the bug manifests itself
       qDebug() << "The undone motion bug happened twice. Something is wrong. Please report to the developers.";
