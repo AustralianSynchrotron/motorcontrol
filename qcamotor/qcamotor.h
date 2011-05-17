@@ -62,18 +62,6 @@ private:
 
   QHash<QString, QEpicsPV*> motor; ///< All motor record's fields used in the class.
 
-  /// \brief Executes caput command.
-  ///
-  /// Used to overcome the bug which prevents writing to any motor field while the motor is moving.
-  /// Whenever this function is used in the code, denotes the appearance of the bug.
-  ///
-  /// WARNING: BUG (in QCaObject or beneath)
-  ///
-  /// @param fieldname first parameter of the caput command
-  /// @param value second parameter of the caput command
-  ///
-  void caput(const QString & fieldname, const QString & value);
-
   /// Updates the parameter with new data and emits the signal.
   ///
   /// @param data New data
