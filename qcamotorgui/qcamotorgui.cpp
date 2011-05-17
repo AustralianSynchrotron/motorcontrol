@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QStringListModel>
+#include <QClipboard>
 
 
 
@@ -161,7 +162,6 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   setupDialog->setWindowTitle("MotorMx, setup");
   relativeDialog->setWindowTitle("Move relatively");
 
-
   proxyModel->setSourceModel(knownPVs);
   proxyModel->setDynamicSortFilter(true);
   proxyModel->setFilterKeyColumn(-1);
@@ -207,6 +207,20 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   connect(mUi->setup, SIGNAL(clicked()),
           SLOT(onSetupClicked()) );
 
+  QAction * action;
+
+  action = new QAction("Copy PV", mUi->setup);
+  mUi->setup->addAction(action);
+  connect(action, SIGNAL(triggered()), SLOT(copyPV()));
+
+  action = new QAction("Copy description", mUi->setup);
+  mUi->setup->addAction(action);
+  connect(action, SIGNAL(triggered()), SLOT(copyDescription()));
+
+  action = new QAction("Copy position", mUi->setup);
+  mUi->setup->addAction(action);
+  connect(action, SIGNAL(triggered()), SLOT(copyPosition()));
+
   connect(rUi->goRelative, SIGNAL(valueEdited(double)),
           SLOT(goRelative(double)));
 
@@ -237,7 +251,8 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   connect(mUi->power, SIGNAL(clicked(bool)),
           SLOT(setPower(bool)));
 
-
+  connect(sUi->pv, SIGNAL(clicked()),
+          SLOT(copyPV()));
   connect(sUi->viewMode, SIGNAL(activated(int)),
           SLOT(setViewMode(int)));
   connect(sUi->loadConfig, SIGNAL(activated(QString)),
@@ -526,7 +541,20 @@ QCaMotorGUI::~QCaMotorGUI() {
 
 
 
+void QCaMotorGUI::copyPV() {
+  if ( ! getPv().isEmpty() )
+    QApplication::clipboard()->setText(getPv());
+}
 
+void QCaMotorGUI::copyDescription() {
+  if ( ! getDescription().isEmpty() )
+    QApplication::clipboard()->setText(getDescription());
+}
+
+void QCaMotorGUI::copyPosition() {
+  if ( isConnected() )
+    QApplication::clipboard()->setText( QString::number(getUserPosition()) );
+}
 
 void QCaMotorGUI::filterPV(const QString & _text){
   proxyModel->setFilterRegExp( QRegExp(
@@ -551,10 +579,12 @@ void QCaMotorGUI::updatePvGui(const QString & newpv){
     connect(mUi->setup, SIGNAL(clicked()),
             pvDialog, SLOT(show()) );
     updateDescriptionGui("SETUP");
+    mUi->setup->setContextMenuPolicy(Qt::NoContextMenu);
   } else {
     connect(mUi->setup, SIGNAL(clicked()),
             setupDialog, SLOT(show()) );
     updateDescriptionGui(newpv);
+    mUi->setup->setContextMenuPolicy(Qt::ActionsContextMenu);
   }
 }
 
@@ -574,7 +604,7 @@ void QCaMotorGUI::init() {
 
   // Known PVs
 
-  // WARING: PORTING ISSUE.
+  // WARNING: PORTING ISSUE.
   QStringList fileNames;
   fileNames
     << "/etc/" + configsSearchBaseDir + "/" + pvListBaseName
@@ -604,7 +634,7 @@ void QCaMotorGUI::init() {
 
   fileNames.clear();
 
-  // WARING: PORTING ISSUE.
+  // WARNING: PORTING ISSUE.
   fileNames << "*."+configsExt;
   QDir dir;
   dir.setNameFilters(fileNames);
@@ -617,7 +647,7 @@ void QCaMotorGUI::init() {
 
   foreach (const QString filename , fileNames) {
     if ( filename.endsWith("."+configsExt) ) {
-      // WARING: PORTING ISSUE.
+      // WARNING: PORTING ISSUE.
       QString entry = filename.section('/',-1);
       entry.chop(configsExt.length()+1);
       knownConfigs[ entry ] = filename;

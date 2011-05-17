@@ -120,6 +120,7 @@ void QMotorStack::removeRow(int idx){
 
   updatePowerConnections();
   updateMotorsFile();
+  updatePowerConnections();
 
 }
 

@@ -7,6 +7,7 @@
 #include <QAbstractTableModel>
 #include <QSortFilterProxyModel>
 #include <QMap>
+#include <QMenu>
 
 #include "qcamotor.h"
 #include "qcamotorgui-additional.h"
@@ -142,7 +143,6 @@ private:
   QDialog * pvDialog;           ///< "Choose PV" dialog.
   QDialog * relativeDialog;     ///< "Move relatively" dialog.
 
-
   static QMap<QString,QString> knownConfigs;
   static KnownPVTable * knownPVs; ///< Table model for the table view in the "Choose PV".
 
@@ -207,6 +207,19 @@ private:
   ViewMode currentView;         ///< Current view mode of the "Setup" GUI.
 
 private slots:
+
+  /// \brief Copies motor's PV into clipboard.
+  void copyPV();
+
+  /// \brief Copies motor's PV into clipboard.
+  void copyDescription();
+
+  /// \brief Copies motor's PV into clipboard.
+  void copyPosition();
+
+  /*
+  void showContextMenu(const QPoint& pos);
+  */
 
   /// \brief Apply filter to the table view in the "Choose PV" GUI.
   /// Used to catch the text changes from the search line in the GUI.
