@@ -84,6 +84,8 @@ public slots:
   /// @param prec new precision.
   inline void setPrec(int prec) {setDecimals(prec);}
 
+  inline void	setValue ( double val ) { QDoubleSpinBox::setValue( oldvalue = val ) ; }
+
 private slots:
 
   /// Calculates and sets new single step of the spinbox:
@@ -155,6 +157,8 @@ public slots:
   /// Slot made from the QSpinBox::setMaximum().
   /// @param max new maximum.
   inline void setMax(int max) {setMaximum(max);}
+
+  inline void	setValue ( int val ) { QSpinBox::setValue( oldvalue = val ) ; }
 
 private slots:
 

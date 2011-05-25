@@ -243,6 +243,10 @@ private slots:
 
   void onLoad(const QString & text) ;
 
+  /// \brief Sets the description from the sUi->description->text.
+  ///
+  inline void setDescriptionGui() { setDescription(sUi->description->text()); }
+
   /// \brief Updates main GUIs when a new text in the ::step widget is activated/edited.
   ///
   /// The ::step widget is multifunctional: it can be either the step or one of the

@@ -259,8 +259,8 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   connect(sUi->saveConfig, SIGNAL(clicked()),
           SLOT(onSave()));
 
-  connect(sUi->description, SIGNAL(textEdited(QString)),
-          SLOT(setDescription(QString)));
+  connect(sUi->description, SIGNAL(returnPressed()),
+          SLOT(setDescriptionGui()));
 
   connect(sUi->power, SIGNAL(clicked(bool)),
           SLOT(setPower(bool)));
@@ -370,7 +370,6 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
           SLOT(setUserHiLimit(double)));
   connect(sUi->resolution, SIGNAL(valueEdited(double)),
           SLOT(setMotorResolution(double)));
-
 
   //
   // Connect Motor Signals
@@ -668,8 +667,10 @@ void QCaMotorGUI::onSetupClicked() {
 
 
 void QCaMotorGUI::onSave() {
+  // WARNING: PORTING ISSUE.
   QString fileName = QFileDialog::getSaveFileName
-                     (0, "Save configuration", "",
+                     (0, "Save configuration",
+                      QDir::currentPath() + "/" + getDescription() + "." + configsExt,
                       "All files (*);;Motor configuration files (*." + configsExt + ")");
   saveConfiguration(fileName);
 }
@@ -682,9 +683,6 @@ void QCaMotorGUI::onLoad(const QString & text) {
         knownConfigs[text];
   loadConfiguration(fileName);
 }
-
-
-
 
 void QCaMotorGUI::setStepGui(const QString & _text){
   QString text = _text.toLower();

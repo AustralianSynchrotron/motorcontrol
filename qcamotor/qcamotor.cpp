@@ -669,11 +669,12 @@ void QCaMotor::goRawPosition(double pos, bool wait){
 }
 
 void QCaMotor::goLimit(int direction, bool wait){
-  goUserPosition( ( direction > 0 ) ? getUserHiLimit() : getUserLoLimit() , wait );
+  jog(true, direction);
+  if (wait)
+    wait_stop();
 }
 
 void QCaMotor::goStep(int direction, bool wait){
-
   SuMode mode = getSuMode();
   setSuMode(USE);
   setField( ( direction > 0 ) ? ".TWF" : ".TWR", 1);
