@@ -125,6 +125,9 @@ QCaMotor::QCaMotor(QObject *parent) :
   motor.insert(".ERES", new QEpicsPV(this));
   connect(motor[".ERES"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateEncoderResolution(QVariant)));
+  motor.insert(".UREV", new QEpicsPV(this));
+  connect(motor[".UREV"], SIGNAL(valueUpdated(QVariant)),
+          this, SLOT(updateUnitsPerRev(QVariant)));
   motor.insert(".SREV", new QEpicsPV(this));
   connect(motor[".SREV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateStepsPerRev(QVariant)));
@@ -431,12 +434,19 @@ void QCaMotor::updateEncoderResolution(const QVariant & data){
                &QCaMotor::changedEncoderResolution);
 }
 
+void QCaMotor::updateUnitsPerRev(const QVariant & data){
+  updateDouble(data, unitsPerRev, "units per revolution",
+               &QCaMotor::changedUnitsPerRev);
+}
+
 void QCaMotor::updateStepsPerRev(const QVariant & data){
   bool er;
-  int new_val = data.toInt(&er);
+  long new_val = data.toInt(&er);
   if (!er)
     emit error("Could not convert \"" + data.toString() +  "\" to "
-               "steps per revolution (int).");
+               "steps per revolution (long).");
+  if (new_val < 0)
+    qDebug() << "Warning! New value of the steps per revolution (SREV) field is negative.");
   emit changedStepsPerRev( stepsPerRev = new_val );
 }
 
@@ -763,7 +773,15 @@ void QCaMotor::setEncoderResolution(double res){
   setField(".ERES", res);
 }
 
-void QCaMotor::setStepsPerRev(int st) {
+void QCaMotor::setUnitsPerRev(double units){
+  setField(".UREV", units);
+}
+
+void QCaMotor::setStepsPerRev(long st) {
+  if ( st <= 0 ) {
+    qDebug() << "Error! Steps per revolution must be strictly positive. Ignoring request to set it to" << st << ".";
+    return;
+  }
   setField(".SREV", st);
 }
 

@@ -112,7 +112,9 @@ private:
   double motorResolution;       ///< current value of the MRES field
   double readbackResolution;    ///< current value of the RRES field
   double encoderResolution;     ///< current value of the ERES field
-  int stepsPerRev;              ///< current value of the SREV field
+  double unitsPerRev;           ///< current value of the UREV field
+  long   stepsPerRev;           ///< current value of the SREV field
+
 
   double maximumSpeed;          ///< current value of the VMAX field
   double normalSpeed;           ///< current value of the VELO field
@@ -272,10 +274,16 @@ private slots:
   /// @param data new resolution.
   void updateEncoderResolution(const QVariant & data);
 
+  /// \brief Updates EGU's per resolution (::unitsPerRev)
+  /// Used to catch the signal valueUpdated(QVariant)
+  /// from the corresponding field (a member of ::motor).
+  /// @param data new value.
+  void updateUnitsPerRev(const QVariant & data);
+
   /// \brief Updates steps per resolution (::stepsPerRev)
   /// Used to catch the signal valueUpdated(QVariant)
   /// from the corresponding field (a member of ::motor).
-  /// @param data new resolution.
+  /// @param data new value.
   void updateStepsPerRev(const QVariant & data);
 
 
@@ -583,9 +591,13 @@ public slots:
   /// @param res new resolution.
   void setEncoderResolution(double res);
 
+  /// Sets EGU's per revolution (UREV field).
+  /// @param units new units-per-rev.
+  void setUnitsPerRev(double units);
+
   /// Sets esteps per revolution (SREV field).
   /// @param st new steps-per-rev.
-  void setStepsPerRev(int st);
+  void setStepsPerRev(long st);
 
 
 
@@ -770,9 +782,13 @@ public:
   /// @return ::encoderResolution
   inline double    getEncoderResolution() const { return encoderResolution; }
 
+  /// Returns current EGU's per revolution
+  /// @return ::unitsPerRev
+  inline double      getUnitsPerRev() const { return unitsPerRev; }
+
   /// Returns current steps per revolution
   /// @return ::stepsPerRev
-  inline int       getStepsPerRev() const { return stepsPerRev; }
+  inline long      getStepsPerRev() const { return stepsPerRev; }
 
 
 
@@ -952,9 +968,13 @@ signals:
   /// @param res new resolution
   void changedEncoderResolution(double res);
 
+  /// The signal is emitted whenever units-per-rev is changed.
+  /// @param units new value
+  void changedUnitsPerRev(double units);
+
   /// The signal is emitted whenever steps-per-rev is changed.
   /// @param res new value
-  void changedStepsPerRev(int st);
+  void changedStepsPerRev(long st);
 
   /// The signal is emitted whenever maximum speed is changed.
   /// @param speed new speed
