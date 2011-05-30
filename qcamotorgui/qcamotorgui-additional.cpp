@@ -1,4 +1,5 @@
 #include "qcamotorgui-additional.h"
+#include <QHBoxLayout>
 
 void QMDoubleSpinBox::focusInEvent(QFocusEvent * event){
   QDoubleSpinBox::focusInEvent(event);
@@ -27,8 +28,24 @@ QMDoubleSpinBox::QMDoubleSpinBox(QWidget * parent) :
 {
   connect(this, SIGNAL(valueChanged(double)), SLOT(recalculateStep(double)));
   connect(this, SIGNAL(escaped()), SLOT(restore()));
+  connect(this->lineEdit(), SIGNAL(cursorPositionChanged(int,int)),
+          SLOT(correctPosition(int,int)));
+
   recalculateStep(value());
 }
+
+
+void QMDoubleSpinBox::correctPosition(int , int newPos) {
+  QLineEdit * ledt = lineEdit();
+  int maxPos = ledt->text().length() - suffix().length();
+  if (newPos > maxPos) {
+    int selSt = ledt->selectionStart();
+    ledt->setCursorPosition(maxPos);
+    if ( selSt >= 0 ) // needed here because setCursorPosition deselects.
+      ledt->setSelection(selSt,maxPos-selSt);
+  }
+}
+
 
 /// Reduces the meaningless zeros from the string representing a double value.
 /// @param value value to represent as the string
@@ -57,6 +74,9 @@ void QMDoubleSpinBox::recalculateStep(double val){
 
 
 
+
+
+
 void QMSpinBox::focusInEvent(QFocusEvent * event){
   QSpinBox::focusInEvent(event);
   selectAll();
@@ -82,6 +102,19 @@ QMSpinBox::QMSpinBox(QWidget * parent)  :
   QSpinBox(parent)
 {
   connect(this, SIGNAL(escaped()), SLOT(restore()));
+  connect(this->lineEdit(), SIGNAL(cursorPositionChanged(int,int)),
+          SLOT(correctPosition(int,int)));
+}
+
+void QMSpinBox::correctPosition(int , int newPos) {
+  QLineEdit * ledt = lineEdit();
+  int maxPos = ledt->text().length() - suffix().length();
+  if (newPos > maxPos) {
+    int selSt = ledt->selectionStart();
+    ledt->setCursorPosition(maxPos);
+    if ( selSt >= 0 ) // needed here because setCursorPosition deselects.
+      ledt->setSelection(selSt,maxPos-selSt);
+  }
 }
 
 

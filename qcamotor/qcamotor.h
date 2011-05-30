@@ -99,7 +99,7 @@ private:
 
   double offset;                ///< current value of the OFF field
   OffMode offsetMode;           ///< current value of the FOFF field
-  Direction offsetDirection;    ///< current value of the DIR field
+  Direction direction;    ///< current value of the DIR field
   SuMode suMode;                ///< current value of the SET field
 
   bool loLimitStatus;           ///< current value of the LLS field
@@ -113,7 +113,7 @@ private:
   double readbackResolution;    ///< current value of the RRES field
   double encoderResolution;     ///< current value of the ERES field
   double unitsPerRev;           ///< current value of the UREV field
-  long   stepsPerRev;           ///< current value of the SREV field
+  int    stepsPerRev;           ///< current value of the SREV field
 
 
   double maximumSpeed;          ///< current value of the VMAX field
@@ -362,11 +362,11 @@ private slots:
   void updateUseEncoder(const QVariant & data);
 
 
-  /// \brief Updates offset direction (::offsetDirection)
+  /// \brief Updates direction (::direction)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new direction.
-  void updateOffsetDirection(const QVariant & data);
+  void updateDirection(const QVariant & data);
 
   /// \brief Updates offset mode (::offsetMode)
   /// Used to catch the signal valueUpdated(QVariant) signal
@@ -537,13 +537,13 @@ public slots:
   void setOffsetMode(OffMode mode);
   inline void setOffsetMode(int mode) { setOffsetMode((OffMode) mode); }
 
-  /// Sets offset direction (DIR field).
+  /// Sets direction (DIR field).
   /// @param direction new direction.
-  void setOffsetDirection(Direction direction);
+  void setDirection(Direction direction);
 
-  /// Sets offset direction (DIR field).
+  /// Sets direction (DIR field).
   /// @param direction new direction (must be the integer from the ::Direction enumeration).
-  inline void setOffsetDirection(int direction) { setOffsetDirection((Direction) direction); }
+  inline void setDirection(int direction) { setDirection((Direction) direction); }
 
   /// Sets the Set/Use mode (SET field).
   /// @param mode new mode.
@@ -597,7 +597,7 @@ public slots:
 
   /// Sets esteps per revolution (SREV field).
   /// @param st new steps-per-rev.
-  void setStepsPerRev(long st);
+  void setStepsPerRev(int st);
 
 
 
@@ -668,7 +668,7 @@ public slots:
 
   /// Prints an error message to the stderr.
   /// @param err Error message.
-  inline void printError(const QString & err) const { qDebug() << "ERROR!" << err; }
+  inline void printError(const QString & err) const { qDebug() << "ERROR in QCaMotor!" << err; }
 
 
 
@@ -736,9 +736,9 @@ public:
   /// @return ::offsetMode
   inline OffMode   getOffsetMode() const { return offsetMode; }
 
-  /// Returns current offset direction
-  /// @return ::offsetDirection
-  inline Direction getOffsetDirection() const { return offsetDirection; }
+  /// Returns current direction
+  /// @return ::direction
+  inline Direction getDirection() const { return direction; }
 
   /// Returns current set/use mode
   /// @return ::suMode
@@ -784,11 +784,11 @@ public:
 
   /// Returns current EGU's per revolution
   /// @return ::unitsPerRev
-  inline double      getUnitsPerRev() const { return unitsPerRev; }
+  inline double    getUnitsPerRev() const { return unitsPerRev; }
 
   /// Returns current steps per revolution
   /// @return ::stepsPerRev
-  inline long      getStepsPerRev() const { return stepsPerRev; }
+  inline int       getStepsPerRev() const { return stepsPerRev; }
 
 
 
@@ -921,9 +921,9 @@ signals:
   /// @param mode new mode
   void changedOffsetMode(OffMode mode);
 
-  /// The signal is emitted whenever offset direction is changed.
-  /// @param dir new offset direction
-  void changedOffsetDirection(int dir);
+  /// The signal is emitted whenever direction is changed.
+  /// @param dir new direction
+  void changedDirection(int dir);
 
   /// The signal is emitted whenever set/use mode is changed.
   /// @param mode new mode
@@ -974,7 +974,7 @@ signals:
 
   /// The signal is emitted whenever steps-per-rev is changed.
   /// @param res new value
-  void changedStepsPerRev(long st);
+  void changedStepsPerRev(int st);
 
   /// The signal is emitted whenever maximum speed is changed.
   /// @param speed new speed

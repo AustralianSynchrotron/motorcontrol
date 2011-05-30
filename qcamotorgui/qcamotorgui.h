@@ -195,12 +195,11 @@ private:
   /// coincide with the index of the corresponding item in the
   /// viewMode QCombobox in the "Setup" GUI.
   enum ViewMode {
-    SETUP=0,
-    NANO=1,
-    MICRO=2,
-    MILI=3,
-    MACRO=4,
-    EPICS=5
+    SETPV=0,
+    MINI=1,
+    COMFO=2,
+    CONFIG=3,
+    EPICS=4
   };
 
   ViewMode currentView;         ///< Current view mode of the "Setup" GUI.
@@ -243,8 +242,7 @@ private slots:
 
   void onLoad(const QString & text) ;
 
-  /// \brief Sets the description from the sUi->description->text.
-  ///
+  /// Sets the description from the sUi->description->text.
   inline void setDescriptionGui() { setDescription(sUi->description->text()); }
 
   /// \brief Updates main GUIs when a new text in the ::step widget is activated/edited.
@@ -266,7 +264,20 @@ private slots:
 
   /// Same the view mode of the "Setup" GUI.
   /// @param mode view mode (must be the integer from the ::ViewMode enumeration).
-  inline void setViewMode(int mode){ setViewMode( (ViewMode) mode ); };
+  inline void setViewMode(int mode){ setViewMode( (ViewMode) mode ); }
+
+  void setSpeedS(double spd);
+  void setAccelerationS(double acc);
+
+  /// \brief Sets the units-per-rev resolution and direction.
+  ///
+  /// Needed to address the bug described in QCaMotor::setResolution().
+  /// In fact it always sets the units-per-rev
+  /// to the absolute value of ::res and the direction
+  /// to the sign of ::res
+  /// @param res new resolution.
+  void setUnitsPerRevGui(double res);
+
 
   /// Catches the go-backward-by-step commands from GUIs.
   inline void goStepM(){ goStep(-1); }
@@ -328,6 +339,9 @@ private slots:
 
   /// Updates GUIs with the new user limit
   void updateUserLimitGui();
+
+  /// Updates GUIs with the new motor resolution
+  void updateUnitsPerRevGui();
 
   /// Updates GUIs with the new maximum speed.
   void updateMaximumSpeedGui(double maxSpeed);

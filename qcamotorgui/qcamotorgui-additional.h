@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <QLineEdit>
 #include <QToolButton>
+#include <QLabel>
 
 #include <math.h>
 
@@ -96,6 +97,8 @@ private slots:
   /// Restores the ::oldvalue (on escape).
   inline void restore() { setValue(oldvalue); }
 
+  void correctPosition(int , int newPos);
+
 };
 
 
@@ -164,6 +167,8 @@ private slots:
 
   /// Restores the ::oldvalue (on escape).
   inline void restore() {setValue(oldvalue);}
+
+  void correctPosition(int , int newPos);
 
 };
 

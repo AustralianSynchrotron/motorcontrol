@@ -24,7 +24,7 @@ QCaMotor::QCaMotor(QObject *parent) :
   rawGoal(0),
   step(0),
   offset(0),
-  offsetDirection(POSITIVE),
+  direction(POSITIVE),
   loLimitStatus(false),
   hiLimitStatus(false),
   userLoLimit(0),
@@ -180,7 +180,7 @@ QCaMotor::QCaMotor(QObject *parent) :
           this, SLOT(updateOffsetMode(QVariant)));
   motor.insert(".DIR",  new QEpicsPV(this));
   connect(motor[".DIR"], SIGNAL(valueUpdated(QVariant)),
-          this, SLOT(updateOffsetDirection(QVariant)));
+          this, SLOT(updateDirection(QVariant)));
   motor.insert(".SET",  new QEpicsPV(this));
   connect(motor[".SET"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateSuMode(QVariant)));
@@ -226,20 +226,26 @@ void QCaMotor::saveConfiguration(const QString & fileName) const {
 
   QTextStream out(&file);
   out
-      << "MRES " << getMotorResolution() << "\n"
+      << "UREV " << getUnitsPerRev() << "\n"
+      //<< "SREV " << getStepsPerRev() << "\n"
+      //<< "MRES " << getMotorResolution() << "\n"
+      // here I prefer the UREV pair over MRES
+      // because UREV is the value constant for the stage,
+      // while MRES depends on the type of motion.
       << "RRES " << getReadbackResolution() << "\n"
       << "ERES " << getEncoderResolution() << "\n"
       << "PREC " << getPrecision() << "\n"
       << "EGU " << getUnits() << "\n"
+      << "DIR " << getDirection() << "\n"
       << "DLLM " << getDialLoLimit() << "\n"
       << "DHLM " << getDialHiLimit() << "\n"
       << "VMAX " << getMaximumSpeed() << "\n"
       << "VELO " << getNormalSpeed() << "\n"
-      << "BVEL " << getBacklashSpeed() << "\n"
-      << "JVEL " << getJogSpeed() << "\n"
       << "ACCL " << getAcceleration() << "\n"
-      << "BACC " << getBacklashAcceleration() << "\n"
+      << "JVEL " << getJogSpeed() << "\n"
       << "JAR " << getJogAcceleration() << "\n"
+      << "BVEL " << getBacklashSpeed() << "\n"
+      << "BACC " << getBacklashAcceleration() << "\n"
       << "BDST " << getBacklash() << "\n";
 
 }
@@ -441,12 +447,12 @@ void QCaMotor::updateUnitsPerRev(const QVariant & data){
 
 void QCaMotor::updateStepsPerRev(const QVariant & data){
   bool er;
-  long new_val = data.toInt(&er);
+  int new_val = data.toInt(&er);
   if (!er)
     emit error("Could not convert \"" + data.toString() +  "\" to "
-               "steps per revolution (long).");
+               "steps per revolution (int).");
   if (new_val < 0)
-    qDebug() << "Warning! New value of the steps per revolution (SREV) field is negative.");
+    qDebug() << "Warning! New value of the steps per revolution (SREV) field is negative.";
   emit changedStepsPerRev( stepsPerRev = new_val );
 }
 
@@ -538,8 +544,8 @@ void QCaMotor::updateUseEncoder(const QVariant & data) {
   emit changedUseEncoder( useEncoder = data.toBool() );
 }
 
-void QCaMotor::updateOffsetDirection(const QVariant & data) {
-  emit changedOffsetDirection( offsetDirection = (Direction) data.toInt() );
+void QCaMotor::updateDirection(const QVariant & data) {
+  emit changedDirection( direction = (Direction) data.toInt() );
 }
 
 void QCaMotor::updateOffsetMode(const QVariant & data){
@@ -726,7 +732,7 @@ void QCaMotor::setOffsetMode(OffMode mode){
   setField(".FOFF", mode);
 }
 
-void QCaMotor::setOffsetDirection(Direction direction){
+void QCaMotor::setDirection(Direction direction){
   setField(".DIR", direction);
 }
 
@@ -756,10 +762,10 @@ void QCaMotor::setDialLoLimit(double limit){
 void QCaMotor::setMotorResolution(double res){
   /*
   if (res < 0.0) {
-    setOffsetDirection(NEGATIVE);
+    setDirection(NEGATIVE);
     res = -res;
   } else {
-    setOffsetDirection(POSITIVE);
+    setDirection(POSITIVE);
   }
   */
   setField(".MRES", res);
@@ -777,12 +783,12 @@ void QCaMotor::setUnitsPerRev(double units){
   setField(".UREV", units);
 }
 
-void QCaMotor::setStepsPerRev(long st) {
+void QCaMotor::setStepsPerRev(int st) {
   if ( st <= 0 ) {
     qDebug() << "Error! Steps per revolution must be strictly positive. Ignoring request to set it to" << st << ".";
     return;
   }
-  setField(".SREV", st);
+  setField(".SREV", (qlonglong) st);
 }
 
 

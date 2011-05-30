@@ -206,6 +206,7 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   connect(mUi->setup, SIGNAL(clicked()),
           SLOT(onSetupClicked()) );
 
+
   QAction * action;
 
   action = new QAction("Copy PV", mUi->setup);
@@ -219,6 +220,11 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   action = new QAction("Copy position", mUi->setup);
   mUi->setup->addAction(action);
   connect(action, SIGNAL(triggered()), SLOT(copyPosition()));
+
+  action = new QAction("Set PV", mUi->setup);
+  mUi->setup->addAction(action);
+  connect(action, SIGNAL(triggered()), pvDialog, SLOT(show()));
+
 
   connect(rUi->goRelative, SIGNAL(valueEdited(double)),
           SLOT(goRelative(double)));
@@ -316,6 +322,13 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
           SLOT(setEncoderResolution(double)));
   connect(sUi->stepsPerRev, SIGNAL(valueEdited(int)),
           SLOT(setStepsPerRev(int)));
+  connect(sUi->unitsPerStep, SIGNAL(valueEdited(double)),
+          SLOT(setMotorResolution(double)));
+  connect(sUi->unitsPerRev, SIGNAL(valueEdited(double)),
+          SLOT(setUnitsPerRev(double)));
+  connect(sUi->unitsPerRevGui, SIGNAL(valueEdited(double)),
+          SLOT(setUnitsPerRevGui(double)));
+
   connect(sUi->useEncoder, SIGNAL(clicked(bool)),
           SLOT(setUseEncoder(bool)));
   connect(sUi->useReadback, SIGNAL(clicked(bool)),
@@ -324,7 +337,7 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   connect(sUi->offGroup, SIGNAL(buttonClicked(int)),
           SLOT(setOffsetMode(int)));
   connect(sUi->dirGroup, SIGNAL(buttonClicked(int)),
-          SLOT(setOffsetDirection(int)));
+          SLOT(setDirection(int)));
   connect(sUi->setGroup, SIGNAL(buttonClicked(int)),
           SLOT(setSuMode(int)));
 
@@ -344,6 +357,10 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
           SLOT(setBacklashAcceleration(double)));
   connect(sUi->jogAcceleration, SIGNAL(valueEdited(double)),
           SLOT(setJogAcceleration(double)));
+  connect(sUi->accelerationS, SIGNAL(valueEdited(double)),
+          SLOT(setAccelerationS(double)));
+  connect(sUi->speedS, SIGNAL(valueEdited(double)),
+          SLOT(setSpeedS(double)));
 
   connect(sUi->backlash, SIGNAL(valueEdited(double)),
           SLOT(setBacklash(double)));
@@ -354,8 +371,6 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
           SLOT(setRawPosition(double)));
   connect(sUi->userVarGoal, SIGNAL(valueEdited(double)),
           SLOT(goUserPosition(double)));
-  connect(sUi->rawVarGoal, SIGNAL(valueEdited(double)),
-          SLOT(goRawPosition(double)));
   connect(sUi->userGoal, SIGNAL(valueEdited(double)),
           SLOT(goUserPosition(double)));
   connect(sUi->rawGoal, SIGNAL(valueEdited(double)),
@@ -368,8 +383,6 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
           SLOT(setUserLoLimit(double)));
   connect(sUi->limitHi, SIGNAL(valueEdited(double)),
           SLOT(setUserHiLimit(double)));
-  connect(sUi->resolution, SIGNAL(valueEdited(double)),
-          SLOT(setMotorResolution(double)));
 
   //
   // Connect Motor Signals
@@ -404,8 +417,6 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
 
   connect(this, SIGNAL(changedRawPosition(double)),
           sUi->rawPosition, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedRawPosition(double)),
-          sUi->rawVarGoal, SLOT(setValue(double)));
 
   connect(this, SIGNAL(changedUserGoal(double)),
           sUi->userGoal, SLOT(setValue(double)));
@@ -423,12 +434,12 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
           sUi->offset, SLOT(setValue(double)));
   connect(this, SIGNAL(changedOffsetMode(OffMode)),
           SLOT(updateOffGroup(OffMode)));
-  connect(this, SIGNAL(changedOffsetDirection(int)),
+  connect(this, SIGNAL(changedDirection(int)),
           SLOT(updateDirGroup(int)));
   // next connection is needed to address the bug described in
   // QCaMotor::setResolution().
-  //connect(this, SIGNAL(changedOffsetDirection(int)),
-  //        SLOT(updateMotorResolutionGui()));
+  connect(this, SIGNAL(changedDirection(int)),
+          SLOT(updateUnitsPerRevGui()));
   connect(this, SIGNAL(changedSuMode(SuMode)),
           SLOT(updateSetGroup(SuMode)));
 
@@ -463,12 +474,12 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   connect(this, SIGNAL(changedDialLoLimit(double)),
           sUi->limitLoDial, SLOT(setValue(double)));
 
-  // Connecting to the ::updateMotorResolutionGui() instead of
-  // sUi->resolution->setValue(double) is needed to
+  // Connecting to the ::updateUnitsPerRevGui() instead of
+  // sUi->unitsPerRev->setValue(double) is needed to
   // address the bug described in QCaMotor::setResolution().
-  connect(this, SIGNAL(changedMotorResolution(double)),
-          sUi->resolution, SLOT(setValue(double)));
-          //SLOT(updateMotorResolutionGui()));
+  connect(this, SIGNAL(changedUnitsPerRev(double)),
+          //sUi->unitsPerRev, SLOT(setValue(double)));
+          SLOT(updateUnitsPerRevGui()));
   connect(this, SIGNAL(changedReadbackResolution(double)),
           sUi->readbackResolution, SLOT(setValue(double)));
   connect(this, SIGNAL(changedEncoderResolution(double)),
@@ -482,6 +493,8 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
           SLOT(updateMaximumSpeedGui(double)));
   connect(this, SIGNAL(changedNormalSpeed(double)),
           sUi->speed, SLOT(setValue(double)));
+  connect(this, SIGNAL(changedNormalSpeed(double)),
+          sUi->speedS, SLOT(setValue(double)));
   connect(this, SIGNAL(changedRevSpeed(double)),
           sUi->revSpeed, SLOT(setValue(double)));
   connect(this, SIGNAL(changedJogSpeed(double)),
@@ -491,6 +504,8 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
 
   connect(this, SIGNAL(changedAcceleration(double)),
           sUi->acceleration, SLOT(setValue(double)));
+  connect(this, SIGNAL(changedAcceleration(double)),
+          sUi->accelerationS, SLOT(setValue(double)));
   connect(this, SIGNAL(changedJogAcceleration(double)),
           sUi->jogAcceleration, SLOT(setValue(double)));
   connect(this, SIGNAL(changedBacklashAcceleration(double)),
@@ -518,7 +533,7 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   connect(this, SIGNAL(changedMoving(bool)),
           SLOT(updateStopButtonStyle()));
 
-  setViewMode(MICRO);
+  setViewMode(COMFO);
   setupDialog->update();
   updatePowerGui();
   updateWiredGui(isWired());
@@ -717,19 +732,41 @@ void QCaMotorGUI::setStepGui(const QString & _text){
 }
 
 
-/*
-void QCaMotorGUI::updateMotorResolutionGui() {
-  double vRes = getMotorResolution();
-  if ( getOffsetDirection() == NEGATIVE )
+
+void QCaMotorGUI::updateUnitsPerRevGui() {
+  double vRes = getUnitsPerRev();
+  sUi->unitsPerRev->setValue(vRes);
+  if ( getDirection() == NEGATIVE )
     vRes *= -1.0;
-  sUi->resolution->setValue(vRes);
+  sUi->unitsPerRevGui->setValue(vRes);
 }
-*/
+
+void QCaMotorGUI::setUnitsPerRevGui(double res) {
+  setUnitsPerRev(qAbs(res));
+  setDirection( res < 0 ? NEGATIVE : POSITIVE );
+}
+
+void QCaMotorGUI::setSpeedS(double spd) {
+  setMaximumSpeed(spd);
+  setJogSpeed(spd);
+  setBacklashSpeed(spd);
+  setNormalSpeed(spd);
+}
+
+void QCaMotorGUI::setAccelerationS(double acc) {
+  setJogAcceleration(acc);
+  setBacklashAcceleration(acc);
+  setAcceleration(acc);
+}
+
+
+
+
 
 
 void QCaMotorGUI::setViewMode(ViewMode mode){
 
-  if ( mode == SETUP ) {
+  if ( mode == SETPV ) {
     if (!locked)
       pvDialog->show();
     sUi->viewMode->setCurrentIndex(currentView);
@@ -737,73 +774,31 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
   }
 
   sUi->viewMode->blockSignals(true);
-
   currentView = mode;
-
   sUi->viewMode->setCurrentIndex(currentView);
   sUi->viewMode->blockSignals(false);
 
   sUi->layHide->insertWidget(0,sUi->rawGoal);
   sUi->layHide->insertWidget(0,sUi->rawPosition);
-  sUi->layHide->insertWidget(0,sUi->rawVarGoal);
   sUi->layHide->insertWidget(0,sUi->userGoal);
   sUi->layHide->insertWidget(0,sUi->userPosition);
   sUi->layHide->insertWidget(0,sUi->userVarGoal);
-  sUi->layHide->insertWidget(0,sUi->resolution);
   sUi->layHide->insertWidget(0,sUi->limitHi);
   sUi->layHide->insertWidget(0,sUi->limitLo);
-  sUi->layHide->insertWidget(0,sUi->offset);
-  sUi->layHide->insertWidget(0,sUi->speed);
   sUi->layHide->insertWidget(0,sUi->callRelative);
   sUi->layHide->insertWidget(0,sUi->absLabel);
+  sUi->layHide->insertWidget(0,sUi->stepsPerRev);
 
 
   switch (mode) {
 
-  case SETUP: // Does not do enything because returns above.
+  case SETPV:
 
-    /*
-
-    sUi->pv->setVisible(true);
-    sUi->label_2->setVisible(true);
-    sUi->label_20->setVisible(true);
-
-    sUi->line_5->setVisible(false);
-    sUi->generalSetup->setVisible(false);
-    sUi->control->setVisible(false);
-    sUi->spmgSetup->setVisible(false);
-
-    sUi->label_3->setVisible(false);
-    sUi->label_7->setVisible(false);
-    sUi->label_21->setVisible(false);
-    sUi->placeControlUser->setVisible(false);
-    sUi->placeControlRaw->setVisible(false);
-    sUi->layControlRel->insertWidget(0, sUi->userVarGoal);
-    sUi->placeControlRel->setVisible(false);
-    sUi->goLimitM->setText("|<");
-    sUi->goLimitP->setText(">|");
-    sUi->jogM->setText("<<");
-    sUi->jogP->setText(">>");
-    sUi->stepD2->setVisible(false);
-    sUi->stepD10->setVisible(false);
-    sUi->stepM2->setVisible(false);
-    sUi->stepM10->setVisible(false);
-    sUi->line_4->setVisible(false);
-
-    sUi->miliAdd->setVisible(false);
-    sUi->line_2->setVisible(false);
-    sUi->epics->setVisible(false);
-    sUi->callibrationSetup->setVisible(false);
-    sUi->line_6->setVisible(false);
-    sUi->speedSetup->setVisible(false);
-    sUi->line_9->setVisible(false);
-    sUi->backlashSetup->setVisible(false);
-
-     */
+    // Does not do enything because returns above.
 
     break;
 
-  case NANO:
+  case MINI:
 
     if (isConnected())
       setSpmgMode(GO);
@@ -815,7 +810,6 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
 
     sUi->generalSetup->setVisible(false);
     sUi->line_5->setVisible(true);
-    sUi->control->setVisible(true);
     sUi->spmgSetup->setVisible(false);
 
     sUi->label_3->setVisible(false);
@@ -824,30 +818,23 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->placeControlUser->setVisible(false);
     sUi->placeControlRaw->setVisible(false);
     sUi->layControlRel->insertWidget(0, sUi->userVarGoal);
-    sUi->placeControlRel->setVisible(true);
-    sUi->goLimitM->setText("|<");
-    sUi->goLimitP->setText(">|");
-    sUi->jogM->setText("<<");
-    sUi->jogP->setText(">>");
     sUi->stepD2->setVisible(false);
     sUi->stepD10->setVisible(false);
     sUi->stepM2->setVisible(false);
     sUi->stepM10->setVisible(false);
     sUi->line_4->setVisible(false);
 
-    sUi->miliAdd->setVisible(false);
+    sUi->configure->setVisible(false);
     sUi->line_2->setVisible(false);
     sUi->epics->setVisible(false);
-    sUi->callibrationSetup->setVisible(false);
     sUi->line_6->setVisible(false);
-    sUi->speedSetup->setVisible(false);
     sUi->line_9->setVisible(false);
     sUi->backlashSetup->setVisible(false);
 
     break;
 
 
-  case MICRO:
+  case COMFO:
 
     if (isConnected())
       setSpmgMode(GO);
@@ -859,7 +846,6 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
 
     sUi->generalSetup->setVisible(false);
     sUi->line_5->setVisible(true);
-    sUi->control->setVisible(true);
     sUi->spmgSetup->setVisible(false);
 
     sUi->label_3->setVisible(false);
@@ -870,91 +856,23 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->layControlRaw->insertWidget(0, sUi->userVarGoal);
     sUi->placeControlRaw->setVisible(true);
     sUi->layControlRel->insertWidget(0, sUi->callRelative);
-    sUi->placeControlRel->setVisible(true);
-    sUi->goLimitM->setText("|<");
-    sUi->goLimitP->setText(">|");
-    sUi->jogM->setText("<<");
-    sUi->jogP->setText(">>");
     sUi->stepD2->setVisible(true);
     sUi->stepD10->setVisible(true);
     sUi->stepM2->setVisible(true);
     sUi->stepM10->setVisible(true);
-    sUi->stepD2->setText("/2");
-    sUi->stepD10->setText("/10");
-    sUi->stepM2->setText("*2");
-    sUi->stepM10->setText("*10");
     sUi->line_4->setVisible(false);
 
-    sUi->miliAdd->setVisible(false);
+    sUi->configure->setVisible(false);
     sUi->line_2->setVisible(false);
     sUi->epics->setVisible(false);
-    sUi->callibrationSetup->setVisible(false);
     sUi->line_6->setVisible(false);
-    sUi->speedSetup->setVisible(false);
     sUi->line_9->setVisible(false);
     sUi->backlashSetup->setVisible(false);
 
     break;
 
 
-  case MILI:
-
-    if (isConnected()) {
-      setOffsetMode(FROZEN);
-      setSpmgMode(GO);
-    }
-
-    sUi->pv->setVisible(false);
-    sUi->label_2->setVisible(false);
-    sUi->label_20->setVisible(false);
-    sUi->loadSave->setVisible(false);
-
-    sUi->generalSetup->setVisible(false);
-    sUi->line_5->setVisible(true);
-    sUi->control->setVisible(true);
-    sUi->spmgSetup->setVisible(false);
-
-    sUi->label_3->setVisible(true);
-    sUi->label_7->setVisible(true);
-    sUi->label_21->setVisible(true);
-    sUi->layControlUser->insertWidget(0, sUi->userGoal);
-    sUi->placeControlUser->setVisible(true);
-    sUi->layControlRaw->insertWidget(0, sUi->rawGoal);
-    sUi->placeControlRaw->setVisible(true);
-    sUi->layControlRel->insertWidget(0, sUi->callRelative);
-    sUi->placeControlRel->setVisible(true);
-    sUi->goLimitM->setText("LIMIT<");
-    sUi->goLimitP->setText(">LIMIT");
-    sUi->jogM->setText("JOG<");
-    sUi->jogP->setText(">JOG");
-    sUi->stepD2->setVisible(true);
-    sUi->stepD10->setVisible(true);
-    sUi->stepM2->setVisible(true);
-    sUi->stepM10->setVisible(true);
-    sUi->stepD2->setText("step/2");
-    sUi->stepD10->setText("step/10");
-    sUi->stepM2->setText("step*2");
-    sUi->stepM10->setText("step*10");
-    sUi->line_4->setVisible(true);
-
-    sUi->layMiliUser->insertWidget(0, sUi->userPosition);
-    sUi->layMiliRaw->insertWidget(0, sUi->rawPosition);
-    sUi->layMiliSpeed->insertWidget(0, sUi->speed);
-    sUi->miliAdd->setVisible(true);
-
-
-    sUi->line_2->setVisible(false);
-
-    sUi->epics->setVisible(false);
-    sUi->callibrationSetup->setVisible(false);
-    sUi->line_6->setVisible(false);
-    sUi->speedSetup->setVisible(false);
-    sUi->line_9->setVisible(false);
-    sUi->backlashSetup->setVisible(false);
-
-    break;
-
-  case MACRO:
+  case CONFIG:
 
     if (isConnected()) {
       setOffsetMode(FROZEN);
@@ -968,7 +886,6 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
 
     sUi->generalSetup->setVisible(true);
     sUi->line_5->setVisible(true);
-    sUi->control->setVisible(true);
     sUi->spmgSetup->setVisible(false);
 
     sUi->label_3->setVisible(true);
@@ -979,37 +896,25 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->layControlRaw->insertWidget(0, sUi->rawGoal);
     sUi->placeControlRaw->setVisible(true);
     sUi->layControlRel->insertWidget(0, sUi->callRelative);
-    sUi->placeControlRel->setVisible(true);
-    sUi->goLimitM->setText("LIMIT<");
-    sUi->goLimitP->setText(">LIMIT");
-    sUi->jogM->setText("JOG<");
-    sUi->jogP->setText(">JOG");
     sUi->stepD2->setVisible(true);
     sUi->stepD10->setVisible(true);
     sUi->stepM2->setVisible(true);
     sUi->stepM10->setVisible(true);
-    sUi->stepD2->setText("step/2");
-    sUi->stepD10->setText("step/10");
-    sUi->stepM2->setText("step*2");
-    sUi->stepM10->setText("step*10");
     sUi->line_4->setVisible(true);
 
-    sUi->miliAdd->setVisible(false);
+    sUi->layCfgUser->insertWidget(0, sUi->userPosition);
+    sUi->layCfgRaw->insertWidget(0, sUi->rawPosition);
+    sUi->layCfgLo->insertWidget(0, sUi->limitLo);
+    sUi->layCfgHi->insertWidget(0, sUi->limitHi);
+    sUi->layCfgStepsPerRev->insertWidget(0, sUi->stepsPerRev);
+
+    sUi->configure->setVisible(true);
+
+
     sUi->line_2->setVisible(false);
+
     sUi->epics->setVisible(false);
-
-    sUi->layMacroUser->insertWidget(0, sUi->userPosition);
-    sUi->layMacroResolution->insertWidget(0, sUi->resolution);
-    sUi->layMacroRaw->insertWidget(0, sUi->rawPosition);
-    sUi->layMacroOffset->insertWidget(0, sUi->offset);
-    sUi->layMacroHi->insertWidget(0, sUi->limitHi);
-    sUi->layMacroLo->insertWidget(0, sUi->limitLo);
-    sUi->layMacroSpeed->insertWidget(0, sUi->speed);
-    sUi->callibrationSetup->setVisible(true);
-
-
-    sUi->line_6->setVisible(true);
-    sUi->speedSetup->setVisible(true);
+    sUi->line_6->setVisible(false);
     sUi->line_9->setVisible(true);
     sUi->backlashSetup->setVisible(true);
 
@@ -1025,45 +930,31 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
 
     sUi->generalSetup->setVisible(true);
     sUi->line_5->setVisible(true);
-    sUi->control->setVisible(true);
     sUi->spmgSetup->setVisible(true);
 
     sUi->label_3->setVisible(false);
     sUi->label_7->setVisible(false);
     sUi->label_21->setVisible(false);
     sUi->layControlRel->insertWidget(0, sUi->callRelative);
-    sUi->goLimitM->setText("LIMIT<");
-    sUi->goLimitP->setText(">LIMIT");
-    sUi->jogM->setText("JOG<");
-    sUi->jogP->setText(">JOG");
     sUi->stepD2->setVisible(true);
     sUi->stepD10->setVisible(true);
     sUi->stepM2->setVisible(true);
     sUi->stepM10->setVisible(true);
-    sUi->stepD2->setText("step/2");
-    sUi->stepD10->setText("step/10");
-    sUi->stepM2->setText("step*2");
-    sUi->stepM10->setText("step*10");
     sUi->line_4->setVisible(true);
 
-    sUi->miliAdd->setVisible(false);
+    sUi->configure->setVisible(false);
     sUi->line_2->setVisible(false);
 
     sUi->layEpicsUserMove->insertWidget(0, sUi->userGoal);
     sUi->layEpicsRawMove->insertWidget(0, sUi->rawGoal);
     sUi->layEpicsUserSet->insertWidget(0, sUi->userPosition);
-    sUi->layEpicsResolution->insertWidget(0, sUi->resolution);
     sUi->layEpicsRawSet->insertWidget(0, sUi->rawPosition);
-    sUi->layEpicsOffset->insertWidget(0, sUi->offset);
     sUi->layEpicsHi->insertWidget(0, sUi->limitHi);
     sUi->layEpicsLo->insertWidget(0, sUi->limitLo);
+    sUi->layEpicsStepsPerRev->insertWidget(0, sUi->stepsPerRev);
     sUi->epics->setVisible(true);
 
-    sUi->callibrationSetup->setVisible(false);
     sUi->line_6->setVisible(true);
-
-    sUi->layMacroSpeed->insertWidget(0, sUi->speed);
-    sUi->speedSetup->setVisible(true);
 
     sUi->line_9->setVisible(true);
     sUi->backlashSetup->setVisible(true);
@@ -1095,15 +986,13 @@ void QCaMotorGUI::updateStepGui(double step){
 }
 
 void QCaMotorGUI::updateConnectionGui(bool suc) {
+
   sUi->message->setText
       ( suc ? "Connection established." : "Connection lost.");
   updateStopButtonStyle();
   updateAllElements();
-  if ( suc ) {
-    if ( sUi->viewMode->currentIndex() == MILI ||
-         sUi->viewMode->currentIndex() == MACRO )
+  if ( suc && sUi->viewMode->currentIndex() != EPICS )
       setOffsetMode(FROZEN);
-  }
 }
 
 void QCaMotorGUI::updateGoButtonStyle(){
@@ -1212,7 +1101,7 @@ void QCaMotorGUI::updateStopButtonStyle() {
     sUi->stop->setStyleSheet("");
     mUi->stop->setText("UNDO");
     sUi->stop->setText("UNDO");
-    double undo = - ( getOffsetDirection() == NEGATIVE ? -1.0 : 1.0) *
+    double undo = - ( getDirection() == NEGATIVE ? -1.0 : 1.0) *
         getMotorResolution() * getLastMotion();
     const QString txt("Undo last motion ("
                       + QString::number(undo) + getUnits() + ")");
@@ -1267,6 +1156,7 @@ void QCaMotorGUI::updateUnitsGui(const QString & data){
   rUi->goRelative->setSuffix(data);
   mUi->userPosition->setSuffix(data);
   sUi->speed->setSuffix(data+"/s");
+  sUi->speedS->setSuffix(data+"/s");
   sUi->step->setSuffix(data);
   sUi->units->setText(data);
   sUi->limitHiDial->setSuffix(data);
@@ -1277,7 +1167,9 @@ void QCaMotorGUI::updateUnitsGui(const QString & data){
   sUi->limitHi->setSuffix(data);
   sUi->maximumSpeed->setSuffix(data+"/s");
   sUi->backlash->setSuffix(data);
-  sUi->resolution->setSuffix(data+"/step");
+  sUi->unitsPerStep->setSuffix(data+"/step");
+  sUi->unitsPerRev->setSuffix(data+"/rev");
+  sUi->unitsPerRevGui->setSuffix(data+"/rev");
   sUi->readbackResolution->setSuffix(data+"/step");
   sUi->encoderResolution->setSuffix(data+"/step");
   sUi->userGoal->setSuffix(data);
@@ -1295,6 +1187,7 @@ void QCaMotorGUI::updatePrecisionGui(int prec){
   rUi->goRelative->setDecimals(prec);
   mUi->userPosition->setDecimals(prec);
   sUi->speed->setDecimals(prec);
+  sUi->speedS->setDecimals(prec);
   sUi->step->setDecimals(prec);
   sUi->userPosition->setDecimals(prec);
   sUi->dialPosition->setDecimals(prec);
@@ -1303,9 +1196,12 @@ void QCaMotorGUI::updatePrecisionGui(int prec){
   sUi->limitLoDial->setDecimals(prec);
   sUi->limitHiDial->setDecimals(prec);
   sUi->acceleration->setDecimals(prec);
+  sUi->accelerationS->setDecimals(prec);
   sUi->maximumSpeed->setDecimals(prec);
   sUi->backlash->setDecimals(prec);
-  sUi->resolution->setDecimals(qMax(prec,7));
+  sUi->unitsPerStep->setDecimals(qMax(prec,7));
+  sUi->unitsPerRev->setDecimals(qMax(prec,7));
+  sUi->unitsPerRevGui->setDecimals(qMax(prec,7));
   sUi->readbackResolution->setDecimals(qMax(prec,7));
   sUi->encoderResolution->setDecimals(qMax(prec,7));
   sUi->userGoal->setDecimals(prec);
@@ -1382,76 +1278,47 @@ void QCaMotorGUI::updateAllElements(){
       mv  = isMoving(),
       cn  = isConnected(),
       wr  = isWired(),
-      std = cn && pwr && !mv;
+      std = cn && !mv;
 
+  rUi->goRelative             ->setEnabled(std && wr && pwr);
 
-  rUi->goRelative             ->setEnabled(std && wr);
-  mUi->goM                    ->setEnabled(std && wr);
-  mUi->goP                    ->setEnabled(std && wr);
-  mUi->limitM                 ->setEnabled(std && wr);
-  mUi->limitP                 ->setEnabled(std && wr);
+  mUi->goM                    ->setEnabled(std && wr && pwr);
+  mUi->goP                    ->setEnabled(std && wr && pwr);
+  mUi->limitM                 ->setEnabled(std && wr && pwr);
+  mUi->limitP                 ->setEnabled(std && wr && pwr);
   mUi->jogM                   ->setEnabled
     (cn && pwr && wr && ( ! mv || mUi->jogM->isDown()) );
   mUi->jogP                   ->setEnabled
     (cn && pwr && wr && ( ! mv || mUi->jogP->isDown()) );
-  mUi->userPosition           ->setEnabled(std && wr);
-  mUi->step                   ->setEnabled(std && wr);
-  mUi->stop                   ->setEnabled(cn && wr);
-  sUi->saveConfig             ->setEnabled(cn && !mv);
-  sUi->loadConfig             ->setEnabled(cn && !mv);
-  sUi->goLimitM               ->setEnabled(std && wr);
-  sUi->goLimitP               ->setEnabled(std && wr);
-  sUi->goM                    ->setEnabled(std && wr);
-  sUi->goP                    ->setEnabled(std && wr);
-  sUi->stepD2                 ->setEnabled(std);
-  sUi->stepD10                ->setEnabled(std);
-  sUi->stepM2                 ->setEnabled(std);
-  sUi->stepM10                ->setEnabled(std);
+  mUi->userPosition           ->setEnabled(std && wr && pwr);
+  mUi->step                   ->setEnabled(std);
+  mUi->stop                   ->setEnabled(cn);
+
+  sUi->goLimitM               ->setEnabled(std && wr && pwr);
+  sUi->goLimitP               ->setEnabled(std && wr && pwr);
+  sUi->goM                    ->setEnabled(std && wr && pwr);
+  sUi->goP                    ->setEnabled(std && wr && pwr);
   sUi->jogM                   ->setEnabled
     (cn && pwr && wr && ( ! mv || sUi->jogM->isDown()) );
   sUi->jogP                   ->setEnabled
     (cn && pwr && wr && ( ! mv || sUi->jogP->isDown()) );
-  sUi->userPosition           ->setEnabled(std);
-  sUi->dialPosition           ->setEnabled(std);
-  sUi->rawPosition            ->setEnabled(std);
-  sUi->step                   ->setEnabled(std);
   sUi->stop                   ->setEnabled(cn && wr);
-  sUi->speed                  ->setEnabled(std);
-  sUi->revSpeed               ->setEnabled(std);
-  sUi->acceleration           ->setEnabled(std);
-  sUi->backlash               ->setEnabled(std);
-  sUi->backlashAcceleration   ->setEnabled(std);
-  sUi->backlashSpeed          ->setEnabled(std);
-  sUi->limitHi                ->setEnabled(std);
-  sUi->limitHiDial            ->setEnabled(std);
-  sUi->jogAcceleration        ->setEnabled(std);
-  sUi->jogSpeed               ->setEnabled(std);
-  sUi->limitLo                ->setEnabled(std);
-  sUi->limitLoDial            ->setEnabled(std);
-  sUi->maximumSpeed           ->setEnabled(std);
-  sUi->description            ->setEnabled(std);
-  sUi->precision              ->setEnabled(std);
-  sUi->rawGoal                ->setEnabled(std);
-  sUi->userGoal               ->setEnabled(std);
-  sUi->dialGoal               ->setEnabled(std);
-  sUi->rawVarGoal             ->setEnabled(std);
-  sUi->userVarGoal            ->setEnabled(std);
-  sUi->resolution             ->setEnabled(std);
-  sUi->readbackResolution     ->setEnabled(std);
-  sUi->encoderResolution      ->setEnabled(std);
-  sUi->stepsPerRev            ->setEnabled(std);
-  sUi->useEncoder             ->setEnabled(std);
-  sUi->useReadback            ->setEnabled(std);
-  sUi->offsetFrz              ->setEnabled(std);
-  sUi->offsetVar              ->setEnabled(std);
-  sUi->offset                 ->setEnabled(std);
-  sUi->dirNeg                 ->setEnabled(std);
-  sUi->dirPos                 ->setEnabled(std);
-  sUi->setMode                ->setEnabled(std);
-  sUi->useMode                ->setEnabled(std);
-  sUi->spmgSetup              ->setEnabled(cn && pwr);
-  sUi->units                  ->setEnabled(std);
-  sUi->callRelative           ->setEnabled(std);
+  sUi->spmgSetup              ->setEnabled(cn);
+  sUi->rawGoal                ->setEnabled(std && wr && pwr);
+  sUi->userGoal               ->setEnabled(std && wr && pwr);
+  sUi->dialGoal               ->setEnabled(std && wr && pwr);
+  sUi->userVarGoal            ->setEnabled(std && wr && pwr);
+  sUi->callRelative           ->setEnabled(std && wr && pwr);
+
+  sUi->loadConfig             ->setEnabled(std);
+
+  sUi->control                ->setEnabled(cn);
+  sUi->loadSave               ->setEnabled(cn);
+  sUi->backlashSetup          ->setEnabled(std);
+  sUi->configure              ->setEnabled(std);
+  sUi->epics                  ->setEnabled(std);
+  sUi->generalSetup           ->setEnabled(std);
+
   sUi->power                  ->setEnabled(cn && !mv);
   mUi->power                  ->setEnabled(cn && !mv);
 
