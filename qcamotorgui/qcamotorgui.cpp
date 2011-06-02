@@ -480,6 +480,8 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   connect(this, SIGNAL(changedUnitsPerRev(double)),
           //sUi->unitsPerRev, SLOT(setValue(double)));
           SLOT(updateUnitsPerRevGui()));
+  connect(this, SIGNAL(changedMotorResolution(double)),
+          sUi->unitsPerStep, SLOT(setValue(double)));
   connect(this, SIGNAL(changedReadbackResolution(double)),
           sUi->readbackResolution, SLOT(setValue(double)));
   connect(this, SIGNAL(changedEncoderResolution(double)),
