@@ -46,6 +46,7 @@ void QMotorStack::initialize() {
   ui->table->horizontalHeader()->setResizeMode(6, QHeaderView::ResizeToContents);
 
   connect(ui->add, SIGNAL(clicked()), SLOT(addMotor()));
+  connect(ui->viewModeAll, SIGNAL(currentIndexChanged(int)), SLOT(viewModeAll()));
   connect(ui->stopAll, SIGNAL(clicked()), SLOT(stopAll()));
   connect(ui->onAll, SIGNAL(clicked()), SLOT(powerOnAll()));
   connect(ui->offAll, SIGNAL(clicked()), SLOT(powerOffAll()));
@@ -90,6 +91,8 @@ void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
 
   connect(motor, SIGNAL(changedPowerConnection(bool)),
           SLOT(updatePowerConnections(bool)));
+  connect(motor, SIGNAL(changedPower(bool)),
+          SLOT(resetHeader()));
   connect(motor, SIGNAL(changedDescription(QString)),
           SLOT(resetHeader()));
   connect(motor, SIGNAL(changedPv()),
@@ -102,6 +105,17 @@ void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
   QTableWidgetItem * itm = new QTableWidgetItem("-");
   itm->setToolTip("Drag to reorganize, double-click to remove.");
   ui->table->setVerticalHeaderItem( idx, itm );
+
+  if ( ! ui->all->isEnabled() )
+    ui->all->setEnabled(true);
+
+  if ( ui->viewModeAll->currentText() == "Show" ) {
+    motor->showSetup();
+    if ( motor->getPv().isEmpty() )
+      motor->showPvSetup();
+  } else if ( ui->viewModeAll->currentText() != "Hide" ) {
+      motor->setViewMode( ui->viewModeAll->currentIndex() - 1 );
+  }
 
   if ( ! noFileSave )
     updateMotorsFile();
@@ -118,9 +132,11 @@ void QMotorStack::removeRow(int idx){
   delete motors[mbtn];
   motors.remove(mbtn);
 
+  if (motors.isEmpty())
+    ui->all->setEnabled(false);
+
   updatePowerConnections();
   updateMotorsFile();
-  updatePowerConnections();
 
 }
 
@@ -178,6 +194,23 @@ void QMotorStack::lock(bool lck) {
 }
 
 
+
+void QMotorStack::viewModeAll() {
+  if ( ui->viewModeAll->currentText() == "Show" )
+    foreach(QCaMotorGUI * motor, motors) {
+      motor->showSetup();
+      if ( motor->getPv().isEmpty() )
+        motor->showPvSetup();
+    }
+  else if ( ui->viewModeAll->currentText() == "Hide" )
+    foreach(QCaMotorGUI * motor, motors) {
+      motor->showSetup(false);
+      motor->showPvSetup(false);
+    }
+  else
+    foreach(QCaMotorGUI * motor, motors)
+      motor->setViewMode( ui->viewModeAll->currentIndex() - 1 );
+}
 
 void QMotorStack::stopAll() {
   foreach(QCaMotorGUI * motor, motors)

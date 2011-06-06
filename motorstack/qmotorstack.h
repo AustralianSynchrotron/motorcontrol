@@ -38,6 +38,7 @@ private slots:
   /// the separate slot
   void initialize();
 
+  void viewModeAll();
   void stopAll();
   void powerOnAll();
   void powerOffAll();

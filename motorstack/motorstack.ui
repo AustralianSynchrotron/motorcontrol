@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWidget" name="widget" native="true">
+    <widget class="QWidget" name="all" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -39,9 +39,89 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QPushButton" name="stopAll">
+       <widget class="QLabel" name="label_3">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
-         <string>Stop All</string>
+         <string>All:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_3">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>view</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="viewModeAll">
+        <item>
+         <property name="text">
+          <string>Hide</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Show</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Minimalistic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Comfortable</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Configure</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>EPICS</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="stopAll">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Stop</string>
         </property>
        </widget>
       </item>
@@ -76,7 +156,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Power All:</string>
+            <string>Power:</string>
            </property>
           </widget>
          </item>

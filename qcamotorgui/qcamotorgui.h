@@ -129,6 +129,18 @@ public:
   static const QString configsSearchBaseDir;
   static const QString configsExt;
 
+  /// Enumeration with the view modes of the setup dialog.
+  /// The values of each element in the enumeration must
+  /// coincide with the index of the corresponding item in the
+  /// viewMode QCombobox in the "Setup" GUI.
+  enum ViewMode {
+    SETPV=0,
+    MINI=1,
+    COMFO=2,
+    CONFIG=3,
+    EPICS=4
+  };
+
 private:
 
   QWidget * theWidget;          ///< Motor's main widget.
@@ -162,6 +174,8 @@ private:
   /// Lock status of the motor. If the motor is locked, then the PV cannot be changed.
   bool locked;
 
+  ViewMode currentView;         ///< Current view mode of the "Setup" GUI.
+
 
 
 public:
@@ -187,22 +201,20 @@ signals:
   /// @param QString new value.
   void ioPositionChanged(QString);
 
-private:
+public slots:
 
+  /// Sets new view mode of the "Setup" GUI.
+  /// @param mode new view mode.
+  void setViewMode(ViewMode mode);
 
-  /// Enumeration with the view modes of the setup dialog.
-  /// The values of each element in the enumeration must
-  /// coincide with the index of the corresponding item in the
-  /// viewMode QCombobox in the "Setup" GUI.
-  enum ViewMode {
-    SETPV=0,
-    MINI=1,
-    COMFO=2,
-    CONFIG=3,
-    EPICS=4
-  };
+  /// Same the view mode of the "Setup" GUI.
+  /// @param mode view mode (must be the integer from the ::ViewMode enumeration).
+  inline void setViewMode(int mode){ setViewMode( (ViewMode) mode ); }
 
-  ViewMode currentView;         ///< Current view mode of the "Setup" GUI.
+  inline void showSetup(bool shown=true) { setupDialog->setShown(shown); }
+
+  inline void showPvSetup(bool shown=true) { pvDialog->setShown(shown); }
+
 
 private slots:
 
@@ -257,14 +269,6 @@ private slots:
   /// Updates the ::step from the main GUI with the actual step (double number), not a driving mode)
   /// @param step new step
   inline void setStepGui(double step) { setStepGui(QString::number(step)); }
-
-  /// Sets new view mode of the "Setup" GUI.
-  /// @param mode new view mode.
-  void setViewMode(ViewMode mode);
-
-  /// Same the view mode of the "Setup" GUI.
-  /// @param mode view mode (must be the integer from the ::ViewMode enumeration).
-  inline void setViewMode(int mode){ setViewMode( (ViewMode) mode ); }
 
   void setSpeedS(double spd);
   void setAccelerationS(double acc);
