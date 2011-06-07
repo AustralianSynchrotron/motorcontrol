@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>746</width>
+    <width>701</width>
     <height>32</height>
    </rect>
   </property>
@@ -297,7 +297,7 @@
   <customwidget>
    <class>QMDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
-   <header>qcamotorgui-additional.h</header>
+   <header location="global">qtpvwidgets.h</header>
    <slots>
     <signal>valueEdited(double)</signal>
     <signal>escaped()</signal>

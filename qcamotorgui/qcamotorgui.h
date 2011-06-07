@@ -28,7 +28,7 @@ class KnownPVTable : public QAbstractTableModel {
 
 private:
 
-  QList <QEpicsPV*> knownPVs;   ///< List of the motors' description fields.
+  QList <QEpicsPv*> knownPVs;   ///< List of the motors' description fields.
 
   /// SAearches for the pv in the ::knownPVs list.
   ///
@@ -37,7 +37,7 @@ private:
   /// @return the index of the pv in the ::knownPVs list if found or invalid index if
   /// the pv was not found in the list.
   ///
-  QModelIndex indexOf(QEpicsPV* pv) const;
+  QModelIndex indexOf(QEpicsPv* pv) const;
 
 public:
 

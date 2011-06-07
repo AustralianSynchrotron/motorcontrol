@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QDebug>
 #include <QCoreApplication>
-#include <qepicspv.h>
+#include <qtpv.h>
 
 
 /// \brief Class representing the EPICS motor.
@@ -59,7 +59,7 @@ public:
 
 private:
 
-  QHash<QString, QEpicsPV*> motor; ///< All motor record's fields used in the class.
+  QHash<QString, QEpicsPv*> motor; ///< All motor record's fields used in the class.
 
   /// Updates the parameter with new data and emits the signal.
   ///
@@ -80,7 +80,7 @@ private:
 
 
   // Here I've got a member for each field to avoid conversion
-  // from QVariant (returned by the QEpicsPV::get() )
+  // from QVariant (returned by the QEpicsPv::get() )
   // each time the value is required.
 
   QString pv;                   ///< Motor's PV

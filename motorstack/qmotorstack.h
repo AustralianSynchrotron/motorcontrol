@@ -12,9 +12,7 @@ namespace Ui {
   class MotorStack;
 }
 
-class QMotorStack : public QWidget
-{
-
+class QMotorStack : public QWidget {
   Q_OBJECT;
 
 private:

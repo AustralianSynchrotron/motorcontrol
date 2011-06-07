@@ -4,7 +4,7 @@
 
 TEMPLATE = lib
 
-QT -= gui 
+QT -= gui
 
 TARGET = qcamotor
 
@@ -12,11 +12,11 @@ INCLUDEPATH += .
 
 DEFINES += CAMOTOR_LIBRARY
 
-SOURCES += qcamotor.cpp 
+SOURCES += qcamotor.cpp
 
 HEADERS += qcamotor.h
 
-LIBS += -lqepicspv
+LIBS += -lqtpv
 
 
 

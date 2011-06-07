@@ -56,9 +56,9 @@ void QMotorStack::initialize() {
 
   if ( motorsFile.open(QIODevice::ReadWrite | QIODevice::Text) &&
        motorsFile.isReadable() )
-    while (!motorsFile.atEnd()) {
-    QByteArray line = motorsFile.readLine();
-    addMotor(line.trimmed(), false, true);
+    while ( !motorsFile.atEnd() ) {
+      QByteArray line = motorsFile.readLine();
+      addMotor(line.trimmed(), false, true);
   }
   if ( ! motorsFile.isWritable() )
     motorsFile.close();

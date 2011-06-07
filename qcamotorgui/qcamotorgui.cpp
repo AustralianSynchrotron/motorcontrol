@@ -12,21 +12,21 @@
 KnownPVTable::KnownPVTable(const QStringList &list, QObject *parent)
   : QAbstractTableModel(parent){
   foreach(QString pvname, list) {
-     QEpicsPV * pv = new QEpicsPV(pvname+".DESC", this) ;
+     QEpicsPv * pv = new QEpicsPv(pvname+".DESC", this) ;
      connect(pv, SIGNAL(valueChanged(QVariant)),
              SLOT(updateData()));
      knownPVs << pv;
   }
 }
 
-QModelIndex KnownPVTable::indexOf(QEpicsPV* pv) const {
+QModelIndex KnownPVTable::indexOf(QEpicsPv* pv) const {
   return knownPVs.contains(pv) ?
       createIndex(knownPVs.indexOf(pv), 1) :
       QModelIndex();
 }
 
 void KnownPVTable::updateData() {
-  QModelIndex midx = indexOf( (QEpicsPV*) sender() );
+  QModelIndex midx = indexOf( (QEpicsPv*) sender() );
   if ( midx.isValid() )
     emit (dataChanged(midx, midx));
 }
@@ -137,7 +137,7 @@ const QString QCaMotorGUI::pvListBaseName = "listOfKnownMotorPVs.txt";
 
 QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   QCaMotor(parent),
-  theWidget(new QWidget),
+  theWidget(new QWidget(parent)),
   mUi(new Ui::MotorControl),
   sUi(new Ui::MotorSetup),
   rUi(new Ui::GoRelative),
