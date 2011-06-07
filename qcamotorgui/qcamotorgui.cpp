@@ -137,7 +137,7 @@ const QString QCaMotorGUI::pvListBaseName = "listOfKnownMotorPVs.txt";
 
 QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   QCaMotor(parent),
-  theWidget(new QWidget(parent)),
+  theWidget(new QWidget),
   mUi(new Ui::MotorControl),
   sUi(new Ui::MotorSetup),
   rUi(new Ui::GoRelative),

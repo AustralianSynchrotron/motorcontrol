@@ -15,6 +15,7 @@ FORMS += qcamotorgui.ui \
 LIBS += -L../qcamotor -lqcamotor \
         -lqtpvwidgets
 headers.files = qcamotorgui.h \
+    qcamotorgui-additional.h \
     ui_qcamotorgui.h \
     ui_qcamotorgui-relative.h \
     ui_qcamotorgui-pv.h \
