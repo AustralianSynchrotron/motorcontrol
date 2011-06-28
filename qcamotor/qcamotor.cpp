@@ -210,6 +210,11 @@ QCaMotor::QCaMotor(QObject *parent) :
 }
 
 
+QCaMotor::~QCaMotor() {
+  setPv();
+  foreach(QEpicsPv * mpv, motor)
+    delete mpv;
+}
 
 void QCaMotor::saveConfiguration(const QString & fileName) const {
 

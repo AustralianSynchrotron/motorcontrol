@@ -50,6 +50,8 @@ public:
   ///
   QCaMotor(QObject *parent=0);
 
+  ~QCaMotor();
+
   /// Qt-aware function which returns only after any motion of the motor has finished.
   void wait_stop();
 

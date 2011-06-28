@@ -993,7 +993,9 @@ void QCaMotorGUI::updateConnectionGui(bool suc) {
       ( suc ? "Connection established." : "Connection lost.");
   updateStopButtonStyle();
   updateAllElements();
-  if ( suc && sUi->viewMode->currentIndex() != EPICS )
+  if ( suc &&
+       sUi->viewMode->currentIndex() != EPICS &&
+       getOffsetMode() != FROZEN )
       setOffsetMode(FROZEN);
 }
 
