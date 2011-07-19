@@ -154,6 +154,8 @@ private:
   QDialog * pvDialog;           ///< "Choose PV" dialog.
   QDialog * relativeDialog;     ///< "Move relatively" dialog.
 
+  QAction * pasteCfgAction;
+
   static QMap<QString,QString> knownConfigs;
   static KnownPVTable * knownPVs; ///< Table model for the table view in the "Choose PV".
 
@@ -226,6 +228,13 @@ private slots:
 
   /// \brief Copies motor's user position into clipboard.
   void copyPosition();
+
+  /// \brief Copies motor's configuration into clipboard.
+  void copyConfiguration();
+
+  /// \brief Pastes motor's configuration from clipboard and loads it.
+  void pasteConfiguration();
+
 
   /*
   void showContextMenu(const QPoint& pos);

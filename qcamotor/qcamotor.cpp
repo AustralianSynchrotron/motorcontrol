@@ -216,21 +216,13 @@ QCaMotor::~QCaMotor() {
     delete mpv;
 }
 
-void QCaMotor::saveConfiguration(const QString & fileName) const {
 
-  if ( ! this->isConnected() ) {
-    printError("Cannot save configuration of the motor because it is not connected." );
-    return;
-  }
+void QCaMotor::saveConfiguration(QTextStream & stream) const {
 
-  QFile file(fileName);
-  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-    printError("Cannot open file \"" + fileName + "\" for writing.");
-    return;
-  }
+  if ( ! isConnected() )
+    printError("Warning: saving configuration of the disconnected motor." );
 
-  QTextStream out(&file);
-  out
+  stream
       << "UREV " << getUnitsPerRev() << "\n"
       //<< "SREV " << getStepsPerRev() << "\n"
       //<< "MRES " << getMotorResolution() << "\n"
@@ -256,22 +248,24 @@ void QCaMotor::saveConfiguration(const QString & fileName) const {
 }
 
 
-void QCaMotor::loadConfiguration(const QString & fileName) {
 
-  if ( ! this->isConnected() ) {
+void QCaMotor::saveConfiguration(const QString & fileName) const {
+  QFile file(fileName);
+  if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+    printError("Cannot open file \"" + fileName + "\" for writing.");
+    return;
+  }
+  QTextStream out(&file);
+  saveConfiguration(out);
+}
+
+void QCaMotor::loadConfiguration(QTextStream & stream) {
+  if ( ! isConnected() ) {
     printError("Cannot load configuration of the motor because it is not connected.");
     return;
   }
-
-  QFile file(fileName);
-  if ( ! file.open(QIODevice::ReadOnly) ) {
-    printError("Cannot open file \"" + fileName + "\" for reading.");
-    return;
-  }
-
-  QTextStream in(&file);
-  QString line = in.readLine();
-  while (!line.isNull()) {
+  QString line = stream.readLine();
+  while ( ! line.isEmpty() ) {
     int idx=line.indexOf(' ');
     if ( idx > 0 ) {
       QString fld = "." + line.left(idx) ;
@@ -279,9 +273,19 @@ void QCaMotor::loadConfiguration(const QString & fileName) {
       if ( ! fld.isEmpty()  &&  ! val.isEmpty()  &&  motor.contains(fld) )
         motor[fld]->set(val);
     }
-    line = in.readLine();
+    line = stream.readLine();
   }
+}
 
+
+void QCaMotor::loadConfiguration(const QString & fileName) {
+  QFile file(fileName);
+  if ( ! file.open(QIODevice::ReadOnly) ) {
+    printError("Cannot open file \"" + fileName + "\" for reading.");
+    return;
+  }
+  QTextStream in(&file);
+  loadConfiguration(in);
 }
 
 

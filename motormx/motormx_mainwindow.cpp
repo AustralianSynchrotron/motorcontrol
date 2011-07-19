@@ -57,8 +57,27 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::onSave(){
+
+  /*
+  QFileDialog box(0, "Sava configuration");
+  box.setAcceptMode(QFileDialog::AcceptSave);
+  box.setFileMode(QFileDialog::AnyFile);
+  //box.setOption(QFileDialog::DontUseNativeDialog, true);
+  QGridLayout *layout = (QGridLayout*)box.layout();
+  QPushButton *button = new QPushButton();
+  button->setText("New button");
+  layout->addWidget(button);
+
+  if (box.exec()) {
+    QStringList fileNames = box.selectedFiles();
+    qDebug() << fileNames;
+    //ms->saveConfiguration(fileNames[0]);
+  }
+  */
+
   QString fileName = QFileDialog::getSaveFileName(0, "Save configuration");
   ms->saveConfiguration(fileName);
+
 }
 
 void MainWindow::onLoad() {

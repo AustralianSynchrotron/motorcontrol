@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QStringListModel>
 #include <QClipboard>
+#include <QMessageBox>
 
 
 
@@ -220,6 +221,15 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   action = new QAction("Copy position", mUi->setup);
   mUi->setup->addAction(action);
   connect(action, SIGNAL(triggered()), SLOT(copyPosition()));
+
+  action = new QAction("Copy configuration", mUi->setup);
+  mUi->setup->addAction(action);
+  connect(action, SIGNAL(triggered()), SLOT(copyConfiguration()));
+
+  pasteCfgAction = new QAction("Paste configuration", mUi->setup);
+  pasteCfgAction->setEnabled(false);
+  mUi->setup->addAction(pasteCfgAction);
+  connect(pasteCfgAction, SIGNAL(triggered()), SLOT(pasteConfiguration()));
 
   action = new QAction("Set PV", mUi->setup);
   mUi->setup->addAction(action);
@@ -544,6 +554,7 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
 }
 
 QCaMotorGUI::~QCaMotorGUI() {
+  delete pasteCfgAction;
   delete mUi;
   delete sUi;
   delete rUi;
@@ -569,6 +580,27 @@ void QCaMotorGUI::copyDescription() {
 void QCaMotorGUI::copyPosition() {
   if ( isConnected() )
     QApplication::clipboard()->setText( QString::number(getUserPosition()) );
+}
+
+void QCaMotorGUI::copyConfiguration() {
+  if ( ! isConnected() )
+    QMessageBox::warning(0, "Warning!",
+                         "Copying configuration of the disconnected motor.");
+  QString cfg;
+  QTextStream stream(&cfg);
+  saveConfiguration(stream);
+  QApplication::clipboard()->setText(cfg);
+}
+
+void QCaMotorGUI::pasteConfiguration() {
+  if ( ! isConnected() ) {
+    QMessageBox::warning(0, "Error",
+                         "Cannot paste configuration because the motor is not connected.");
+    return;
+  }
+  QString cfg = QApplication::clipboard()->text();
+  QTextStream stream(&cfg);
+  loadConfiguration(stream);
 }
 
 void QCaMotorGUI::filterPV(const QString & _text){
@@ -988,9 +1020,9 @@ void QCaMotorGUI::updateStepGui(double step){
 }
 
 void QCaMotorGUI::updateConnectionGui(bool suc) {
-
   sUi->message->setText
       ( suc ? "Connection established." : "Connection lost.");
+  pasteCfgAction->setEnabled(suc);
   updateStopButtonStyle();
   updateAllElements();
   if ( suc &&

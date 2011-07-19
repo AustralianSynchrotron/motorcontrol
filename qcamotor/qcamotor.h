@@ -56,7 +56,9 @@ public:
   void wait_stop();
 
   void saveConfiguration(const QString & fileName) const;
+  void saveConfiguration(QTextStream & stream) const;
   void loadConfiguration(const QString & fileName);
+  void loadConfiguration(QTextStream & stream);
 
 
 private:

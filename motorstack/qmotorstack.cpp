@@ -264,8 +264,9 @@ void QMotorStack::loadConfiguration(const QString & fileName) {
       file.isReadable() ) {
     clear();
     while (!file.atEnd()) {
-      QByteArray line = file.readLine();
-      addMotor(line.trimmed(), false, true);
+      QByteArray line = file.readLine().trimmed();
+      if ( ! line.isEmpty() )
+        addMotor(line, false, true);
     }
   }
   file.close();
