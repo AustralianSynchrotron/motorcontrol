@@ -448,6 +448,14 @@ void QCaMotor::updateDialLoLimit(const QVariant & data){
 void QCaMotor::updateMotorResolution(const QVariant & data){
   updateDouble(data, motorResolution, "motor resolution",
                &QCaMotor::changedMotorResolution);
+
+  /// BUG
+  // Actually not a bug, but many users called it a bug:
+  // When RDBD field is too high.
+  double amres = qAbs( getMotorResolution() );
+  double ardbd = qAbs( QEpicsPv::get(getPv()+".RDBD").toDouble() );
+  if ( amres > 0.0  &&  ardbd > amres * 2 )
+    QEpicsPv::set(getPv()+".RDBD", amres*2, 200);
 }
 
 void QCaMotor::updateReadbackResolution(const QVariant & data){
@@ -781,7 +789,6 @@ void QCaMotor::setDialLoLimit(double limit){
 
 void QCaMotor::setMotorResolution(double res){
   setField(".MRES", res);
-  QEpicsPv::set(getPv()+".RDBD", qAbs(res)*2, 200);
 }
 
 void QCaMotor::setReadbackResolution(double res){
