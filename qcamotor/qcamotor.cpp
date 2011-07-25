@@ -198,14 +198,14 @@ QCaMotor::QCaMotor(QObject *parent) :
 
   foreach ( QString key, motor.keys() )
     if ( key == "_CONNECTED_STATUS" )
-      connect(motor[key], SIGNAL(connectionChanged(bool)),
+      connect(motor[key], SIGNAL(valueInited(QVariant)),
               this, SLOT(updateWired()));
     else if ( key == "_ON_STATUS"  ||  key == "_ON_CMD")
       connect(motor[key], SIGNAL(connectionChanged(bool)),
               SLOT(updatePowerConnection(bool)));
     else
-      connect(motor[key], SIGNAL(connectionChanged(bool)),
-              SLOT(updateConnection(bool)));
+      connect(motor[key], SIGNAL(valueInited(QVariant)),
+              SLOT(updateConnection()));
 
 }
 
@@ -339,26 +339,15 @@ void QCaMotor::updateDouble(const QVariant & data,
 
 
 
-void QCaMotor::updateConnection(bool suc){
-
-  if (suc)
-    foreach(QString key, motor.keys())
-      if ( suc &&
-           key != "_ON_STATUS" && key != "_ON_CMD" &&
-           key != "_CONNECTED_STATUS" ) // Nonstandard fields
-        suc &= motor[key]->isConnected();
-
-  // need to make sure all fields are ready to confirm successful connection.
-  if ( suc && ! iAmConnected )
-    foreach(QString key, motor.keys())
-      if ( suc &&
-           key != "_ON_STATUS" && key != "_ON_CMD" &&
-           key != "_CONNECTED_STATUS" ) // Nonstandard fields
-        motor[key]->getReady();
-
+void QCaMotor::updateConnection(){
+  bool suc = true;
+  foreach(QString key, motor.keys())
+    if ( suc &&
+         key != "_ON_STATUS" && key != "_ON_CMD" &&
+         key != "_CONNECTED_STATUS" ) // Nonstandard fields
+      suc &= motor[key]->isReady();
   if (suc != iAmConnected)
     emit changedConnected(iAmConnected = suc);
-
 }
 
 void QCaMotor::updateDescription(const QVariant & data){
