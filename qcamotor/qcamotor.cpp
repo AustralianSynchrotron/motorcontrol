@@ -600,8 +600,11 @@ void QCaMotor::setField(const QString & key, const QVariant & value){
   if ( ! motor.contains(key) )
     emit error("Unknown field \"" + key + "\".");
   else if ( ! motor[key] || ! motor[key]->isConnected() )
+    continue;
+    /*
     emit error("Attempt to operate on field \"" + key + "\""
                " of uninitialized motor: set PV first.");
+    */
   else
     motor[key]->set(value, 100);
 }
