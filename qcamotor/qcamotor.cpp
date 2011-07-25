@@ -340,14 +340,25 @@ void QCaMotor::updateDouble(const QVariant & data,
 
 
 void QCaMotor::updateConnection(bool suc){
+
   if (suc)
     foreach(QString key, motor.keys())
       if ( suc &&
            key != "_ON_STATUS" && key != "_ON_CMD" &&
            key != "_CONNECTED_STATUS" ) // Nonstandard fields
         suc &= motor[key]->isConnected();
+
+  // need to make sure all fields are ready to confirm successful connection.
+  if ( suc && ! iAmConnected )
+    foreach(QString key, motor.keys())
+      if ( suc &&
+           key != "_ON_STATUS" && key != "_ON_CMD" &&
+           key != "_CONNECTED_STATUS" ) // Nonstandard fields
+        motor[key]->getReady();
+
   if (suc != iAmConnected)
     emit changedConnected(iAmConnected = suc);
+
 }
 
 void QCaMotor::updateDescription(const QVariant & data){
@@ -600,11 +611,8 @@ void QCaMotor::setField(const QString & key, const QVariant & value){
   if ( ! motor.contains(key) )
     emit error("Unknown field \"" + key + "\".");
   else if ( ! motor[key] || ! motor[key]->isConnected() )
-    continue;
-    /*
     emit error("Attempt to operate on field \"" + key + "\""
-               " of uninitialized motor: set PV first.");
-    */
+               " of uninitialized or disconnected motor: set PV first.");
   else
     motor[key]->set(value, 100);
 }
@@ -772,15 +780,8 @@ void QCaMotor::setDialLoLimit(double limit){
 
 
 void QCaMotor::setMotorResolution(double res){
-  /*
-  if (res < 0.0) {
-    setDirection(NEGATIVE);
-    res = -res;
-  } else {
-    setDirection(POSITIVE);
-  }
-  */
   setField(".MRES", res);
+  QEpicsPv::set(getPv()+".RDBD", qAbs(res)*2, 200);
 }
 
 void QCaMotor::setReadbackResolution(double res){

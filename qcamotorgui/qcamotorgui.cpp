@@ -1028,7 +1028,7 @@ void QCaMotorGUI::updateConnectionGui(bool suc) {
   if ( suc &&
        sUi->viewMode->currentIndex() != EPICS &&
        getOffsetMode() != FROZEN )
-      setOffsetMode(FROZEN);
+    setOffsetMode(FROZEN);
 }
 
 void QCaMotorGUI::updateGoButtonStyle(){
