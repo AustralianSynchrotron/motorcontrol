@@ -1039,8 +1039,7 @@ void QCaMotorGUI::updateGoButtonStyle(){
 
   if (getLoLimitStatus())
     style = hardStyle;
-  else if ( getUserPosition() <= getUserLoLimit() ||
-            getDialPosition() <= getDialLoLimit() )
+  else if ( getUserPosition() <= getUserLoLimit() )
     style = softStyle;
   else
     style = "";
@@ -1053,8 +1052,7 @@ void QCaMotorGUI::updateGoButtonStyle(){
 
   if (getHiLimitStatus())
     style = hardStyle;
-  else if ( getUserPosition() >= getUserHiLimit() ||
-            getDialPosition() >= getDialHiLimit() )
+  else if ( getUserPosition() >= getUserHiLimit() )
     style = softStyle;
   else
     style = "";
