@@ -8,8 +8,6 @@
 
 using namespace std;
 
-
-
 QCaMotor::QCaMotor(QObject *parent) :
   QObject(parent),
   pv(),
@@ -52,159 +50,210 @@ QCaMotor::QCaMotor(QObject *parent) :
   iaAmWired(true),
   lastMotion(0)
 {
+  init();
+}
+
+QCaMotor::QCaMotor(const QString & _pv, QObject *parent) :
+  QObject(parent),
+  pv(),
+  description(),
+  precsision(0),
+  units(),
+  userPosition(0),
+  dialPosition(0),
+  rawPosition(0),
+  userGoal(0),
+  dialGoal(0),
+  rawGoal(0),
+  step(0),
+  offset(0),
+  direction(POSITIVE),
+  loLimitStatus(false),
+  hiLimitStatus(false),
+  userLoLimit(0),
+  userHiLimit(0),
+  dialLoLimit(0),
+  dialHiLimit(0),
+  motorResolution(1.0),
+  readbackResolution(1.0),
+  encoderResolution(1.0),
+  maximumSpeed(1.0),
+  normalSpeed(1.0),
+  revSpeed(1.0),
+  backlashSpeed(1.0),
+  jogSpeed(1.0),
+  acceleration(1.0),
+  backlashAcceleration(1.0),
+  jogAcceleration(1.0),
+  iAmConnected(false),
+  iAmMoving(false), // false is crusial here to distinguish first and further updates in ::updateMoving()
+  useEncoder(false),
+  useReadback(false),
+  backlash(0),
+  iAmPowered(true),
+  powerIsConnected(false),
+  iaAmWired(true),
+  lastMotion(0)
+{
+  init();
+  setPv(_pv);
+}
+
+
+void QCaMotor::init() {
 
   connect(this, SIGNAL(error(QString)), this, SLOT(printError(QString)));
 
-  motor.insert(".DESC", new QEpicsPv(this));
-  connect(motor[".DESC"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".DESC", new QEpicsPv(this));
+  connect(fields[".DESC"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateDescription(QVariant)));
 
-  motor.insert(".PREC", new QEpicsPv(this));
-  connect(motor[".PREC"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".PREC", new QEpicsPv(this));
+  connect(fields[".PREC"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updatePrecision(QVariant)));
-  motor.insert(".EGU",  new QEpicsPv(this));
-  connect(motor[".EGU"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".EGU",  new QEpicsPv(this));
+  connect(fields[".EGU"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUnits(QVariant)));
 
-  motor.insert(".RBV",  new QEpicsPv(this));
-  connect(motor[".RBV"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".RBV",  new QEpicsPv(this));
+  connect(fields[".RBV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUserPosition(QVariant)));
-  motor.insert(".DRBV", new QEpicsPv(this));
-  connect(motor[".DRBV"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".DRBV", new QEpicsPv(this));
+  connect(fields[".DRBV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateDialPosition(QVariant)));
-  motor.insert(".RRBV", new QEpicsPv(this));
-  connect(motor[".RRBV"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".RRBV", new QEpicsPv(this));
+  connect(fields[".RRBV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateRawPosition(QVariant)));
-  motor.insert(".VAL",  new QEpicsPv(this));
-  connect(motor[".VAL"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".VAL",  new QEpicsPv(this));
+  connect(fields[".VAL"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUserGoal(QVariant)));
-  motor.insert(".DVAL", new QEpicsPv(this));
-  connect(motor[".DVAL"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".DVAL", new QEpicsPv(this));
+  connect(fields[".DVAL"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateDialGoal(QVariant)));
-  motor.insert(".RVAL", new QEpicsPv(this));
-  connect(motor[".RVAL"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".RVAL", new QEpicsPv(this));
+  connect(fields[".RVAL"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateRawGoal(QVariant)));
-  motor.insert(".TWV",  new QEpicsPv(this));
-  connect(motor[".TWV"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".TWV",  new QEpicsPv(this));
+  connect(fields[".TWV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateStep(QVariant)));
 
-  motor.insert(".TWR",  new QEpicsPv(this));
-  motor.insert(".TWF",  new QEpicsPv(this));
-  motor.insert(".HOMR", new QEpicsPv(this));
-  motor.insert(".HOMF", new QEpicsPv(this));
-  motor.insert(".JOGR", new QEpicsPv(this));
-  motor.insert(".JOGF", new QEpicsPv(this));
-  motor.insert(".RLV",  new QEpicsPv(this));
-  motor.insert(".STOP", new QEpicsPv(this));
+  fields.insert(".TWR",  new QEpicsPv(this));
+  fields.insert(".TWF",  new QEpicsPv(this));
+  fields.insert(".HOMR", new QEpicsPv(this));
+  fields.insert(".HOMF", new QEpicsPv(this));
+  fields.insert(".JOGR", new QEpicsPv(this));
+  fields.insert(".JOGF", new QEpicsPv(this));
+  fields.insert(".RLV",  new QEpicsPv(this));
+  fields.insert(".STOP", new QEpicsPv(this));
 
-  motor.insert(".HLS",  new QEpicsPv(this));
-  connect(motor[".HLS"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".HLS",  new QEpicsPv(this));
+  connect(fields[".HLS"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateHiLimitStatus(QVariant)));
-  motor.insert(".LLS",  new QEpicsPv(this));
-  connect(motor[".LLS"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".LLS",  new QEpicsPv(this));
+  connect(fields[".LLS"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateLoLimitStatus(QVariant)));
-  motor.insert(".HLM",  new QEpicsPv(this));
-  connect(motor[".HLM"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".HLM",  new QEpicsPv(this));
+  connect(fields[".HLM"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUserHiLimit(QVariant)));
-  motor.insert(".LLM",  new QEpicsPv(this));
-  connect(motor[".LLM"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".LLM",  new QEpicsPv(this));
+  connect(fields[".LLM"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUserLoLimit(QVariant)));
-  motor.insert(".DHLM", new QEpicsPv(this));
-  connect(motor[".DHLM"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".DHLM", new QEpicsPv(this));
+  connect(fields[".DHLM"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateDialHiLimit(QVariant)));
-  motor.insert(".DLLM", new QEpicsPv(this));
-  connect(motor[".DLLM"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".DLLM", new QEpicsPv(this));
+  connect(fields[".DLLM"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateDialLoLimit(QVariant)));
 
-  motor.insert(".MRES", new QEpicsPv(this));
-  connect(motor[".MRES"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".MRES", new QEpicsPv(this));
+  connect(fields[".MRES"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateMotorResolution(QVariant)));
-  motor.insert(".RRES", new QEpicsPv(this));
-  connect(motor[".RRES"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".RRES", new QEpicsPv(this));
+  connect(fields[".RRES"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateReadbackResolution(QVariant)));
-  motor.insert(".ERES", new QEpicsPv(this));
-  connect(motor[".ERES"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".ERES", new QEpicsPv(this));
+  connect(fields[".ERES"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateEncoderResolution(QVariant)));
-  motor.insert(".UREV", new QEpicsPv(this));
-  connect(motor[".UREV"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".UREV", new QEpicsPv(this));
+  connect(fields[".UREV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUnitsPerRev(QVariant)));
-  motor.insert(".SREV", new QEpicsPv(this));
-  connect(motor[".SREV"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".SREV", new QEpicsPv(this));
+  connect(fields[".SREV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateStepsPerRev(QVariant)));
 
-  motor.insert(".VMAX", new QEpicsPv(this));
-  connect(motor[".VMAX"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".VMAX", new QEpicsPv(this));
+  connect(fields[".VMAX"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateMaximumSpeed(QVariant)));
-  motor.insert(".VELO", new QEpicsPv(this));
-  connect(motor[".VELO"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".VELO", new QEpicsPv(this));
+  connect(fields[".VELO"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateNormalSpeed(QVariant)));
-  motor.insert(".S", new QEpicsPv(this));
-  connect(motor[".S"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".S", new QEpicsPv(this));
+  connect(fields[".S"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateRevSpeed(QVariant)));
-  motor.insert(".BVEL", new QEpicsPv(this));
-  connect(motor[".BVEL"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".BVEL", new QEpicsPv(this));
+  connect(fields[".BVEL"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateBacklashSpeed(QVariant)));
-  motor.insert(".JVEL", new QEpicsPv(this));
-  connect(motor[".JVEL"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".JVEL", new QEpicsPv(this));
+  connect(fields[".JVEL"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateJogSpeed(QVariant)));
 
-  motor.insert(".ACCL", new QEpicsPv(this));
-  connect(motor[".ACCL"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".ACCL", new QEpicsPv(this));
+  connect(fields[".ACCL"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateAcceleration(QVariant)));
-  motor.insert(".BACC", new QEpicsPv(this));
-  connect(motor[".BACC"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".BACC", new QEpicsPv(this));
+  connect(fields[".BACC"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateBacklashAcceleration(QVariant)));
-  motor.insert(".JAR",  new QEpicsPv(this));
-  connect(motor[".JAR"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".JAR",  new QEpicsPv(this));
+  connect(fields[".JAR"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateJogAcceleration(QVariant)));
 
-  motor.insert(".BDST", new QEpicsPv(this));
-  connect(motor[".BDST"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".BDST", new QEpicsPv(this));
+  connect(fields[".BDST"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateBacklash(QVariant)));
 
-  motor.insert(".DMOV", new QEpicsPv(this));
-  connect(motor[".DMOV"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".DMOV", new QEpicsPv(this));
+  connect(fields[".DMOV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateMoving(QVariant)));
-  motor.insert(".UEIP", new QEpicsPv(this));
-  connect(motor[".UEIP"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".UEIP", new QEpicsPv(this));
+  connect(fields[".UEIP"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUseEncoder(QVariant)));
-  motor.insert(".URIP", new QEpicsPv(this));
-  connect(motor[".URIP"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".URIP", new QEpicsPv(this));
+  connect(fields[".URIP"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUseReadback(QVariant)));
 
-  motor.insert(".OFF",  new QEpicsPv(this));
-  connect(motor[".OFF"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".OFF",  new QEpicsPv(this));
+  connect(fields[".OFF"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateOffset(QVariant)));
-  motor.insert(".FOFF", new QEpicsPv(this));
-  connect(motor[".FOFF"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".FOFF", new QEpicsPv(this));
+  connect(fields[".FOFF"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateOffsetMode(QVariant)));
-  motor.insert(".DIR",  new QEpicsPv(this));
-  connect(motor[".DIR"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".DIR",  new QEpicsPv(this));
+  connect(fields[".DIR"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateDirection(QVariant)));
-  motor.insert(".SET",  new QEpicsPv(this));
-  connect(motor[".SET"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".SET",  new QEpicsPv(this));
+  connect(fields[".SET"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateSuMode(QVariant)));
-  motor.insert(".SPMG", new QEpicsPv(this));
-  connect(motor[".SPMG"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert(".SPMG", new QEpicsPv(this));
+  connect(fields[".SPMG"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateSpmgMode(QVariant)));
-  motor.insert("_ON_STATUS", new QEpicsPv(this));
-  connect(motor["_ON_STATUS"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert("_ON_STATUS", new QEpicsPv(this));
+  connect(fields["_ON_STATUS"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updatePower(QVariant)));
-  motor.insert("_ON_CMD",    new QEpicsPv(this));
-  motor.insert("_CONNECTED_STATUS", new QEpicsPv(this));
-  connect(motor["_CONNECTED_STATUS"], SIGNAL(valueUpdated(QVariant)),
+  fields.insert("_ON_CMD",    new QEpicsPv(this));
+  fields.insert("_CONNECTED_STATUS", new QEpicsPv(this));
+  connect(fields["_CONNECTED_STATUS"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateWired(QVariant)));
 
 
-  foreach ( QString key, motor.keys() )
+  foreach ( QString key, fields.keys() )
     if ( key == "_CONNECTED_STATUS" )
-      connect(motor[key], SIGNAL(connectionChanged(bool)),
+      connect(fields[key], SIGNAL(connectionChanged(bool)),
               this, SLOT(updateWired()));
     else if ( key == "_ON_STATUS"  ||  key == "_ON_CMD")
-      connect(motor[key], SIGNAL(connectionChanged(bool)),
+      connect(fields[key], SIGNAL(connectionChanged(bool)),
               SLOT(updatePowerConnection(bool)));
     else
-      connect(motor[key], SIGNAL(connectionChanged(bool)),
+      connect(fields[key], SIGNAL(connectionChanged(bool)),
               SLOT(updateConnection(bool)));
 
 }
@@ -212,7 +261,7 @@ QCaMotor::QCaMotor(QObject *parent) :
 
 QCaMotor::~QCaMotor() {
   setPv();
-  foreach(QEpicsPv * mpv, motor)
+  foreach(QEpicsPv * mpv, fields)
     delete mpv;
 }
 
@@ -270,8 +319,8 @@ void QCaMotor::loadConfiguration(QTextStream & stream) {
     if ( idx > 0 ) {
       QString fld = "." + line.left(idx) ;
       QString val = line.mid(idx+1);
-      if ( ! fld.isEmpty()  &&  ! val.isEmpty()  &&  motor.contains(fld) )
-        motor[fld]->set(val);
+      if ( ! fld.isEmpty()  &&  ! val.isEmpty()  &&  fields.contains(fld) )
+        fields[fld]->set(val);
     }
     line = stream.readLine();
   }
@@ -303,8 +352,8 @@ void QCaMotor::preSetPv(){
     return;
   }
 
-  foreach ( QString key, motor.keys() )
-    motor[key]->setPV(pv+key);
+  foreach ( QString key, fields.keys() )
+    fields[key]->setPV(pv+key);
 
 }
 
@@ -318,8 +367,8 @@ void QCaMotor::setPv(const QString & pvName) {
   emit changedPv(pv);
 
   if (pv.isEmpty())
-    foreach ( QString key, motor.keys() )
-      motor[key]->setPV();
+    foreach ( QString key, fields.keys() )
+      fields[key]->setPV();
   else
     QTimer::singleShot(0, this, SLOT(preSetPv()));
 
@@ -341,11 +390,11 @@ void QCaMotor::updateDouble(const QVariant & data,
 
 void QCaMotor::updateConnection(bool suc){
   if (suc)
-    foreach(QString key, motor.keys())
+    foreach(QString key, fields.keys())
       if ( suc &&
            key != "_ON_STATUS" && key != "_ON_CMD" &&
            key != "_CONNECTED_STATUS" ) // Nonstandard fields
-        suc &= motor[key]->isConnected();
+        suc &= fields[key]->isConnected();
   if (suc != iAmConnected)
     emit changedConnected(iAmConnected = suc);
 }
@@ -575,7 +624,7 @@ void QCaMotor::updateSuMode(const QVariant & data){
 
 void QCaMotor::updatePowerConnection(bool){
   powerIsConnected =
-    motor["_ON_CMD"]->isConnected() && motor["_ON_STATUS"]->isConnected();
+    fields["_ON_CMD"]->isConnected() && fields["_ON_STATUS"]->isConnected();
   if (!powerIsConnected)
     updatePower(true);
   emit changedPowerConnection(powerIsConnected);
@@ -588,7 +637,7 @@ void QCaMotor::updatePower(const QVariant & data){
 
 void QCaMotor::updateWired(const QVariant & data) {
   emit changedWired( iaAmWired =
-                    ! motor["_CONNECTED_STATUS"]->isConnected()  ||
+                    ! fields["_CONNECTED_STATUS"]->isConnected()  ||
                     data.toBool() );
 }
 
@@ -597,13 +646,13 @@ void QCaMotor::updateWired(const QVariant & data) {
 
 
 void QCaMotor::setField(const QString & key, const QVariant & value){
-  if ( ! motor.contains(key) )
+  if ( ! fields.contains(key) )
     emit error("Unknown field \"" + key + "\".");
-  else if ( ! motor[key] || ! motor[key]->isConnected() )
+  else if ( ! fields[key] || ! fields[key]->isConnected() )
     emit error("Attempt to operate on field \"" + key + "\""
                " of uninitialized motor: set PV first.");
   else
-    motor[key]->set(value, 100);
+    fields[key]->set(value, 100);
 }
 
 
@@ -642,13 +691,14 @@ void QCaMotor::setRawPosition(double pos){
 }
 
 void QCaMotor::wait_stop(){
-  QEventLoop q;
-  connect(this, SIGNAL(stopped()), &q, SLOT(quit()));
-  connect(this, SIGNAL(changedConnected(bool)), &q, SLOT(quit()));
-  connect(this, SIGNAL(changedPv(QString)), &q, SLOT(quit()));
-  connect(this, SIGNAL(destroyed()), &q, SLOT(quit()));
+  QList<ObjSig> osS;
+  osS
+      << ObjSig(this, SIGNAL(stopped()))
+      << ObjSig(this, SIGNAL(changedConnected(bool)))
+      << ObjSig(this, SIGNAL(changedPv(QString)))
+      << ObjSig(this, SIGNAL(destroyed()));
   if ( isConnected() && isMoving() )
-    q.exec();
+    qtWait(osS);
 }
 
 

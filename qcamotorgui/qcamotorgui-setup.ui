@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>642</width>
-    <height>1247</height>
+    <width>653</width>
+    <height>1256</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1194,8 +1194,14 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="6" column="0" colspan="2">
+      <item row="6" column="0">
        <widget class="QLabel" name="label_18">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Speeds</string>
         </property>
@@ -1203,6 +1209,12 @@ p, li { white-space: pre-wrap; }
       </item>
       <item row="6" column="3">
        <widget class="QLabel" name="label_45">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Accelerations</string>
         </property>
@@ -1293,7 +1305,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item row="10" column="0" colspan="2">
-       <widget class="QMDoubleSpinBox" name="unitsPerRevGui">
+       <widget class="QMDoubleSpinBox" name="unitsPerRevAndDir">
         <property name="toolTip">
          <string>Units per revolution</string>
         </property>
@@ -1324,6 +1336,38 @@ p, li { white-space: pre-wrap; }
           <number>0</number>
          </property>
         </layout>
+       </widget>
+      </item>
+      <item row="6" column="2">
+       <widget class="QToolButton" name="equalizeAccelerations">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Set all accelerations to displayed.</string>
+        </property>
+        <property name="text">
+         <string>=</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QToolButton" name="equalizeSpeeds">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Set all speeds to displayed.</string>
+        </property>
+        <property name="text">
+         <string>=</string>
+        </property>
        </widget>
       </item>
      </layout>

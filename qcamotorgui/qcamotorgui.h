@@ -186,6 +186,9 @@ public:
   /// @param parent parent widget.
   QCaMotorGUI(QWidget *parent=0);
 
+  QCaMotorGUI(const QString & pv, QWidget *parent=0);
+
+
   /// Destructor.
   ~QCaMotorGUI();
 
@@ -257,14 +260,11 @@ private slots:
 
   /// Updates all GUIs when the motor PV has changed.
   /// @param newpv new PV.
-  void updatePvGui(const QString & newpv = "");
+  void updatePv(const QString & newpv = "");
 
   void onSave() ;
 
   void onLoad(const QString & text) ;
-
-  /// Sets the description from the sUi->description->text.
-  inline void setDescriptionGui() { setDescription(sUi->description->text()); }
 
   /// \brief Updates main GUIs when a new text in the ::step widget is activated/edited.
   ///
@@ -273,14 +273,10 @@ private slots:
   ///
   /// @param _text new text in the widget.
   ///
-  void setStepGui(const QString & _text="");
+  void setStep(const QString & _text="");
 
-  /// Updates the ::step from the main GUI with the actual step (double number), not a driving mode)
-  /// @param step new step
-  inline void setStepGui(double step) { setStepGui(QString::number(step)); }
-
-  void setSpeedS(double spd);
-  void setAccelerationS(double acc);
+  void setSpeedS(double spd=0);
+  void setAccelerationS(double acc=0);
 
   /// \brief Sets the units-per-rev resolution and direction.
   ///
@@ -289,7 +285,7 @@ private slots:
   /// to the absolute value of ::res and the direction
   /// to the sign of ::res
   /// @param res new resolution.
-  void setUnitsPerRevGui(double res);
+  void setUnitsPerRevAndDirection(double res);
 
 
   /// Catches the go-backward-by-step commands from GUIs.
@@ -316,93 +312,91 @@ private slots:
   /// Catches the stop-positive-jog commands from GUIs.
   inline void jogPstop(){ jog(false, 1); }
 
-  /// Divides current step by 10.
-  inline void stepD10() { setStep( 0.1 * getStep() ); }
-
-  /// Divides current step by 2.
-  inline void stepD2() { setStep( 0.5 * getStep() ); }
-
-  /// Multiplies current step by 2.
-  inline void stepM2() { setStep( 2.0 * getStep() ); }
-
-  /// Multiplies current step by 10.
-  inline void stepM10() { setStep( 10.0 * getStep() ); }
-
-  /// Updates the color of the drive buttons reflecting the limits status.
-  void updateGoButtonStyle();
-
-  /// Updates GUIs with new motor description.
-  /// @param desc new description.
-  void updateDescriptionGui(const QString & desc);
-
-  /// Updates GUIs with new precision.
-  /// @param prec new precision.
-  void updatePrecisionGui(int prec);
-
-  /// Updates GUIs with new units.
-  /// @param data new units.
-  void updateUnitsGui(const QString & data);
-
-  /// Updates GUIs with new step.
-  /// @param step new step.
-  void updateStepGui(double step);
-
-  /// Updates GUIs with the new dial limit
-  void updateDialLimitGui();
-
-  /// Updates GUIs with the new user limit
-  void updateUserLimitGui();
-
-  /// Updates GUIs with the new motor resolution
-  void updateUnitsPerRevGui();
-
-  /// Updates GUIs with the new maximum speed.
-  void updateMaximumSpeedGui(double maxSpeed);
-
-  /// Updates GUIs with the new backlash
-  void updateBacklashGui(double blsh);
-
-  /// Catches new set/use mode.
-  /// @param mode new mode.
-  void updateSetGroup(SuMode mode);
-
-  /// Catches new offset mode.
-  /// @param mode new mode.
-  void updateOffGroup(OffMode mode);
-
-  /// Catches new offset direction.
-  /// @param direction new direction.
-  void updateDirGroup(int direction);
-
-  /// Catches new SPMG mode.
-  /// @param mode new mode.
-  void updateSpmgGroup(SpmgMode mode);
-
-
-  /// Updates GUIs with the new connection status.
-  /// @param connected new status
-  void updateConnectionGui(bool connected=false);
-
-  /// Updates GUIs with the new moving status.
-  /// @param moving new status
-  void updateMovingGui(bool moving);
-
-  /// Sets style of the stop buttons reflecting the moving status.
-  void updateStopButtonStyle();
-
-  /// Sets style of the power button.
-  void updatePowerGui();
-
-  /// Updates the GUI in accordance with new isWired status.
-  void updateWiredGui(bool wr);
-
   /// Catches Stop/Undo commands from GUIs.
   ///
   /// Stops the motion if the motor is moving or undos last motion if it does not.
   void pressStop();
 
+  /// Divides current step by 10.
+  inline void stepD10() { QCaMotor::setStep( 0.1 * getStep() ); }
+
+  /// Divides current step by 2.
+  inline void stepD2() { QCaMotor::setStep( 0.5 * getStep() ); }
+
+  /// Multiplies current step by 2.
+  inline void stepM2() { QCaMotor::setStep( 2.0 * getStep() ); }
+
+  /// Multiplies current step by 10.
+  inline void stepM10() { QCaMotor::setStep( 10.0 * getStep() ); }
+
+
+  /// Updates the color of the drive buttons reflecting the limits status.
+  void updateGoButtonStyle();
+
+  /// Sets style of the stop buttons reflecting the moving status.
+  void updateStopButtonStyle();
+
   /// Enables / Disables GUIs' elements depending on moving, power, connection and other statuses.
   void updateAllElements();
+
+  void updateSpeeds();
+
+  void updateAccelerations();
+
+
+  void updateDescription(const QVariant & data);
+
+  void updatePrecision(const QVariant & data);
+
+  void updateUnits(const QVariant & data);
+
+  void updateUserPosition(const QVariant & data);
+
+  void updateDialPosition(const QVariant & data);
+
+  void updateStep(const QVariant & data);
+
+  void updateUserHiLimit(const QVariant &data);
+
+  void updateUserLoLimit(const QVariant &data);
+
+  void updateDialHiLimit(const QVariant &data);
+
+  void updateDialLoLimit(const QVariant &data);
+
+  void updateUnitsPerRev(const QVariant & data);
+
+  void updateMaximumSpeed(const QVariant & data);
+
+  void updateNormalSpeed(const QVariant & data);
+
+  void updateBacklashSpeed(const QVariant & data);
+
+  void updateJogSpeed(const QVariant & data);
+
+  void updateAcceleration(const QVariant & data);
+
+  void updateBacklashAcceleration(const QVariant & data);
+
+  void updateJogAcceleration(const QVariant & data);
+
+  void updateBacklash(const QVariant & data);
+
+  void updateSuMode(const QVariant & data);
+
+  void updateOffsetMode(const QVariant & data);
+
+  void updateDirection(const QVariant & data);
+
+  void updateSpmgMode(const QVariant & data);
+
+  void updateConnection(bool suc);
+
+  void updateMoving(const QVariant & data);
+
+  void updatePower(const QVariant &data);
+
+  void updateWired(const QVariant &data);
 
 };
 

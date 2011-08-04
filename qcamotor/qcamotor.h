@@ -2,6 +2,7 @@
 #define CAMOTOR_H
 
 #include <QObject>
+#include <QString>
 #include <QDebug>
 #include <QCoreApplication>
 #include <qtpv.h>
@@ -50,6 +51,8 @@ public:
   ///
   QCaMotor(QObject *parent=0);
 
+  QCaMotor(const QString & pv, QObject *parent=0);
+
   ~QCaMotor();
 
   /// Qt-aware function which returns only after any motion of the motor has finished.
@@ -63,7 +66,9 @@ public:
 
 private:
 
-  QHash<QString, QEpicsPv*> motor; ///< All motor record's fields used in the class.
+  void init();
+
+  QHash<QString, QEpicsPv*> fields; ///< All motor record's fields used in the class.
 
   /// Updates the parameter with new data and emits the signal.
   ///
@@ -154,266 +159,266 @@ private:
   // Just found that the bug can be reproduced with high probability after re-fusing the motor channel.
   bool secondMotionAttempt;
 
-private slots:
+protected slots:
 
   /// \brief Updates connection status (::iAmConnected)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param suc true if connected.
-  void updateConnection(bool suc);
+  virtual void updateConnection(bool suc);
 
   /// \brief Updates description (::description)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new description.
-  void updateDescription(const QVariant & data);
+  virtual void updateDescription(const QVariant & data);
 
   /// \brief Updates precision (::precision)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new precision.
-  void updatePrecision(const QVariant & data);
+  virtual void updatePrecision(const QVariant & data);
 
   /// \brief Updates units (::units)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new units.
-  void updateUnits(const QVariant & data);
+  virtual void updateUnits(const QVariant & data);
 
   /// \brief Updates user position (::userPosition)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new user position.
-  void updateUserPosition(const QVariant & data);
+  virtual void updateUserPosition(const QVariant & data);
 
   /// \brief Updates dial position (::dialPosition)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new dial position.
-  void updateDialPosition(const QVariant & data);
+  virtual void updateDialPosition(const QVariant & data);
 
   /// \brief Updates raw position (::rawPosition)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new raw position.
-  void updateRawPosition(const QVariant & data);
+  virtual void updateRawPosition(const QVariant & data);
 
   /// \brief Updates user goal (::userGoal)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new user goal.
-  void updateUserGoal(const QVariant & data);
+  virtual void updateUserGoal(const QVariant & data);
 
   /// \brief Updates dial goal (::dialGoal)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new dial goal.
-  void updateDialGoal(const QVariant & data);
+  virtual void updateDialGoal(const QVariant & data);
 
   /// \brief Updates raw goal (::rawGoal)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new raw goal.
-  void updateRawGoal(const QVariant & data);
+  virtual void updateRawGoal(const QVariant & data);
 
   /// \brief Updates step (::step)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new step.
-  void updateStep(const QVariant & data);
+  virtual void updateStep(const QVariant & data);
 
 
   /// \brief Updates hi limit status (::hiLimitStatus)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new status.
-  void updateHiLimitStatus(const QVariant & data);
+  virtual void updateHiLimitStatus(const QVariant & data);
 
   /// \brief Updates lo limit status (::loLimitStatus)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new status.
-  void updateLoLimitStatus(const QVariant & data);
+  virtual void updateLoLimitStatus(const QVariant & data);
 
   /// \brief Updates user hi limit (::userHiLimit)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new limit.
-  void updateUserHiLimit(const QVariant & data);
+  virtual void updateUserHiLimit(const QVariant & data);
 
   /// \brief Updates user lo limit (::userLoLimit)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new limit.
-  void updateUserLoLimit(const QVariant & data);
+  virtual void updateUserLoLimit(const QVariant & data);
 
   /// \brief Updates dial lo limit (::dialLoLimit)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new limit.
-  void updateDialLoLimit(const QVariant & data);
+  virtual void updateDialLoLimit(const QVariant & data);
 
   /// \brief Updates dial high limit (::dialHiLimit)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new limit.
-  void updateDialHiLimit(const QVariant & data);
+  virtual void updateDialHiLimit(const QVariant & data);
 
 
   /// \brief Updates motor resolution (::motorResolution)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new resolution.
-  void updateMotorResolution(const QVariant & data);
+  virtual void updateMotorResolution(const QVariant & data);
 
   /// \brief Updates readback resolution (::readbackResolution)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new resolution.
-  void updateReadbackResolution(const QVariant & data);
+  virtual void updateReadbackResolution(const QVariant & data);
 
   /// \brief Updates encoder resolution (::encoderResolution)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new resolution.
-  void updateEncoderResolution(const QVariant & data);
+  virtual void updateEncoderResolution(const QVariant & data);
 
   /// \brief Updates EGU's per resolution (::unitsPerRev)
   /// Used to catch the signal valueUpdated(QVariant)
   /// from the corresponding field (a member of ::motor).
   /// @param data new value.
-  void updateUnitsPerRev(const QVariant & data);
+  virtual void updateUnitsPerRev(const QVariant & data);
 
   /// \brief Updates steps per resolution (::stepsPerRev)
   /// Used to catch the signal valueUpdated(QVariant)
   /// from the corresponding field (a member of ::motor).
   /// @param data new value.
-  void updateStepsPerRev(const QVariant & data);
+  virtual void updateStepsPerRev(const QVariant & data);
 
 
   /// \brief Updates maximum speed (::maximumSpeed)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new speed.
-  void updateMaximumSpeed(const QVariant & data);
+  virtual void updateMaximumSpeed(const QVariant & data);
 
   /// \brief Updates normal speed (::normalSpeed)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new speed.
-  void updateNormalSpeed(const QVariant & data);
+  virtual void updateNormalSpeed(const QVariant & data);
 
   /// \brief Updates revolving speed: turns per second (::revSpeed)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new speed.
-  void updateRevSpeed(const QVariant & data);
+  virtual void updateRevSpeed(const QVariant & data);
 
   /// \brief Updates backlash speed (::backlashSpeed)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new speed.
-  void updateBacklashSpeed(const QVariant & data);
+  virtual void updateBacklashSpeed(const QVariant & data);
 
   /// \brief Updates jog speed (::jogSpeed)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new speed.
-  void updateJogSpeed(const QVariant & data);
+  virtual void updateJogSpeed(const QVariant & data);
 
   /// \brief Updates acceleration (::acceleration)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new acceleration.
-  void updateAcceleration(const QVariant & data);
+  virtual void updateAcceleration(const QVariant & data);
 
   /// \brief Updates backlash acceleration (::backlashAcceleration)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new acceleration.
-  void updateBacklashAcceleration(const QVariant & data);
+  virtual void updateBacklashAcceleration(const QVariant & data);
 
   /// \brief Updates jog acceleration (::jogAcceleration)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new acceleration.
-  void updateJogAcceleration(const QVariant & data);
+  virtual void updateJogAcceleration(const QVariant & data);
 
 
   /// \brief Updates backlash (::backlash)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new backlash.
-  void updateBacklash(const QVariant & data);
+  virtual void updateBacklash(const QVariant & data);
 
 
   /// \brief Updates moving status (::iAmMoving)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new status.
-  void updateMoving(const QVariant & data);
+  virtual void updateMoving(const QVariant & data);
 
   /// \brief Updates use readback parameter (::useReadback)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new value.
-  void updateUseReadback(const QVariant & data);
+  virtual void updateUseReadback(const QVariant & data);
 
   /// \brief Updates use encoder parameter (::useEncoder)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new value.
-  void updateUseEncoder(const QVariant & data);
+  virtual void updateUseEncoder(const QVariant & data);
 
 
   /// \brief Updates direction (::direction)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new direction.
-  void updateDirection(const QVariant & data);
+  virtual void updateDirection(const QVariant & data);
 
   /// \brief Updates offset mode (::offsetMode)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new mode.
-  void updateOffsetMode(const QVariant & data);
+  virtual void updateOffsetMode(const QVariant & data);
 
   /// \brief Updates offset (::offset)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new offset.
-  void updateOffset(const QVariant & data);
+  virtual void updateOffset(const QVariant & data);
 
   /// \brief Updates SPMG mode (::spmgMode)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new mode.
-  void updateSpmgMode(const QVariant & data);
+  virtual void updateSpmgMode(const QVariant & data);
 
   /// \brief Updates set mode (::suMode)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new mode.
-  void updateSuMode(const QVariant & data);
+  virtual void updateSuMode(const QVariant & data);
 
 
   /// \brief Updates power status (::iAmPowered)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new status.
-  void updatePower(const QVariant & data);
+  virtual void updatePower(const QVariant & data);
 
   /// \brief Updates power status visibility (::powerIsConnected)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new status.
-  void updatePowerConnection(bool suc);
+  virtual void updatePowerConnection(bool suc);
 
   /// \brief Updates isWired status (::iAmWired)
   /// Used to catch the signal valueUpdated(QVariant)
   /// from the corresponding field (a member of ::motor).
   /// @param data new status.
-  void updateWired(const QVariant & data = QVariant() );
+  virtual void updateWired(const QVariant & data = QVariant() );
 
 
 

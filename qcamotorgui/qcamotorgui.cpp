@@ -242,9 +242,9 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   connect(mUi->userPosition, SIGNAL(valueEdited(double)),
           SLOT(goUserPosition(double)));
   connect(mUi->step, SIGNAL(textEdited(QString)),
-          SLOT(setStepGui(QString)));
+          SLOT(setStep(QString)));
   connect(mUi->step, SIGNAL(activated(QString)),
-          SLOT(setStepGui(QString)));
+          SLOT(setStep(QString)));
   connect(mUi->stop, SIGNAL(clicked()),
           SLOT(pressStop()));
   connect(mUi->limitM, SIGNAL(clicked()),
@@ -275,8 +275,8 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   connect(sUi->saveConfig, SIGNAL(clicked()),
           SLOT(onSave()));
 
-  connect(sUi->description, SIGNAL(returnPressed()),
-          SLOT(setDescriptionGui()));
+  connect(sUi->description, SIGNAL(editingFinished(QString)),
+          SLOT(setDescription(QString)));
 
   connect(sUi->power, SIGNAL(clicked(bool)),
           SLOT(setPower(bool)));
@@ -336,8 +336,8 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
           SLOT(setMotorResolution(double)));
   connect(sUi->unitsPerRev, SIGNAL(valueEdited(double)),
           SLOT(setUnitsPerRev(double)));
-  connect(sUi->unitsPerRevGui, SIGNAL(valueEdited(double)),
-          SLOT(setUnitsPerRevGui(double)));
+  connect(sUi->unitsPerRevAndDir, SIGNAL(valueEdited(double)),
+          SLOT(setUnitsPerRevAndDirection(double)));
 
   connect(sUi->useEncoder, SIGNAL(clicked(bool)),
           SLOT(setUseEncoder(bool)));
@@ -371,6 +371,10 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
           SLOT(setAccelerationS(double)));
   connect(sUi->speedS, SIGNAL(valueEdited(double)),
           SLOT(setSpeedS(double)));
+  connect(sUi->equalizeSpeeds, SIGNAL(clicked()),
+          SLOT(setSpeedS()));
+  connect(sUi->equalizeAccelerations, SIGNAL(clicked()),
+          SLOT(setAccelerationS()));
 
   connect(sUi->backlash, SIGNAL(valueEdited(double)),
           SLOT(setBacklash(double)));
@@ -399,31 +403,7 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   //
 
   connect(this, SIGNAL(changedPv(QString)),
-          SLOT(updatePvGui(QString)));
-
-  connect(this, SIGNAL(changedDescription(QString)),
-          SLOT(updateDescriptionGui(QString)));
-  connect(this, SIGNAL(changedDescription(QString)),
-          sUi->description, SLOT(setText(QString)));
-
-  connect(this, SIGNAL(changedPrecision(int)),
-          SLOT(updatePrecisionGui(int)));
-  connect(this, SIGNAL(changedUnits(QString)),
-          SLOT(updateUnitsGui(QString)));
-
-  connect(this, SIGNAL(changedUserPosition(double)),
-          mUi->userPosition, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedUserPosition(double)),
-          sUi->userPosition, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedUserPosition(double)),
-          sUi->userVarGoal, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedUserPosition(double)),
-          SLOT(updateGoButtonStyle()));
-
-  connect(this, SIGNAL(changedDialPosition(double)),
-          sUi->dialPosition, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedDialPosition(double)),
-          SLOT(updateGoButtonStyle()));
+          SLOT(updatePv(QString)));
 
   connect(this, SIGNAL(changedRawPosition(double)),
           sUi->rawPosition, SLOT(setValue(double)));
@@ -435,61 +415,14 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   connect(this, SIGNAL(changedRawGoal(double)),
           sUi->rawGoal, SLOT(setValue(double)));
 
-  connect(this, SIGNAL(changedStep(double)),
-          sUi->step, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedStep(double)),
-          SLOT(updateStepGui(double)));
-
   connect(this, SIGNAL(changedOffset(double)),
           sUi->offset, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedOffsetMode(OffMode)),
-          SLOT(updateOffGroup(OffMode)));
-  connect(this, SIGNAL(changedDirection(int)),
-          SLOT(updateDirGroup(int)));
-  // next connection is needed to address the bug described in
-  // QCaMotor::setResolution().
-  connect(this, SIGNAL(changedDirection(int)),
-          SLOT(updateUnitsPerRevGui()));
-  connect(this, SIGNAL(changedSuMode(SuMode)),
-          SLOT(updateSetGroup(SuMode)));
 
   connect(this, SIGNAL(changedHiLimitStatus(bool)),
           SLOT(updateGoButtonStyle()));
   connect(this, SIGNAL(changedLoLimitStatus(bool)),
           SLOT(updateGoButtonStyle()));
 
-  connect(this, SIGNAL(changedUserHiLimit(double)),
-          SLOT(updateUserLimitGui()));
-  connect(this, SIGNAL(changedUserHiLimit(double)),
-          SLOT(updateGoButtonStyle()));
-  connect(this, SIGNAL(changedUserHiLimit(double)),
-          sUi->limitHi, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedUserLoLimit(double)),
-          SLOT(updateUserLimitGui()));
-  connect(this, SIGNAL(changedUserLoLimit(double)),
-          SLOT(updateGoButtonStyle()));
-  connect(this, SIGNAL(changedUserLoLimit(double)),
-          sUi->limitLo, SLOT(setValue(double)));
-
-  connect(this, SIGNAL(changedDialHiLimit(double)),
-          SLOT(updateDialLimitGui()));
-  connect(this, SIGNAL(changedDialHiLimit(double)),
-          SLOT(updateGoButtonStyle()));
-  connect(this, SIGNAL(changedDialHiLimit(double)),
-          sUi->limitHiDial, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedDialLoLimit(double)),
-          SLOT(updateDialLimitGui()));
-  connect(this, SIGNAL(changedDialLoLimit(double)),
-          SLOT(updateGoButtonStyle()));
-  connect(this, SIGNAL(changedDialLoLimit(double)),
-          sUi->limitLoDial, SLOT(setValue(double)));
-
-  // Connecting to the ::updateUnitsPerRevGui() instead of
-  // sUi->unitsPerRev->setValue(double) is needed to
-  // address the bug described in QCaMotor::setResolution().
-  connect(this, SIGNAL(changedUnitsPerRev(double)),
-          //sUi->unitsPerRev, SLOT(setValue(double)));
-          SLOT(updateUnitsPerRevGui()));
   connect(this, SIGNAL(changedMotorResolution(double)),
           sUi->unitsPerStep, SLOT(setValue(double)));
   connect(this, SIGNAL(changedReadbackResolution(double)),
@@ -499,57 +432,19 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   connect(this, SIGNAL(changedStepsPerRev(int)),
           sUi->stepsPerRev, SLOT(setValue(int)));
 
-  connect(this, SIGNAL(changedMaximumSpeed(double)),
-          sUi->maximumSpeed, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedMaximumSpeed(double)),
-          SLOT(updateMaximumSpeedGui(double)));
-  connect(this, SIGNAL(changedNormalSpeed(double)),
-          sUi->speed, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedNormalSpeed(double)),
-          sUi->speedS, SLOT(setValue(double)));
   connect(this, SIGNAL(changedRevSpeed(double)),
           sUi->revSpeed, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedJogSpeed(double)),
-          sUi->jogSpeed, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedBacklashSpeed(double)),
-          sUi->backlashSpeed, SLOT(setValue(double)));
 
-  connect(this, SIGNAL(changedAcceleration(double)),
-          sUi->acceleration, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedAcceleration(double)),
-          sUi->accelerationS, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedJogAcceleration(double)),
-          sUi->jogAcceleration, SLOT(setValue(double)));
-  connect(this, SIGNAL(changedBacklashAcceleration(double)),
-          sUi->backlashAcceleration, SLOT(setValue(double)));
-
-  connect(this, SIGNAL(changedConnected(bool)),
-          SLOT(updateConnectionGui(bool)));
-  connect(this, SIGNAL(changedMoving(bool)),
-          SLOT(updateMovingGui(bool)));
   connect(this, SIGNAL(changedUseReadback(bool)),
           sUi->useReadback, SLOT(setChecked(bool)));
   connect(this, SIGNAL(changedUseEncoder(bool)),
           sUi->useEncoder, SLOT(setChecked(bool)));
-  connect(this, SIGNAL(changedBacklash(double)),
-          SLOT(updateBacklashGui(double)));
-  connect(this, SIGNAL(changedSpmgMode(SpmgMode)),
-          SLOT(updateSpmgGroup(SpmgMode)));
-
-  connect(this, SIGNAL(changedPowerConnection(bool)),
-          SLOT(updatePowerGui()));
-  connect(this, SIGNAL(changedPower(bool)),
-          SLOT(updatePowerGui()));
-  connect(this, SIGNAL(changedWired(bool)),
-          SLOT(updateWiredGui(bool)));
-  connect(this, SIGNAL(changedMoving(bool)),
-          SLOT(updateStopButtonStyle()));
 
   setViewMode(COMFO);
   setupDialog->update();
-  updatePowerGui();
-  updateWiredGui(isWired());
-  setStepGui();
+  updatePower(getPower());
+  updateWired(isWired());
+  setStep();
 
 }
 
@@ -619,18 +514,18 @@ void QCaMotorGUI::pvFromSearch(){
   pUi->search->clear();
 }
 
-void QCaMotorGUI::updatePvGui(const QString & newpv){
+void QCaMotorGUI::updatePv(const QString & newpv){
   sUi->pv->setText(newpv);
   mUi->setup->disconnect();
   if (newpv.isEmpty()) {
     connect(mUi->setup, SIGNAL(clicked()),
             pvDialog, SLOT(show()) );
-    updateDescriptionGui("SETUP");
+    updateDescription("SETUP");
     mUi->setup->setContextMenuPolicy(Qt::NoContextMenu);
   } else {
     connect(mUi->setup, SIGNAL(clicked()),
             setupDialog, SLOT(show()) );
-    updateDescriptionGui(newpv);
+    updateDescription(newpv);
     mUi->setup->setContextMenuPolicy(Qt::ActionsContextMenu);
   }
 }
@@ -733,7 +628,7 @@ void QCaMotorGUI::onLoad(const QString & text) {
   loadConfiguration(fileName);
 }
 
-void QCaMotorGUI::setStepGui(const QString & _text){
+void QCaMotorGUI::setStep(const QString & _text){
   QString text = _text.toLower();
   bool ok;
   double val = text.toDouble(&ok);
@@ -746,7 +641,7 @@ void QCaMotorGUI::setStepGui(const QString & _text){
     mUi->limitP->setVisible(false);
   } else if (text == "relative") {
     relativeDialog->show();
-  } else if (text == "limit" || !ok) {
+  } else if (text == "limit") {
     mUi->goM->setVisible(false);
     mUi->goP->setVisible(false);
     mUi->jogM->setVisible(false);
@@ -754,8 +649,8 @@ void QCaMotorGUI::setStepGui(const QString & _text){
     mUi->limitM->setVisible(true);
     mUi->limitP->setVisible(true);
   } else {
-    if (val != getStep() )
-      setStep(val);
+    if ( ok && val != getStep() )
+      QCaMotor::setStep(val);
     mUi->goM->setVisible(true);
     mUi->goP->setVisible(true);
     mUi->jogM->setVisible(false);
@@ -766,21 +661,14 @@ void QCaMotorGUI::setStepGui(const QString & _text){
 }
 
 
-
-void QCaMotorGUI::updateUnitsPerRevGui() {
-  double vRes = getUnitsPerRev();
-  sUi->unitsPerRev->setValue(vRes);
-  if ( getDirection() == NEGATIVE )
-    vRes *= -1.0;
-  sUi->unitsPerRevGui->setValue(vRes);
-}
-
-void QCaMotorGUI::setUnitsPerRevGui(double res) {
+void QCaMotorGUI::setUnitsPerRevAndDirection(double res) {
   setUnitsPerRev(qAbs(res));
   setDirection( res < 0 ? NEGATIVE : POSITIVE );
 }
 
 void QCaMotorGUI::setSpeedS(double spd) {
+  if (spd<=0.0)
+    spd = sUi->speedS->value();
   setMaximumSpeed(spd);
   setJogSpeed(spd);
   setBacklashSpeed(spd);
@@ -788,6 +676,8 @@ void QCaMotorGUI::setSpeedS(double spd) {
 }
 
 void QCaMotorGUI::setAccelerationS(double acc) {
+  if (acc<=0.0)
+    acc = sUi->accelerationS->value();
   setJogAcceleration(acc);
   setBacklashAcceleration(acc);
   setAcceleration(acc);
@@ -1000,26 +890,16 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
 
 }
 
-
-
-
-
-
-
-
-
-
-
-void QCaMotorGUI::updateStepGui(double step){
-  QString textStep = QString::number(step);
-  int knownIndex = mUi->step->findText(textStep);
-  if (knownIndex == -1)
-    mUi->step->insertItem(knownIndex = 3, textStep);
-  mUi->step->setCurrentIndex(knownIndex);
-  setStepGui(step);
+void QCaMotorGUI::pressStop(){
+  if ( ! getPower() ) setPower(true);
+  else if (isMoving()) stop();
+  else undoLastMotion();
 }
 
-void QCaMotorGUI::updateConnectionGui(bool suc) {
+
+void QCaMotorGUI::updateConnection(bool suc) {
+  QCaMotor::updateConnection(suc);
+  suc = isConnected();
   sUi->message->setText
       ( suc ? "Connection established." : "Connection lost.");
   pasteCfgAction->setEnabled(suc);
@@ -1028,7 +908,327 @@ void QCaMotorGUI::updateConnectionGui(bool suc) {
   if ( suc &&
        sUi->viewMode->currentIndex() != EPICS &&
        getOffsetMode() != FROZEN )
-      setOffsetMode(FROZEN);
+    setOffsetMode(FROZEN);
+}
+
+
+void QCaMotorGUI::updateUserPosition(const QVariant & data) {
+  QCaMotor::updateUserPosition(data);
+  double ps = getUserPosition();
+  mUi->userPosition->setValue(ps);
+  sUi->userPosition->setValue(ps);
+  sUi->userVarGoal->setValue(ps);
+  updateGoButtonStyle();
+}
+
+void QCaMotorGUI::updateDialPosition(const QVariant & data) {
+  QCaMotor::updateDialPosition(data);
+  sUi->dialPosition->setValue(getDialPosition());
+  updateGoButtonStyle();
+}
+
+void QCaMotorGUI::updateStep(const QVariant & data) {
+  QCaMotor::updateStep(data);
+  double stp = getStep();
+  sUi->step->setValue(stp);
+  QString textStep = QString::number(stp);
+  int knownIndex = mUi->step->findText(textStep);
+  if (knownIndex == -1)
+    mUi->step->insertItem(knownIndex = 3, textStep);
+  mUi->step->setCurrentIndex(knownIndex);
+}
+
+
+void QCaMotorGUI::updateDescription(const QVariant & data){
+  QCaMotor::updateDescription(data);
+  const QString & dsc = getDescription();
+  mUi->setup->setText(dsc);
+  setupDialog->setWindowTitle(dsc);
+  relativeDialog->setWindowTitle(dsc);
+  sUi->description->setText(dsc);
+}
+
+
+void QCaMotorGUI::updateMoving(const QVariant & data){
+
+  QCaMotor::updateMoving(data);
+  bool mov = isMoving();
+
+  updateAllElements();
+
+  // Updates status of the jog buttons on stop
+  if ( !mov ) {
+    sUi->jogM->setDown(false);
+    sUi->jogP->setDown(false);
+    if ( mUi->goM->isDown() )
+      mUi->goM->setDown(false);
+    if ( mUi->goP->isDown() )
+      mUi->goP->setDown(false);
+  }
+
+  if (mov)
+    sUi->message->setText("Moving...");
+  else if (sUi->message->text() == "Moving...")
+    sUi->message->clear();
+
+  updateStopButtonStyle();
+
+}
+
+
+void QCaMotorGUI::updatePower(const QVariant &data) {
+
+  QCaMotor::updatePower(data);
+  bool pwrC = getPowerConnection(), pwr = getPower();
+
+  sUi->power->setVisible(pwrC);
+  sUi->label_19->setVisible(pwrC);
+  sUi->label_23->setVisible(pwrC);
+  mUi->power->setVisible(pwrC);
+
+  sUi->power->setChecked(pwr);
+  sUi->power->setText( pwr ? "ON" : "OFF" );
+  sUi->power->setStyleSheet
+      ( pwr ?
+         "background-color: rgb(0, 128, 0);   color: rgb(255, 255, 255);" :
+         "background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);" );
+
+  mUi->power->setChecked(pwr);
+  mUi->power->setStyleSheet
+      ( pwr ?
+         "background-color: rgb(0, 128, 0)" :
+         "background-color: rgb(0, 0, 0)" );
+
+  updateStopButtonStyle();
+  updateAllElements();
+}
+
+
+void QCaMotorGUI::updateWired(const QVariant &data) {
+  QCaMotor::updateWired(data);
+  bool wr=isWired();
+  if (wr)
+    sUi->message->setText("Cable connected.");
+  else
+    sUi->message->setText("Cable disconnected.");
+  updateStopButtonStyle();
+  updateAllElements();
+}
+
+void QCaMotorGUI::updateUnitsPerRev(const QVariant & data) {
+  QCaMotor::updateUnitsPerRev(data);
+  double vRes = getUnitsPerRev();
+  sUi->unitsPerRev->setValue(vRes);
+  if ( getDirection() == NEGATIVE )
+    vRes *= -1.0;
+  sUi->unitsPerRevAndDir->setValue(vRes);
+}
+
+void QCaMotorGUI::updateUnits(const QVariant & data){
+
+  QCaMotor::updateUnits(data);
+  const QString & egu = getUnits();
+
+  rUi->goRelative->setSuffix(egu);
+  mUi->userPosition->setSuffix(egu);
+  sUi->speed->setSuffix(egu+"/s");
+  sUi->speedS->setSuffix(egu+"/s");
+  sUi->step->setSuffix(egu);
+  sUi->units->setText(egu);
+  sUi->limitHiDial->setSuffix(egu);
+  sUi->userPosition->setSuffix(egu);
+  sUi->dialPosition->setSuffix(egu);
+  sUi->limitLoDial->setSuffix(egu);
+  sUi->limitLo->setSuffix(egu);
+  sUi->limitHi->setSuffix(egu);
+  sUi->maximumSpeed->setSuffix(egu+"/s");
+  sUi->backlash->setSuffix(egu);
+  sUi->unitsPerStep->setSuffix(egu+"/step");
+  sUi->unitsPerRev->setSuffix(egu+"/rev");
+  sUi->unitsPerRevAndDir->setSuffix(egu+"/rev");
+  sUi->readbackResolution->setSuffix(egu+"/step");
+  sUi->encoderResolution->setSuffix(egu+"/step");
+  sUi->userGoal->setSuffix(egu);
+  sUi->userVarGoal->setSuffix(egu);
+  sUi->dialGoal->setSuffix(egu);
+  sUi->offset->setSuffix(egu);
+  sUi->backlashSpeed->setSuffix(egu+"/s");
+  sUi->jogSpeed->setSuffix(egu+"/s");
+}
+
+void QCaMotorGUI::updatePrecision(const QVariant & data){
+
+  QCaMotor::updatePrecision(data);
+  int prec = getPrecision();
+
+  sUi->precision->setValue(prec);
+
+  rUi->goRelative->setDecimals(prec);
+  mUi->userPosition->setDecimals(prec);
+  sUi->speed->setDecimals(prec);
+  sUi->speedS->setDecimals(prec);
+  sUi->step->setDecimals(prec);
+  sUi->userPosition->setDecimals(prec);
+  sUi->dialPosition->setDecimals(prec);
+  sUi->limitLo->setDecimals(prec);
+  sUi->limitHi->setDecimals(prec);
+  sUi->limitLoDial->setDecimals(prec);
+  sUi->limitHiDial->setDecimals(prec);
+  sUi->acceleration->setDecimals(prec);
+  sUi->accelerationS->setDecimals(prec);
+  sUi->maximumSpeed->setDecimals(prec);
+  sUi->backlash->setDecimals(prec);
+  sUi->unitsPerStep->setDecimals(qMax(prec,7));
+  sUi->unitsPerRev->setDecimals(qMax(prec,7));
+  sUi->unitsPerRevAndDir->setDecimals(qMax(prec,7));
+  sUi->readbackResolution->setDecimals(qMax(prec,7));
+  sUi->encoderResolution->setDecimals(qMax(prec,7));
+  sUi->userGoal->setDecimals(prec);
+  sUi->userVarGoal->setDecimals(prec);
+  sUi->offset->setDecimals(prec);
+  sUi->dialGoal->setDecimals(prec);
+  sUi->backlashSpeed->setDecimals(prec);
+  sUi->backlashAcceleration->setDecimals(prec);
+  sUi->jogSpeed->setDecimals(prec);
+  sUi->jogAcceleration->setDecimals(prec);
+
+}
+
+void QCaMotorGUI::updateMaximumSpeed(const QVariant & data){
+  QCaMotor::updateMaximumSpeed(data);
+  double maxSpeed = getMaximumSpeed();
+  sUi->speed->setMaximum(maxSpeed);
+  sUi->jogSpeed->setMaximum(maxSpeed);
+  sUi->backlashSpeed->setMaximum(maxSpeed);
+  sUi->maximumSpeed->setValue(maxSpeed);
+  updateSpeeds();
+}
+
+void QCaMotorGUI::updateNormalSpeed(const QVariant & data) {
+  QCaMotor::updateNormalSpeed(data);
+  sUi->speed->setValue(getNormalSpeed());
+  sUi->speedS->setValue(getNormalSpeed());
+  updateSpeeds();
+}
+
+void QCaMotorGUI::updateBacklashSpeed(const QVariant & data) {
+  QCaMotor::updateBacklashSpeed(data);
+  sUi->backlashSpeed->setValue(getBacklashSpeed());
+  updateSpeeds();
+}
+
+void QCaMotorGUI::updateJogSpeed(const QVariant & data) {
+  QCaMotor::updateJogSpeed(data);
+  sUi->jogSpeed->setValue(getJogSpeed());
+  updateSpeeds();
+}
+
+void QCaMotorGUI::updateAcceleration(const QVariant & data) {
+  QCaMotor::updateAcceleration(data);
+  sUi->acceleration->setValue(getAcceleration());
+  sUi->accelerationS->setValue(getAcceleration());
+  updateAccelerations();
+}
+
+void QCaMotorGUI::updateBacklashAcceleration(const QVariant & data) {
+  QCaMotor::updateBacklashAcceleration(data);
+  sUi->backlashAcceleration->setValue(getBacklashAcceleration());
+  updateAccelerations();
+}
+
+void QCaMotorGUI::updateJogAcceleration(const QVariant & data) {
+  QCaMotor::updateJogAcceleration(data);
+  sUi->jogAcceleration->setValue(getJogAcceleration());
+  updateAccelerations();
+}
+
+void QCaMotorGUI::updateBacklash(const QVariant & data){
+  QCaMotor::updateBacklash(data);
+  double blsh = getBacklash();
+  sUi->backlash->setValue(blsh);
+  if (blsh != 0.0 && getBacklashSpeed() == 0.0) {
+    setBacklashSpeed(getNormalSpeed());
+    sUi->message->setText("Backlash speed set to normal speed.");
+  }
+}
+
+
+void QCaMotorGUI::updateUserHiLimit(const QVariant &data) {
+  QCaMotor::updateUserHiLimit(data);
+  double loL=getUserLoLimit(), hiL=getUserHiLimit();
+  mUi->userPosition->setMaximum(hiL);
+  sUi->userPosition->setMaximum(hiL);
+  sUi->userGoal->setMaximum(hiL);
+  sUi->userVarGoal->setMaximum(hiL);
+  sUi->limitHi->setValue(hiL);
+  sUi->step->setRange(loL-hiL, hiL-loL);
+  updateGoButtonStyle();
+}
+
+void QCaMotorGUI::updateUserLoLimit(const QVariant &data) {
+  QCaMotor::updateUserLoLimit(data);
+  double loL=getUserLoLimit(), hiL=getUserHiLimit();
+  mUi->userPosition->setMinimum(loL);
+  sUi->userPosition->setMinimum(loL);
+  sUi->userGoal->setMinimum(loL);
+  sUi->userVarGoal->setMinimum(loL);
+  sUi->limitLo->setValue(loL);
+  sUi->step->setRange(loL-hiL, hiL-loL);
+  updateGoButtonStyle();
+}
+
+void QCaMotorGUI::updateDialHiLimit(const QVariant &data){
+  QCaMotor::updateDialHiLimit(data);
+  double hiL=getDialHiLimit();
+  sUi->dialPosition->setMaximum(hiL);
+  sUi->dialGoal->setMaximum(hiL);
+  sUi->limitHiDial->setValue(hiL);
+  updateGoButtonStyle();
+}
+
+void QCaMotorGUI::updateDialLoLimit(const QVariant &data){
+  QCaMotor::updateDialLoLimit(data);
+  double loL=getDialLoLimit();
+  sUi->dialPosition->setMinimum(loL);
+  sUi->dialGoal->setMinimum(loL);
+  sUi->limitLoDial->setValue(loL);
+  updateGoButtonStyle();
+}
+
+
+
+void QCaMotorGUI::updateSuMode(const QVariant & data) {
+  QCaMotor::updateSuMode(data);
+  sUi->setGroup->button(getSuMode())->setChecked(true);
+}
+
+void QCaMotorGUI::updateOffsetMode(const QVariant & data) {
+  QCaMotor::updateOffsetMode(data);
+  sUi->offGroup->button(getOffsetMode())->setChecked(true);
+}
+
+void QCaMotorGUI::updateDirection(const QVariant & data){
+  QCaMotor::updateDirection(data);
+  updateUnitsPerRev(getUnitsPerRev()); // needed to address the bug described in QCaMotor::setResolution().
+  sUi->dirGroup->button(getDirection() > 0 ? 1 : 0)->setChecked(true);
+}
+
+void QCaMotorGUI::updateSpmgMode(const QVariant & data){
+  QCaMotor::updateSpmgMode(data);
+  sUi->spmgGroup->button(getSpmgMode())->setChecked(true);
+}
+
+
+void QCaMotorGUI::updateSpeeds() {
+  double spd = getNormalSpeed();
+  sUi->equalizeSpeeds->setVisible( spd != getMaximumSpeed() ||
+        spd != getBacklashSpeed() ||  spd != getJogSpeed() );
+}
+
+void QCaMotorGUI::updateAccelerations() {
+  double acc = getAcceleration();
+  sUi->equalizeAccelerations->setVisible(
+        acc != getBacklashAcceleration() ||  acc != getJogAcceleration() );
 }
 
 void QCaMotorGUI::updateGoButtonStyle(){
@@ -1065,36 +1265,6 @@ void QCaMotorGUI::updateGoButtonStyle(){
   sUi->goLimitP->setStyleSheet(style);
   sUi->jogP->setStyleSheet(style);
 
-
-}
-
-
-void QCaMotorGUI::updateDescriptionGui(const QString & data){
-  mUi->setup->setText(data);
-  setupDialog->setWindowTitle(data);
-  relativeDialog->setWindowTitle(data);
-  sUi->description->setText(data);
-}
-
-
-void QCaMotorGUI::updateMovingGui(bool mov){
-
-  updateAllElements();
-
-  // Updates status of the jog buttons on stop
-  if ( !mov ) {
-    sUi->jogM->setDown(false);
-    sUi->jogP->setDown(false);
-    if ( mUi->goM->isDown() )
-      mUi->goM->setDown(false);
-    if ( mUi->goP->isDown() )
-      mUi->goP->setDown(false);
-  }
-
-  if (mov)
-    sUi->message->setText("Moving...");
-  else if (sUi->message->text() == "Moving...")
-    sUi->message->clear();
 
 }
 
@@ -1146,166 +1316,6 @@ void QCaMotorGUI::updateStopButtonStyle() {
   }
 
 }
-
-void QCaMotorGUI::updatePowerGui() {
-
-  bool pwrC = getPowerConnection(), pwr = getPower();
-
-  sUi->power->setVisible(pwrC);
-  sUi->label_19->setVisible(pwrC);
-  sUi->label_23->setVisible(pwrC);
-  mUi->power->setVisible(pwrC);
-
-  sUi->power->setChecked(pwr);
-  sUi->power->setText( pwr ? "ON" : "OFF" );
-  sUi->power->setStyleSheet
-      ( pwr ?
-         "background-color: rgb(0, 128, 0);   color: rgb(255, 255, 255);" :
-         "background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);" );
-
-  mUi->power->setChecked(pwr);
-  mUi->power->setStyleSheet
-      ( pwr ?
-         "background-color: rgb(0, 128, 0)" :
-         "background-color: rgb(0, 0, 0)" );
-
-  updateStopButtonStyle();
-  updateAllElements();
-}
-
-void QCaMotorGUI::updateWiredGui(bool wr) {
-  if (wr)
-    sUi->message->setText("Cable connected.");
-  else
-    sUi->message->setText("Cable disconnected.");
-  updateStopButtonStyle();
-  updateAllElements();
-}
-
-void QCaMotorGUI::pressStop(){
-  if ( ! getPower() ) setPower(true);
-  else if (isMoving()) stop();
-  else undoLastMotion();
-}
-
-void QCaMotorGUI::updateUnitsGui(const QString & data){
-  rUi->goRelative->setSuffix(data);
-  mUi->userPosition->setSuffix(data);
-  sUi->speed->setSuffix(data+"/s");
-  sUi->speedS->setSuffix(data+"/s");
-  sUi->step->setSuffix(data);
-  sUi->units->setText(data);
-  sUi->limitHiDial->setSuffix(data);
-  sUi->userPosition->setSuffix(data);
-  sUi->dialPosition->setSuffix(data);
-  sUi->limitLoDial->setSuffix(data);
-  sUi->limitLo->setSuffix(data);
-  sUi->limitHi->setSuffix(data);
-  sUi->maximumSpeed->setSuffix(data+"/s");
-  sUi->backlash->setSuffix(data);
-  sUi->unitsPerStep->setSuffix(data+"/step");
-  sUi->unitsPerRev->setSuffix(data+"/rev");
-  sUi->unitsPerRevGui->setSuffix(data+"/rev");
-  sUi->readbackResolution->setSuffix(data+"/step");
-  sUi->encoderResolution->setSuffix(data+"/step");
-  sUi->userGoal->setSuffix(data);
-  sUi->userVarGoal->setSuffix(data);
-  sUi->dialGoal->setSuffix(data);
-  sUi->offset->setSuffix(data);
-  sUi->backlashSpeed->setSuffix(data+"/s");
-  sUi->jogSpeed->setSuffix(data+"/s");
-}
-
-void QCaMotorGUI::updatePrecisionGui(int prec){
-
-  sUi->precision->setValue(prec);
-
-  rUi->goRelative->setDecimals(prec);
-  mUi->userPosition->setDecimals(prec);
-  sUi->speed->setDecimals(prec);
-  sUi->speedS->setDecimals(prec);
-  sUi->step->setDecimals(prec);
-  sUi->userPosition->setDecimals(prec);
-  sUi->dialPosition->setDecimals(prec);
-  sUi->limitLo->setDecimals(prec);
-  sUi->limitHi->setDecimals(prec);
-  sUi->limitLoDial->setDecimals(prec);
-  sUi->limitHiDial->setDecimals(prec);
-  sUi->acceleration->setDecimals(prec);
-  sUi->accelerationS->setDecimals(prec);
-  sUi->maximumSpeed->setDecimals(prec);
-  sUi->backlash->setDecimals(prec);
-  sUi->unitsPerStep->setDecimals(qMax(prec,7));
-  sUi->unitsPerRev->setDecimals(qMax(prec,7));
-  sUi->unitsPerRevGui->setDecimals(qMax(prec,7));
-  sUi->readbackResolution->setDecimals(qMax(prec,7));
-  sUi->encoderResolution->setDecimals(qMax(prec,7));
-  sUi->userGoal->setDecimals(prec);
-  sUi->userVarGoal->setDecimals(prec);
-  sUi->offset->setDecimals(prec);
-  sUi->dialGoal->setDecimals(prec);
-  sUi->backlashSpeed->setDecimals(prec);
-  sUi->backlashAcceleration->setDecimals(prec);
-  sUi->jogSpeed->setDecimals(prec);
-  sUi->jogAcceleration->setDecimals(prec);
-
-}
-
-void QCaMotorGUI::updateMaximumSpeedGui(double maxSpeed){
-  sUi->speed->setMaximum(maxSpeed);
-  sUi->jogSpeed->setMaximum(maxSpeed);
-  sUi->backlashSpeed->setMaximum(maxSpeed);
-  sUi->maximumSpeed->setValue(maxSpeed);
-}
-
-void QCaMotorGUI::updateBacklashGui(double blsh){
-  sUi->backlash->setValue(blsh);
-  if (blsh != 0.0 && getBacklashSpeed() == 0.0) {
-    setBacklashSpeed(getNormalSpeed());
-    sUi->message->setText("Backlash speed set to normal speed.");
-  }
-}
-
-
-void QCaMotorGUI::updateUserLimitGui(){
-  double loL=getUserLoLimit(), hiL=getUserHiLimit(), pos=getUserPosition();
-  mUi->userPosition->setRange(loL, hiL);
-  mUi->userPosition->setValue(pos);
-  sUi->userPosition->setRange(loL, hiL);
-  sUi->userPosition->setValue(pos);
-  sUi->userGoal->setRange(loL, hiL);
-  sUi->userGoal->setValue(pos);
-  sUi->userVarGoal->setRange(loL, hiL);
-  sUi->userVarGoal->setValue(pos);
-  sUi->step->setRange(loL-hiL, hiL-loL);
-}
-
-void QCaMotorGUI::updateDialLimitGui(){
-  double loL=getDialLoLimit(), hiL=getDialHiLimit(), pos=getDialPosition();
-  sUi->dialPosition->setRange(loL, hiL);
-  sUi->dialPosition->setValue(pos);
-  sUi->dialGoal->setRange(loL, hiL);
-  sUi->dialGoal->setValue(pos);
-}
-
-
-
-void QCaMotorGUI::updateSetGroup(SuMode mode){
-  sUi->setGroup->button(mode)->setChecked(true);
-}
-
-void QCaMotorGUI::updateOffGroup(OffMode mode){
-  sUi->offGroup->button(mode)->setChecked(true);
-}
-
-void QCaMotorGUI::updateDirGroup(int direction){
-  sUi->dirGroup->button(direction > 0 ? 1 : 0)->setChecked(true);
-}
-
-void QCaMotorGUI::updateSpmgGroup(SpmgMode mode){
-  sUi->spmgGroup->button(mode)->setChecked(true);
-}
-
 
 void QCaMotorGUI::updateAllElements(){
 
