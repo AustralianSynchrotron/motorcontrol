@@ -66,6 +66,8 @@ public:
 
 private:
 
+  mutable int referenceCounter;
+
   void init();
 
   QHash<QString, QEpicsPv*> fields; ///< All motor record's fields used in the class.
@@ -94,6 +96,7 @@ private:
 
   QString pv;                   ///< Motor's PV
 
+
   QString description;          ///< current value of the DESC field
   int precsision;               ///< current value of the PREC field
   QString units;                ///< current value of the EGU field
@@ -108,7 +111,7 @@ private:
 
   double offset;                ///< current value of the OFF field
   OffMode offsetMode;           ///< current value of the FOFF field
-  Direction direction;    ///< current value of the DIR field
+  Direction direction;          ///< current value of the DIR field
   SuMode suMode;                ///< current value of the SET field
 
   bool loLimitStatus;           ///< current value of the LLS field

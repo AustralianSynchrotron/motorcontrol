@@ -166,7 +166,9 @@ private:
   /// The function cannot be called before the application has inited
   /// (needs Qt event loop running), and therefore
   /// is called from within the constructor.
-  static void init();
+  static void static_init();
+
+  void init();
 
 
   QSortFilterProxyModel *proxyModel; ///< Sort/filter proxy for the table view in the "Choose PV".
@@ -187,6 +189,8 @@ public:
   QCaMotorGUI(QWidget *parent=0);
 
   QCaMotorGUI(const QString & pv, QWidget *parent=0);
+
+  QCaMotorGUI(QCaMotor & base, QWidget *parent=0);
 
 
   /// Destructor.

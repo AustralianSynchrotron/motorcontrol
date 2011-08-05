@@ -148,8 +148,57 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   relativeDialog(new QDialog(parent)),
   proxyModel(new QSortFilterProxyModel(this))
 {
+  init();
+}
 
-  QCaMotorGUI::init();
+QCaMotorGUI::QCaMotorGUI(const QString & pv, QWidget *parent) :
+  QCaMotor(pv, parent),
+  theWidget(new QWidget),
+  mUi(new Ui::MotorControl),
+  sUi(new Ui::MotorSetup),
+  rUi(new Ui::GoRelative),
+  pUi(new Ui::PVtable),
+  setupDialog(new QDialog(parent)),
+  pvDialog(new QDialog(parent)),
+  relativeDialog(new QDialog(parent)),
+  proxyModel(new QSortFilterProxyModel(this))
+{
+  init();
+}
+
+QCaMotorGUI::QCaMotorGUI(QCaMotor & base, QWidget *parent) :
+  theWidget(new QWidget),
+  mUi(new Ui::MotorControl),
+  sUi(new Ui::MotorSetup),
+  rUi(new Ui::GoRelative),
+  pUi(new Ui::PVtable),
+  setupDialog(new QDialog(parent)),
+  pvDialog(new QDialog(parent)),
+  relativeDialog(new QDialog(parent)),
+  proxyModel(new QSortFilterProxyModel(this))
+{
+  init();
+}
+
+
+
+QCaMotorGUI::~QCaMotorGUI() {
+  delete pasteCfgAction;
+  delete mUi;
+  delete sUi;
+  delete rUi;
+  delete pUi;
+  delete pvDialog;
+  delete setupDialog;
+  delete relativeDialog;
+  delete theWidget;
+}
+
+
+
+void QCaMotorGUI::init() {
+
+  QCaMotorGUI::static_init();
 
   locked=false;
 
@@ -448,18 +497,6 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
 
 }
 
-QCaMotorGUI::~QCaMotorGUI() {
-  delete pasteCfgAction;
-  delete mUi;
-  delete sUi;
-  delete rUi;
-  delete pUi;
-  delete pvDialog;
-  delete setupDialog;
-  delete relativeDialog;
-  delete theWidget;
-}
-
 
 
 void QCaMotorGUI::copyPV() {
@@ -538,7 +575,7 @@ void QCaMotorGUI::lock(bool lck){
 }
 
 
-void QCaMotorGUI::init() {
+void QCaMotorGUI::static_init() {
 
   if (inited)
     return;
