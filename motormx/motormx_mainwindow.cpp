@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include <QLabel>
 #include <QScrollBar>
 #include <QPoint>
 #include <QCursor>

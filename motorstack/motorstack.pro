@@ -9,9 +9,8 @@ HEADERS += qmotorstack.h
 SOURCES += qmotorstack.cpp
 LIBS += -L../qcamotor -L../qcamotorgui \
     -lqcamotor -lqcamotorgui
-headers.files = qmotorstack.h \
-    ui_motorstack.h \
-    ui_interbut.h
+
+headers.files = $$HEADERS
 headers.path = $$[INSTALLBASE]/include
 INSTALLS += headers
 target.files = $$[TARGET]

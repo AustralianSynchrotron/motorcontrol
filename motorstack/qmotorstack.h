@@ -4,9 +4,7 @@
 #include <QWidget>
 #include <QFile>
 
-#include "ui_motorstack.h"
 #include "qcamotorgui.h"
-//#include "interbutt.h"
 
 namespace Ui {
   class MotorStack;
@@ -45,10 +43,12 @@ private slots:
 public:
 
   QMotorStack(const QString & _motorsFile=QString(), QWidget *parent = 0);
+  QMotorStack(const QStringList & _motorsList, const QString & _motorsFile=QString(), QWidget *parent = 0);
+  QMotorStack(const QStringList & _motorsList, QWidget *parent);
   QMotorStack(QWidget *parent);
   ~QMotorStack();
 
-  inline bool isLocked() {return ! ui->add->isVisible();}
+  bool isLocked();
   QList < QCaMotorGUI * > motorList() const;
 
 public slots:
@@ -69,6 +69,13 @@ public slots:
   /// @param noFileSave Does not update the motorsFile if true.
   ///
   void addMotor(QCaMotorGUI *, bool noFileSave = false);
+
+  /// Adds existing motor into the UI.
+  ///
+  /// @param motor existing motor.
+  /// @param noFileSave Does not update the motorsFile if true.
+  ///
+   QCaMotorGUI * addMotor(QCaMotor *, bool lock = false, bool noFileSave = false);
 
   /// Removes the motor with the button from the UI.
   /// @param button button assigned to the motor.
@@ -92,6 +99,9 @@ private slots:
   // column widths when the context of the column elements is changed.
   void resetHeader();
 
+signals:
+
+  void listChanged();
 
 
 };

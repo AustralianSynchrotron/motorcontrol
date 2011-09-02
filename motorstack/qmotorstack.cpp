@@ -1,3 +1,5 @@
+#include "ui_qcamotorgui.h"
+#include "ui_motorstack.h"
 #include "qmotorstack.h"
 #include <QSettings>
 #include <QFileDialog>
@@ -9,6 +11,26 @@ QMotorStack::QMotorStack(const QString & _motorsFile, QWidget *parent) :
 {
   //QTimer::singleShot(0, this, SLOT(initialize()));
   initialize();
+}
+
+QMotorStack::QMotorStack(const QStringList & _motorsList, const QString & _motorsFile, QWidget *parent) :
+  QWidget(parent),
+  motorsFile(_motorsFile),
+  ui(new Ui::MotorStack)
+{
+  initialize();
+  foreach (QString mPV, _motorsList)
+    addMotor(mPV,true,true);
+}
+
+QMotorStack::QMotorStack(const QStringList & _motorsList, QWidget *parent) :
+  QWidget(parent),
+  motorsFile(),
+  ui(new Ui::MotorStack)
+{
+  initialize();
+  foreach (QString mPV, _motorsList)
+    addMotor(mPV,true,true);
 }
 
 
@@ -70,12 +92,18 @@ void QMotorStack::initialize() {
 
 QCaMotorGUI * QMotorStack::addMotor(const QString & presetpv, bool lock, bool noFileSave){
   QCaMotorGUI * motor = new QCaMotorGUI(this);
-  motor->setPv(presetpv);
+  motor->motor()->setPv(presetpv);
   motor->lock(lock);
   addMotor(motor, noFileSave);
   return motor;
 }
 
+QCaMotorGUI * QMotorStack::addMotor(QCaMotor *motor, bool lock, bool noFileSave){
+  QCaMotorGUI * motorUi = new QCaMotorGUI(motor,this);
+  motorUi->lock(lock);
+  addMotor(motorUi, noFileSave);
+  return motorUi;
+}
 
 void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
 
@@ -89,15 +117,15 @@ void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
   ui->table->setCellWidget(idx,5,motor->basicUI()->stop);
   ui->table->setCellWidget(idx,6,motor->basicUI()->powerW);
 
-  connect(motor, SIGNAL(changedPowerConnection(bool)),
+  connect(motor->motor(), SIGNAL(changedPowerConnection(bool)),
           SLOT(updatePowerConnections(bool)));
-  connect(motor, SIGNAL(changedPower(bool)),
+  connect(motor->motor(), SIGNAL(changedPower(bool)),
           SLOT(resetHeader()));
-  connect(motor, SIGNAL(changedDescription(QString)),
+  connect(motor->motor(), SIGNAL(changedDescription(QString)),
           SLOT(resetHeader()));
-  connect(motor, SIGNAL(changedPv()),
+  connect(motor->motor(), SIGNAL(changedPv()),
           SLOT(resetHeader()));
-  connect(motor, SIGNAL(changedPv()),
+  connect(motor->motor(), SIGNAL(changedPv()),
           SLOT(updateMotorsFile()));
 
   motors[motor->basicUI()->setup] = motor;
@@ -111,12 +139,13 @@ void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
 
   if ( ui->viewModeAll->currentText() == "Show" ) {
     motor->showSetup();
-    if ( motor->getPv().isEmpty() )
+    if ( motor->motor()->getPv().isEmpty() )
       motor->showPvSetup();
   } else if ( ui->viewModeAll->currentText() != "Hide" ) {
       motor->setViewMode( ui->viewModeAll->currentIndex() - 1 );
   }
 
+  emit listChanged();
   if ( ! noFileSave )
     updateMotorsFile();
 
@@ -135,6 +164,7 @@ void QMotorStack::removeRow(int idx){
   if (motors.isEmpty())
     ui->all->setEnabled(false);
 
+  emit listChanged();
   updatePowerConnections();
   updateMotorsFile();
 
@@ -183,7 +213,7 @@ void QMotorStack::updateMotorsFile() {
   motorsFile.reset();
   motorsFile.resize(0);
   foreach (QCaMotorGUI * motor, motorList() )
-    motorsFile.write( ( motor->getPv() + "\n" ).toAscii());
+    motorsFile.write( ( motor->motor()->getPv() + "\n" ).toAscii());
   motorsFile.flush();
 }
 
@@ -193,13 +223,17 @@ void QMotorStack::lock(bool lck) {
   ui->manipulate->setVisible(!lck);
 }
 
+bool QMotorStack::isLocked() {
+  return ! ui->manipulate->isVisible();
+}
+
 
 
 void QMotorStack::viewModeAll() {
   if ( ui->viewModeAll->currentText() == "Show" )
     foreach(QCaMotorGUI * motor, motors) {
       motor->showSetup();
-      if ( motor->getPv().isEmpty() )
+      if ( motor->motor()->getPv().isEmpty() )
         motor->showPvSetup();
     }
   else if ( ui->viewModeAll->currentText() == "Hide" )
@@ -214,17 +248,17 @@ void QMotorStack::viewModeAll() {
 
 void QMotorStack::stopAll() {
   foreach(QCaMotorGUI * motor, motors)
-    motor->stop();
+    motor->motor()->stop();
 }
 
 void QMotorStack::powerOnAll(){
   foreach(QCaMotorGUI * motor, motors)
-    motor->setPower(true);
+    motor->motor()->setPower(true);
 }
 
 void QMotorStack::powerOffAll(){
   foreach(QCaMotorGUI * motor, motors)
-    motor->setPower(false);
+    motor->motor()->setPower(false);
 }
 
 void QMotorStack::updatePowerConnections(bool pwr) {
@@ -237,7 +271,7 @@ void QMotorStack::updatePowerConnections(bool pwr) {
 
   bool powerCon = false;
   foreach(QCaMotorGUI * motor, motors)
-    powerCon |= motor->getPowerConnection();
+    powerCon |= motor->motor()->getPowerConnection();
   ui->table->setColumnHidden(6, ! powerCon );
   ui->powerW->setVisible(powerCon);
 
@@ -254,7 +288,7 @@ void QMotorStack::saveConfiguration(const QString & fileName) {
   if ( file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate) &&
       file.isWritable() )
     foreach (QCaMotorGUI * motor, motorList() )
-      file.write( ( motor->getPv() + "\n" ).toAscii());
+      file.write( ( motor->motor()->getPv() + "\n" ).toAscii());
   file.close();
 }
 

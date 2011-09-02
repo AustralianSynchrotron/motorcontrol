@@ -14,12 +14,8 @@ FORMS += qcamotorgui.ui \
     qcamotorgui-pv.ui
 LIBS += -L../qcamotor -lqcamotor \
         -lqtpvwidgets
-headers.files = qcamotorgui.h \
-    qcamotorgui-additional.h \
-    ui_qcamotorgui.h \
-    ui_qcamotorgui-relative.h \
-    ui_qcamotorgui-pv.h \
-    ui_qcamotorgui-setup.h
+
+headers.files = qcamotorgui.h
 headers.path = $$[INSTALLBASE]/include
 INSTALLS += headers
 target.files = $$[TARGET]

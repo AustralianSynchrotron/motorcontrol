@@ -8,14 +8,10 @@
 #include <QSortFilterProxyModel>
 #include <QMap>
 #include <QMenu>
+#include <QDialog>
 
 #include "qcamotor.h"
-#include "qcamotorgui-additional.h"
 
-#include "ui_qcamotorgui.h"
-#include "ui_qcamotorgui-setup.h"
-#include "ui_qcamotorgui-pv.h"
-#include "ui_qcamotorgui-relative.h"
 
 
 
@@ -118,7 +114,7 @@ namespace Ui {
 
 
 /// Graphical user interface for the motor.
-class QCaMotorGUI : public QCaMotor {
+class QCaMotorGUI : public QWidget {
   Q_OBJECT;
 
 public:
@@ -143,7 +139,7 @@ public:
 
 private:
 
-  QWidget * theWidget;          ///< Motor's main widget.
+  QCaMotor * mot;          ///< Motor.
 
   Ui::MotorControl *mUi;        ///< GUI of the main widget.
   Ui::MotorSetup *sUi;          ///< "Setup" (advanced control) GUI.
@@ -173,8 +169,6 @@ private:
 
   QSortFilterProxyModel *proxyModel; ///< Sort/filter proxy for the table view in the "Choose PV".
 
-  using QCaMotor::goRelative;
-
   /// Lock status of the motor. If the motor is locked, then the PV cannot be changed.
   bool locked;
 
@@ -190,7 +184,9 @@ public:
 
   QCaMotorGUI(const QString & pv, QWidget *parent=0);
 
-  QCaMotorGUI(QCaMotor & base, QWidget *parent=0);
+  QCaMotorGUI(QCaMotor * _mot, QWidget *parent=0);
+
+  inline QCaMotor * motor() {return mot;}
 
 
   /// Destructor.
@@ -200,9 +196,13 @@ public:
   /// @param lck new lock status
   void lock(bool lck);
 
+  /// Gives an external application access to the setup button.
+  QPushButton * setupButton();
+
   /// Gives an external application access to the widgets of the
   /// basic control UI.
-  inline Ui::MotorControl * basicUI() {return mUi;}
+  /// To be used within the QMotorStack.
+  Ui::MotorControl * basicUI();
 
 signals:
 
@@ -226,6 +226,8 @@ public slots:
 
 
 private slots:
+
+  void onMotorDestruction();
 
   /// \brief Copies motor's PV into clipboard.
   void copyPV();
@@ -293,28 +295,28 @@ private slots:
 
 
   /// Catches the go-backward-by-step commands from GUIs.
-  inline void goStepM(){ goStep(-1); }
+  inline void goStepM(){ mot->goStep(-1); }
 
   /// Catches the go-forward-by-step commands from GUIs.
-  inline void goStepP(){ goStep(1);  }
+  inline void goStepP(){ mot->goStep(1);  }
 
   /// Catches the go-to-negative-limit commands from GUIs.
-  inline void goLimitM(){ goLimit(-1); }
+  inline void goLimitM(){ mot->goLimit(-1); }
 
   /// Catches the go-to-positive-limit commands from GUIs.
-  inline void goLimitP(){ goLimit(1);  }
+  inline void goLimitP(){ mot->goLimit(1);  }
 
   /// Catches the start-negative-jog commands from GUIs.
-  inline void jogMstart(){ jog(true, -1); }
+  inline void jogMstart(){ mot->jog(true, -1); }
 
   /// Catches the stop-negative-jog commands from GUIs.
-  inline void jogMstop(){ jog(false, -1); }
+  inline void jogMstop(){ mot->jog(false, -1); }
 
   /// Catches the start-positive-jog commands from GUIs.
-  inline void jogPstart(){ jog(true, 1); }
+  inline void jogPstart(){ mot->jog(true, 1); }
 
   /// Catches the stop-positive-jog commands from GUIs.
-  inline void jogPstop(){ jog(false, 1); }
+  inline void jogPstop(){ mot->jog(false, 1); }
 
   /// Catches Stop/Undo commands from GUIs.
   ///
@@ -322,16 +324,16 @@ private slots:
   void pressStop();
 
   /// Divides current step by 10.
-  inline void stepD10() { QCaMotor::setStep( 0.1 * getStep() ); }
+  inline void stepD10() { mot->setStep( 0.1 * mot->getStep() ); }
 
   /// Divides current step by 2.
-  inline void stepD2() { QCaMotor::setStep( 0.5 * getStep() ); }
+  inline void stepD2() { mot->setStep( 0.5 * mot->getStep() ); }
 
   /// Multiplies current step by 2.
-  inline void stepM2() { QCaMotor::setStep( 2.0 * getStep() ); }
+  inline void stepM2() { mot->setStep( 2.0 * mot->getStep() ); }
 
   /// Multiplies current step by 10.
-  inline void stepM10() { QCaMotor::setStep( 10.0 * getStep() ); }
+  inline void stepM10() { mot->setStep( 10.0 * mot->getStep() ); }
 
 
   /// Updates the color of the drive buttons reflecting the limits status.
@@ -347,60 +349,60 @@ private slots:
 
   void updateAccelerations();
 
+  void updateDescription(const QString & dsc);
 
-  void updateDescription(const QVariant & data);
+  void updatePrecision(int prec);
 
-  void updatePrecision(const QVariant & data);
+  void updateUnits(const QString & egu);
 
-  void updateUnits(const QVariant & data);
+  void updateUserPosition(double ps);
 
-  void updateUserPosition(const QVariant & data);
+  void updateDialPosition(double ps);
 
-  void updateDialPosition(const QVariant & data);
+  void updateStep(double stp);
 
-  void updateStep(const QVariant & data);
+  void updateUserHiLimit(double hiL);
 
-  void updateUserHiLimit(const QVariant &data);
+  void updateUserLoLimit(double loL);
 
-  void updateUserLoLimit(const QVariant &data);
+  void updateDialHiLimit(double hiL);
 
-  void updateDialHiLimit(const QVariant &data);
+  void updateDialLoLimit(double loL);
 
-  void updateDialLoLimit(const QVariant &data);
+  void updateUnitsPerRev(double vRes);
 
-  void updateUnitsPerRev(const QVariant & data);
+  void updateMaximumSpeed(double maxSpeed);
 
-  void updateMaximumSpeed(const QVariant & data);
+  void updateNormalSpeed(double spd);
 
-  void updateNormalSpeed(const QVariant & data);
+  void updateBacklashSpeed(double spd);
 
-  void updateBacklashSpeed(const QVariant & data);
+  void updateJogSpeed(double spd);
 
-  void updateJogSpeed(const QVariant & data);
+  void updateAcceleration(double acc);
 
-  void updateAcceleration(const QVariant & data);
+  void updateBacklashAcceleration(double acc);
 
-  void updateBacklashAcceleration(const QVariant & data);
+  void updateJogAcceleration(double acc);
 
-  void updateJogAcceleration(const QVariant & data);
+  void updateBacklash(double blsh);
 
-  void updateBacklash(const QVariant & data);
+  void updateSuMode(QCaMotor::SuMode mode);
 
-  void updateSuMode(const QVariant & data);
+  void updateOffsetMode(QCaMotor::OffMode mode);
 
-  void updateOffsetMode(const QVariant & data);
+  void updateDirection(QCaMotor::Direction dir);
 
-  void updateDirection(const QVariant & data);
-
-  void updateSpmgMode(const QVariant & data);
+  void updateSpmgMode(QCaMotor::SpmgMode mode);
 
   void updateConnection(bool suc);
 
-  void updateMoving(const QVariant & data);
+  void updateMoving(bool mov);
 
-  void updatePower(const QVariant &data);
+  void updatePower(bool pwr);
 
-  void updateWired(const QVariant &data);
+  void updateWired(bool wr);
+
 
 };
 
