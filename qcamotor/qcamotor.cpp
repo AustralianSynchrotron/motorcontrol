@@ -484,6 +484,14 @@ void QCaMotor::updateDialLoLimit(const QVariant & data){
 void QCaMotor::updateMotorResolution(const QVariant & data){
   updateDouble(data, motorResolution, "motor resolution",
                &QCaMotor::changedMotorResolution);
+
+  /// BUG
+  // Actually not a bug, but many users called it a bug:
+  // When RDBD field is too high.
+  double amres = qAbs( getMotorResolution() );
+  double ardbd = qAbs( QEpicsPv::get(getPv()+".RDBD").toDouble() );
+  if ( amres > 0.0  &&  ardbd > amres * 2 )
+    QEpicsPv::set(getPv()+".RDBD", amres*2, 200);
 }
 
 void QCaMotor::updateReadbackResolution(const QVariant & data){
@@ -648,7 +656,7 @@ void QCaMotor::setField(const QString & key, const QVariant & value){
     emit error("Unknown field \"" + key + "\".");
   else if ( ! fields[key] || ! fields[key]->isConnected() )
     emit error("Attempt to operate on field \"" + key + "\""
-               " of uninitialized motor: set PV first.");
+               " of uninitialized or disconnected motor: set PV first.");
   else
     fields[key]->set(value, 100);
 }
@@ -817,14 +825,6 @@ void QCaMotor::setDialLoLimit(double limit){
 
 
 void QCaMotor::setMotorResolution(double res){
-  /*
-  if (res < 0.0) {
-    setDirection(NEGATIVE);
-    res = -res;
-  } else {
-    setDirection(POSITIVE);
-  }
-  */
   setField(".MRES", res);
 }
 

@@ -165,7 +165,6 @@ private slots:
   /// \brief Updates connection status (::iAmConnected)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
-  /// @param suc true if connected.
   void updateConnection(bool suc);
 
   /// \brief Updates description (::description)
