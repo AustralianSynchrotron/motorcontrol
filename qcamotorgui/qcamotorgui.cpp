@@ -1345,8 +1345,7 @@ void QCaMotorGUI::updateStopButtonStyle() {
 
   static const QString
       movstyle("background-color: rgb(128, 0, 0); color: rgb(255, 255, 255);"),
-      wrdstyle("color: rgb(255, 0, 0);"),
-      pwrstyle("background-color: rgb(0, 128, 0); color: rgb(255, 255, 255);");
+      wrdstyle("color: rgb(255, 0, 0);");
 
   if ( ! mot->isConnected() ) {
     mUi->stop->setStyleSheet("");
@@ -1360,14 +1359,6 @@ void QCaMotorGUI::updateStopButtonStyle() {
     sUi->stop->setText("STOP");
     mUi->stop->setToolTip("Stop motion");
     sUi->stop->setToolTip("Stop motion");
-  } else if ( ! mot->getPower() ) {
-    mUi->stop->setStyleSheet(pwrstyle);
-    sUi->stop->setStyleSheet(pwrstyle);
-    mUi->stop->setText("POWER ON");
-    sUi->stop->setText("POWER ON");
-    const QString txt("Click to turn power on");
-    mUi->stop->setToolTip(txt);
-    sUi->stop->setToolTip(txt);
   } else if ( ! mot->isWired() ) {
     mUi->stop->setStyleSheet(wrdstyle);
     sUi->stop->setStyleSheet(wrdstyle);
