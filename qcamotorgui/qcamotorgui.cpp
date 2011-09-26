@@ -1010,8 +1010,7 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
 }
 
 void QCaMotorGUI::pressStop(){
-  if ( ! mot->getPower() ) mot->setPower(true);
-  else if (mot->isMoving()) mot->stop();
+  if (mot->isMoving()) mot->stop();
   else mot->undoLastMotion();
 }
 
@@ -1402,7 +1401,7 @@ void QCaMotorGUI::updateAllElements(){
     (cn && pwr && wr && ( ! mv || mUi->jogP->isDown()) );
   mUi->userPosition           ->setEnabled(std && wr && pwr);
   mUi->step                   ->setEnabled(std);
-  mUi->stop                   ->setEnabled(cn);
+  mUi->stop                   ->setEnabled(cn && wr && pwr);
 
   sUi->goLimitM               ->setEnabled(std && wr && pwr);
   sUi->goLimitP               ->setEnabled(std && wr && pwr);
@@ -1412,7 +1411,7 @@ void QCaMotorGUI::updateAllElements(){
     (cn && pwr && wr && ( ! mv || sUi->jogM->isDown()) );
   sUi->jogP                   ->setEnabled
     (cn && pwr && wr && ( ! mv || sUi->jogP->isDown()) );
-  sUi->stop                   ->setEnabled(cn && wr);
+  sUi->stop                   ->setEnabled(cn && wr && pwr);
   sUi->spmgSetup              ->setEnabled(cn);
   sUi->rawGoal                ->setEnabled(std && wr && pwr);
   sUi->userGoal               ->setEnabled(std && wr && pwr);
