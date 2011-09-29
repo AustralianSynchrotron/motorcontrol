@@ -718,7 +718,7 @@ void QCaMotor::goUserPosition(double pos, bool wait){
   setSuMode(USE);
   setField(".VAL", pos);
   if (wait) {
-    qtWait(300); // needed to make sure the motor has started motion
+    qtWait(100); // needed to make sure the motor has started motion
     wait_stop();
   }
   setSuMode(mode);
@@ -734,7 +734,7 @@ void QCaMotor::goDialPosition(double pos, bool wait){
   setSuMode(USE);
   setField(".DVAL", pos);
   if (wait) {
-    qtWait(300); // needed to make sure the motor has started motion
+    qtWait(100); // needed to make sure the motor has started motion
     wait_stop();
   }
   setSuMode(mode);
@@ -749,7 +749,7 @@ void QCaMotor::goRawPosition(double pos, bool wait){
   setSuMode(USE);
   setField(".RVAL", pos);
   if (wait) {
-    qtWait(300); // needed to make sure the motor has started motion
+    qtWait(100); // needed to make sure the motor has started motion
     wait_stop();
   }
   setSuMode(mode);
@@ -758,7 +758,7 @@ void QCaMotor::goRawPosition(double pos, bool wait){
 void QCaMotor::goLimit(int direction, bool wait){
   jog(true, direction);
   if (wait) {
-    qtWait(300); // needed to make sure the motor has started motion
+    qtWait(100); // needed to make sure the motor has started motion
     wait_stop();
   }
 }
@@ -768,7 +768,7 @@ void QCaMotor::goStep(int direction, bool wait){
   setSuMode(USE);
   setField( ( direction > 0 ) ? ".TWF" : ".TWR", 1);
   if (wait) {
-    qtWait(300); // needed to make sure the motor has started motion
+    qtWait(100); // needed to make sure the motor has started motion
     wait_stop();
   }
   setSuMode(mode);
@@ -779,7 +779,7 @@ void QCaMotor::goRelative(double dist, bool wait){
   setSuMode(USE);
   setField(".RLV" , dist);
   if (wait) {
-    qtWait(300); // needed to make sure the motor has started motion
+    qtWait(100); // needed to make sure the motor has started motion
     wait_stop();
   }
   setSuMode(mode);
