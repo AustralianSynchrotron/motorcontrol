@@ -100,12 +100,18 @@ void KnownPVTable::updateData() {
 
 
 
-class FilterPVsProxyModel : public QSortFilterProxyModel {
+class FilterPVsProxyModel : private QSortFilterProxyModel {
 private:
   QStringList searchWords;
 public:
-  FilterPVsProxyModel(QObject * parent=0) :
-    QSortFilterProxyModel(parent) {}
+  FilterPVsProxyModel( KnownPVTable * pvTable , QObject * parent=0) :
+    QSortFilterProxyModel(parent) {
+    setSourceModel(pvTable);
+    setDynamicSortFilter(true);
+    setFilterKeyColumn(-1);
+    sort(0, Qt::AscendingOrder);
+  }
+  QAbstractItemModel * aModel() { return this; }
 public slots:
   void setSearch(const QString & str = QString() ) {
     searchWords = str.split(QRegExp("\\s+"));
@@ -203,7 +209,7 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   setupDialog(new QDialog(parent)),
   pvDialog(new QDialog(parent)),
   relativeDialog(new QDialog(parent)),
-  proxyModel(new FilterPVsProxyModel(this))
+  proxyModel(new FilterPVsProxyModel(knownPVs, this))
 {
   init();
 }
@@ -218,7 +224,7 @@ QCaMotorGUI::QCaMotorGUI(const QString & pv, QWidget *parent) :
   setupDialog(new QDialog(parent)),
   pvDialog(new QDialog(parent)),
   relativeDialog(new QDialog(parent)),
-  proxyModel(new FilterPVsProxyModel(this))
+  proxyModel(new FilterPVsProxyModel(knownPVs, this))
 {
   init();
 }
@@ -234,7 +240,7 @@ QCaMotorGUI::QCaMotorGUI(QCaMotor * _mot, QWidget *parent) :
   setupDialog(new QDialog(parent)),
   pvDialog(new QDialog(parent)),
   relativeDialog(new QDialog(parent)),
-  proxyModel(new FilterPVsProxyModel(this))
+  proxyModel(new FilterPVsProxyModel(knownPVs, this))
 {
   mot->setParent(parent);
   connect(mot, SIGNAL(destroyed()), SLOT(onMotorDestruction()));
@@ -270,11 +276,8 @@ void QCaMotorGUI::init() {
   setupDialog->setWindowTitle("MotorMx, setup");
   relativeDialog->setWindowTitle("Move relatively");
 
-  proxyModel->setSourceModel(knownPVs);
-  proxyModel->setDynamicSortFilter(true);
-  proxyModel->setFilterKeyColumn(-1);
-  proxyModel->sort(0, Qt::AscendingOrder);
-  pUi->pvTable->setModel(proxyModel);
+
+  pUi->pvTable->setModel(proxyModel->aModel());
   pUi->pvTable->resizeColumnsToContents();
 
   KeyPressEater * keater = new KeyPressEater(pvDialog);
