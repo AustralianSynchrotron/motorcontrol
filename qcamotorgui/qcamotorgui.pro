@@ -6,7 +6,8 @@ TEMPLATE = lib
 SOURCES += qcamotorgui.cpp \
     qcamotorgui-additional.cpp
 HEADERS += qcamotorgui.h \
-    qcamotorgui-additional.h
+    qcamotorgui-additional.h \
+    qcamotorgui-local.h
 INCLUDEPATH += ../qcamotor
 FORMS += qcamotorgui.ui \
     qcamotorgui-setup.ui \
@@ -21,3 +22,4 @@ INSTALLS += headers
 target.files = $$[TARGET]
 target.path = $$[INSTALLBASE]/lib
 INSTALLS += target
+

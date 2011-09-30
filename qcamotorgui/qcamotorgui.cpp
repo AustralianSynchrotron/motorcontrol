@@ -1,4 +1,4 @@
-#include "qcamotorgui.h"
+#include "qcamotorgui-local.h"
 
 #include "ui_qcamotorgui.h"
 #include "ui_qcamotorgui-setup.h"
@@ -16,28 +16,22 @@
 
 
 
+QModelIndex KnownPVTable::indexOf(QEpicsPv* pv) const {
+  return knownPVs.contains(pv) ?
+        createIndex(knownPVs.indexOf(pv), 1) :
+        QModelIndex();
+}
+
+
 KnownPVTable::KnownPVTable(const QStringList &list, QObject *parent)
   : QAbstractTableModel(parent){
   foreach(QString pvname, list) {
-     QEpicsPv * pv = new QEpicsPv(pvname+".DESC", this) ;
-     connect(pv, SIGNAL(valueChanged(QVariant)),
-             SLOT(updateData()));
-     knownPVs << pv;
+    QEpicsPv * pv = new QEpicsPv(pvname+".DESC", this) ;
+    connect(pv, SIGNAL(valueChanged(QVariant)),
+            SLOT(updateData()));
+    knownPVs << pv;
   }
 }
-
-QModelIndex KnownPVTable::indexOf(QEpicsPv* pv) const {
-  return knownPVs.contains(pv) ?
-      createIndex(knownPVs.indexOf(pv), 1) :
-      QModelIndex();
-}
-
-void KnownPVTable::updateData() {
-  QModelIndex midx = indexOf( (QEpicsPv*) sender() );
-  if ( midx.isValid() )
-    emit (dataChanged(midx, midx));
-}
-
 
 int KnownPVTable::rowCount(const QModelIndex &parent) const {
   Q_UNUSED(parent);
@@ -48,6 +42,7 @@ int KnownPVTable::columnCount(const QModelIndex &parent) const {
   Q_UNUSED(parent);
   return 2;
 }
+
 
 QVariant KnownPVTable::data(const QModelIndex &index, int role) const {
   if ( ! index.isValid() ||
@@ -68,6 +63,7 @@ QVariant KnownPVTable::data(const QModelIndex &index, int role) const {
 
 }
 
+
 QVariant KnownPVTable::headerData(int section, Qt::Orientation orientation, int role) const {
   if (role != Qt::DisplayRole || orientation != Qt::Horizontal )
     return QVariant();
@@ -79,9 +75,64 @@ QVariant KnownPVTable::headerData(int section, Qt::Orientation orientation, int 
 }
 
 
+void KnownPVTable::updateData() {
+  QModelIndex midx = indexOf( (QEpicsPv*) sender() );
+  if ( midx.isValid() )
+    emit (dataChanged(midx, midx));
+}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class FilterPVsProxyModel : public QSortFilterProxyModel {
+private:
+  QStringList searchWords;
+public:
+  FilterPVsProxyModel(QObject * parent=0) :
+    QSortFilterProxyModel(parent) {}
+public slots:
+  void setSearch(const QString & str = QString() ) {
+    searchWords = str.split(QRegExp("\\s+"));
+    searchWords.removeDuplicates();
+    searchWords.removeOne("");
+    invalidateFilter();
+  }
+protected:
+
+  bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const {
+    int column_count = sourceModel()->columnCount(source_parent);
+    for (int column = 0; column < column_count; ++column) {
+      QModelIndex source_index = sourceModel()->index(source_row, column, source_parent);
+      QString key = sourceModel()->data(source_index).toString();
+      bool found = true;
+      foreach (QString word, searchWords) {
+        found &= (bool) key.contains(word, Qt::CaseInsensitive);
+        if (!found)
+          break;
+      }
+      if (found)
+        return true;
+    }
+    return false;
+  }
+
+};
 
 
 
@@ -152,7 +203,7 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   setupDialog(new QDialog(parent)),
   pvDialog(new QDialog(parent)),
   relativeDialog(new QDialog(parent)),
-  proxyModel(new QSortFilterProxyModel(this))
+  proxyModel(new FilterPVsProxyModel(this))
 {
   init();
 }
@@ -167,7 +218,7 @@ QCaMotorGUI::QCaMotorGUI(const QString & pv, QWidget *parent) :
   setupDialog(new QDialog(parent)),
   pvDialog(new QDialog(parent)),
   relativeDialog(new QDialog(parent)),
-  proxyModel(new QSortFilterProxyModel(this))
+  proxyModel(new FilterPVsProxyModel(this))
 {
   init();
 }
@@ -183,7 +234,7 @@ QCaMotorGUI::QCaMotorGUI(QCaMotor * _mot, QWidget *parent) :
   setupDialog(new QDialog(parent)),
   pvDialog(new QDialog(parent)),
   relativeDialog(new QDialog(parent)),
-  proxyModel(new QSortFilterProxyModel(this))
+  proxyModel(new FilterPVsProxyModel(this))
 {
   mot->setParent(parent);
   connect(mot, SIGNAL(destroyed()), SLOT(onMotorDestruction()));
@@ -610,8 +661,9 @@ void QCaMotorGUI::pasteConfiguration() {
 }
 
 void QCaMotorGUI::filterPV(const QString & _text){
-  proxyModel->setFilterRegExp( QRegExp(
-      QString(".*%1.*").arg(_text), Qt::CaseInsensitive) );
+  proxyModel->setSearch(_text);
+//  proxyModel->setFilterRegExp( QRegExp(
+//      QString(".*%1.*").arg(_text), Qt::CaseInsensitive) );
 }
 
 void QCaMotorGUI::choosePV(const QModelIndex & index){
