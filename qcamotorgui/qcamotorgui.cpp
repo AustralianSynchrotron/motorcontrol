@@ -209,7 +209,7 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   setupDialog(new QDialog(parent)),
   pvDialog(new QDialog(parent)),
   relativeDialog(new QDialog(parent)),
-  proxyModel(new FilterPVsProxyModel(knownPVs, this))
+  proxyModel(0)
 {
   init();
 }
@@ -224,7 +224,7 @@ QCaMotorGUI::QCaMotorGUI(const QString & pv, QWidget *parent) :
   setupDialog(new QDialog(parent)),
   pvDialog(new QDialog(parent)),
   relativeDialog(new QDialog(parent)),
-  proxyModel(new FilterPVsProxyModel(knownPVs, this))
+  proxyModel(0)
 {
   init();
 }
@@ -240,7 +240,7 @@ QCaMotorGUI::QCaMotorGUI(QCaMotor * _mot, QWidget *parent) :
   setupDialog(new QDialog(parent)),
   pvDialog(new QDialog(parent)),
   relativeDialog(new QDialog(parent)),
-  proxyModel(new FilterPVsProxyModel(knownPVs, this))
+  proxyModel(0)
 {
   mot->setParent(parent);
   connect(mot, SIGNAL(destroyed()), SLOT(onMotorDestruction()));
@@ -276,7 +276,7 @@ void QCaMotorGUI::init() {
   setupDialog->setWindowTitle("MotorMx, setup");
   relativeDialog->setWindowTitle("Move relatively");
 
-
+  proxyModel = new FilterPVsProxyModel(knownPVs, this);
   pUi->pvTable->setModel(proxyModel->aModel());
   pUi->pvTable->resizeColumnsToContents();
 
