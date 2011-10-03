@@ -9,7 +9,6 @@ QMotorStack::QMotorStack(const QString & _motorsFile, QWidget *parent) :
     motorsFile(_motorsFile),
     ui(new Ui::MotorStack)
 {
-  //QTimer::singleShot(0, this, SLOT(initialize()));
   initialize();
 }
 
@@ -39,7 +38,6 @@ QMotorStack::QMotorStack(QWidget *parent) :
     motorsFile(),
     ui(new Ui::MotorStack)
 {
-  //QTimer::singleShot(0, this, SLOT(initialize()));
   initialize();
 }
 

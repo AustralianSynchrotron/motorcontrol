@@ -63,6 +63,9 @@ public:
   void loadConfiguration(const QString & fileName);
   void loadConfiguration(QTextStream & stream);
 
+protected:
+  bool eventFilter(QObject *obj, QEvent *event);
+
 
 private:
 

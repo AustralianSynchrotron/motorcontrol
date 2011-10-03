@@ -102,6 +102,8 @@ QCaMotor::QCaMotor(const QString & _pv, QObject *parent) :
 
 void QCaMotor::init() {
 
+  installEventFilter(this);
+
   connect(this, SIGNAL(error(QString)), this, SLOT(printError(QString)));
 
   fields.insert(".DESC", new QEpicsPv(this));
@@ -266,6 +268,14 @@ QCaMotor::~QCaMotor() {
 }
 
 
+bool QCaMotor::eventFilter(QObject *obj, QEvent *event) {
+  if ( event->type() == QEvent::ApplicationActivate )
+    preSetPv();
+  return QObject::eventFilter(obj, event);
+}
+
+
+
 void QCaMotor::saveConfiguration(QTextStream & stream) const {
 
   if ( ! isConnected() )
@@ -367,7 +377,9 @@ void QCaMotor::setPv(const QString & pvName) {
     emit changedPv(pv);
     foreach ( QString key, fields.keys() )
       fields[key]->setPV();
-  } else
+  } else if ( QCoreApplication::startingUp() )
+    QCoreApplication::postEvent(this, new QEvent(QEvent::ApplicationActivate));
+  else
     QTimer::singleShot(0, this, SLOT(preSetPv()));
 
 }
