@@ -85,10 +85,6 @@ public slots:
   /// Removes all motors from stack.
   void clear();
 
-
-  // WARNING: Save/Load configuration was NOT tested at all
-  // To be done when the electricity is back to the beamline.
-
   void saveConfiguration(const QString & fileName);
 
   void loadConfiguration(const QString & fileName);

@@ -282,24 +282,27 @@ void QMotorStack::resetHeader() {
 }
 
 void QMotorStack::saveConfiguration(const QString & fileName) {
-  QFile file(fileName);
-  if ( file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate) &&
-      file.isWritable() )
-    foreach (QCaMotorGUI * motor, motorList() )
-      file.write( ( motor->motor()->getPv() + "\n" ).toAscii());
-  file.close();
+  QSettings sett(fileName, QSettings::IniFormat);
+  sett.clear();
+  foreach (QCaMotorGUI * motor, motorList() ) {
+    QCaMotor * mot = motor->motor();
+    if ( ! mot->getPv().isEmpty() ) {
+      sett.beginGroup(mot->getPv());
+      sett.setValue("description", mot->getDescription());
+      sett.setValue("units", mot->getUnits());
+      sett.setValue("position",mot->getUserPosition());
+      sett.setValue("speed",mot->getNormalSpeed());
+      sett.setValue("lo_limit",mot->getUserLoLimit());
+      sett.setValue("hi_limit",mot->getUserHiLimit());
+      sett.setValue("steps_per_revol",mot->getStepsPerRev());
+      sett.setValue("units_per_revol",mot->getUnitsPerRev());
+      sett.endGroup();
+    }
+  }
 }
 
 void QMotorStack::loadConfiguration(const QString & fileName) {
-  QFile file(fileName);
-  if ( file.open(QIODevice::ReadOnly | QIODevice::Text) &&
-      file.isReadable() ) {
-    clear();
-    while (!file.atEnd()) {
-      QByteArray line = file.readLine().trimmed();
-      if ( ! line.isEmpty() )
-        addMotor(line, false, true);
-    }
-  }
-  file.close();
+  QSettings sett(fileName, QSettings::IniFormat);
+  foreach (QString motPv, sett.childGroups())
+    addMotor(motPv);
 }
