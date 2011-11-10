@@ -1330,6 +1330,14 @@ void QCaMotorGUI::updateDialLoLimit(double loL){
 
 void QCaMotorGUI::updateSuMode(QCaMotor::SuMode mode) {
   sUi->setGroup->button(mode)->setChecked(true);
+  // the rest is needed in here to revert to the original
+  // values in the GUI.
+  updateUserPosition(mot->getUserPosition());
+  updateDialPosition(mot->getDialPosition());
+  sUi->rawPosition->setValue(mot->getRawPosition());
+  sUi->userGoal->setValue(mot->getUserGoal());
+  sUi->dialGoal->setValue(mot->getDialGoal());
+  sUi->rawGoal->setValue(mot->getRawGoal());
 }
 
 void QCaMotorGUI::updateOffsetMode(QCaMotor::OffMode mode) {

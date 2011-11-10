@@ -6,6 +6,26 @@
 #include <QFile>
 
 
+#define ENSURE_SUMODE(mode) \
+  SuMode curMode = getSuMode(); \
+  setSuMode(mode); \
+  QTimer tmpt; \
+  tmpt.setInterval(500); \
+  tmpt.setSingleShot(true); \
+  tmpt.start(); \
+  while ( getSuMode() != mode && tmpt.isActive() ) \
+  qtWait(this, SIGNAL(changedSuMode(QCaMotor::SuMode)), 100); \
+  if (getSuMode() != mode) { \
+  qDebug() << "ERROR! Could not set proper SU mode of the motor." << getPv(); \
+  return; \
+  }
+
+#define RESTORE_SUMODE \
+  if ( getSuMode() != curMode ) \
+  setSuMode(curMode);
+
+
+
 using namespace std;
 
 QCaMotor::QCaMotor(QObject *parent) :
@@ -106,37 +126,39 @@ void QCaMotor::init() {
 
   connect(this, SIGNAL(error(QString)), this, SLOT(printError(QString)));
 
+  fields.insert(".PROC", new QEpicsPv(this));
+
   fields.insert(".DESC", new QEpicsPv(this));
-  connect(fields[".DESC"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".DESC"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateDescription(QVariant)));
 
   fields.insert(".PREC", new QEpicsPv(this));
-  connect(fields[".PREC"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".PREC"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updatePrecision(QVariant)));
   fields.insert(".EGU",  new QEpicsPv(this));
-  connect(fields[".EGU"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".EGU"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUnits(QVariant)));
 
   fields.insert(".RBV",  new QEpicsPv(this));
-  connect(fields[".RBV"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".RBV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUserPosition(QVariant)));
   fields.insert(".DRBV", new QEpicsPv(this));
-  connect(fields[".DRBV"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".DRBV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateDialPosition(QVariant)));
   fields.insert(".RRBV", new QEpicsPv(this));
-  connect(fields[".RRBV"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".RRBV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateRawPosition(QVariant)));
   fields.insert(".VAL",  new QEpicsPv(this));
-  connect(fields[".VAL"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".VAL"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUserGoal(QVariant)));
   fields.insert(".DVAL", new QEpicsPv(this));
-  connect(fields[".DVAL"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".DVAL"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateDialGoal(QVariant)));
   fields.insert(".RVAL", new QEpicsPv(this));
-  connect(fields[".RVAL"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".RVAL"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateRawGoal(QVariant)));
   fields.insert(".TWV",  new QEpicsPv(this));
-  connect(fields[".TWV"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".TWV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateStep(QVariant)));
 
   fields.insert(".TWR",  new QEpicsPv(this));
@@ -149,101 +171,101 @@ void QCaMotor::init() {
   fields.insert(".STOP", new QEpicsPv(this));
 
   fields.insert(".HLS",  new QEpicsPv(this));
-  connect(fields[".HLS"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".HLS"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateHiLimitStatus(QVariant)));
   fields.insert(".LLS",  new QEpicsPv(this));
-  connect(fields[".LLS"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".LLS"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateLoLimitStatus(QVariant)));
   fields.insert(".HLM",  new QEpicsPv(this));
-  connect(fields[".HLM"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".HLM"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUserHiLimit(QVariant)));
   fields.insert(".LLM",  new QEpicsPv(this));
-  connect(fields[".LLM"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".LLM"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUserLoLimit(QVariant)));
   fields.insert(".DHLM", new QEpicsPv(this));
-  connect(fields[".DHLM"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".DHLM"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateDialHiLimit(QVariant)));
   fields.insert(".DLLM", new QEpicsPv(this));
-  connect(fields[".DLLM"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".DLLM"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateDialLoLimit(QVariant)));
 
   fields.insert(".MRES", new QEpicsPv(this));
-  connect(fields[".MRES"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".MRES"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateMotorResolution(QVariant)));
   fields.insert(".RRES", new QEpicsPv(this));
-  connect(fields[".RRES"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".RRES"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateReadbackResolution(QVariant)));
   fields.insert(".ERES", new QEpicsPv(this));
-  connect(fields[".ERES"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".ERES"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateEncoderResolution(QVariant)));
   fields.insert(".UREV", new QEpicsPv(this));
-  connect(fields[".UREV"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".UREV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUnitsPerRev(QVariant)));
   fields.insert(".SREV", new QEpicsPv(this));
-  connect(fields[".SREV"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".SREV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateStepsPerRev(QVariant)));
 
   fields.insert(".VMAX", new QEpicsPv(this));
-  connect(fields[".VMAX"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".VMAX"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateMaximumSpeed(QVariant)));
   fields.insert(".VELO", new QEpicsPv(this));
-  connect(fields[".VELO"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".VELO"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateNormalSpeed(QVariant)));
   fields.insert(".S", new QEpicsPv(this));
-  connect(fields[".S"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".S"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateRevSpeed(QVariant)));
   fields.insert(".BVEL", new QEpicsPv(this));
-  connect(fields[".BVEL"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".BVEL"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateBacklashSpeed(QVariant)));
   fields.insert(".JVEL", new QEpicsPv(this));
-  connect(fields[".JVEL"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".JVEL"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateJogSpeed(QVariant)));
 
   fields.insert(".ACCL", new QEpicsPv(this));
-  connect(fields[".ACCL"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".ACCL"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateAcceleration(QVariant)));
   fields.insert(".BACC", new QEpicsPv(this));
-  connect(fields[".BACC"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".BACC"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateBacklashAcceleration(QVariant)));
   fields.insert(".JAR",  new QEpicsPv(this));
-  connect(fields[".JAR"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".JAR"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateJogAcceleration(QVariant)));
 
   fields.insert(".BDST", new QEpicsPv(this));
-  connect(fields[".BDST"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".BDST"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateBacklash(QVariant)));
 
   fields.insert(".DMOV", new QEpicsPv(this));
-  connect(fields[".DMOV"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".DMOV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateMoving(QVariant)));
   fields.insert(".UEIP", new QEpicsPv(this));
-  connect(fields[".UEIP"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".UEIP"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUseEncoder(QVariant)));
   fields.insert(".URIP", new QEpicsPv(this));
-  connect(fields[".URIP"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".URIP"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateUseReadback(QVariant)));
 
   fields.insert(".OFF",  new QEpicsPv(this));
-  connect(fields[".OFF"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".OFF"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateOffset(QVariant)));
   fields.insert(".FOFF", new QEpicsPv(this));
-  connect(fields[".FOFF"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".FOFF"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateOffsetMode(QVariant)));
   fields.insert(".DIR",  new QEpicsPv(this));
-  connect(fields[".DIR"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".DIR"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateDirection(QVariant)));
   fields.insert(".SET",  new QEpicsPv(this));
-  connect(fields[".SET"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".SET"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateSuMode(QVariant)));
   fields.insert(".SPMG", new QEpicsPv(this));
-  connect(fields[".SPMG"], SIGNAL(valueChanged(QVariant)),
+  connect(fields[".SPMG"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateSpmgMode(QVariant)));
   fields.insert("_ON_STATUS", new QEpicsPv(this));
-  connect(fields["_ON_STATUS"], SIGNAL(valueChanged(QVariant)),
+  connect(fields["_ON_STATUS"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updatePower(QVariant)));
   fields.insert("_ON_CMD",    new QEpicsPv(this));
   fields.insert("_CONNECTED_STATUS", new QEpicsPv(this));
-  connect(fields["_CONNECTED_STATUS"], SIGNAL(valueChanged(QVariant)),
+  connect(fields["_CONNECTED_STATUS"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateWired(QVariant)));
 
 
@@ -601,10 +623,12 @@ void QCaMotor::updateMoving(const QVariant & data) {
        getSpmgMode() != PAUSE  &&  getSpmgMode() != STOP  &&
        getUserGoal() >= getUserLoLimit()  &&  getUserGoal() <= getUserHiLimit() )  {
 
+
     if (secondMotionAttempt) // it is second time when the bug manifests itself.
       qDebug() << "The undone motion bug happened twice. Something is wrong. Please report to the developers.";
     else
-      goRawPosition(getRawGoal()); // do second attempt
+      setField(".PROC", 1);
+      //      goRawPosition(getRawGoal()); // do second attempt
     secondMotionAttempt = ! secondMotionAttempt;
 
   } else if ( ! iAmMoving ) // stopped without the bug
@@ -666,11 +690,10 @@ void QCaMotor::updateWired(const QVariant & data) {
 void QCaMotor::setField(const QString & key, const QVariant & value){
   if ( ! fields.contains(key) )
     emit error("Unknown field \"" + key + "\".");
-  else if ( ! fields[key] || ! fields[key]->isConnected() )
-    emit error("Attempt to operate on field \"" + key + "\""
-               " of uninitialized or disconnected motor: set PV first.");
+  else if ( ! fields[key] )
+    emit error("Attempt to operate on uninitialized field \"" + key + "\".");
   else
-    fields[key]->set(value, 100);
+    fields[key]->set(value);
 }
 
 
@@ -688,24 +711,21 @@ void QCaMotor::setUnits(const QString & units){
 
 
 void QCaMotor::setUserPosition(double pos){
-  SuMode mode = getSuMode();
-  setSuMode(SET);
+  ENSURE_SUMODE(SET);
   setField(".VAL", pos);
-  setSuMode(mode);
+  RESTORE_SUMODE;
 }
 
 void QCaMotor::setDialPosition(double pos){
-  SuMode mode = getSuMode();
-  setSuMode(SET);
+  ENSURE_SUMODE(SET);
   setField(".DVAL", pos);
-  setSuMode(mode);
+  RESTORE_SUMODE;
 }
 
 void QCaMotor::setRawPosition(double pos){
-  SuMode mode = getSuMode();
-  setSuMode(SET);
+  ENSURE_SUMODE(SET);
   setField(".RVAL", pos);
-  setSuMode(mode);
+  RESTORE_SUMODE;
 }
 
 void QCaMotor::wait_stop(){
@@ -721,19 +741,21 @@ void QCaMotor::wait_stop(){
 
 
 void QCaMotor::goUserPosition(double pos, bool wait){
+
   double res = qAbs(getMotorResolution());
   if ( pos >= numeric_limits<int>::max() * res )
     pos = numeric_limits<int>::max() * res;
   else if ( pos <= numeric_limits<int>::min() * res )
     pos = numeric_limits<int>::min() * res;
-  SuMode mode = getSuMode();
-  setSuMode(USE);
+
+  ENSURE_SUMODE(USE);
   setField(".VAL", pos);
   if (wait) {
     qtWait(100); // needed to make sure the motor has started motion
     wait_stop();
   }
-  setSuMode(mode);
+  RESTORE_SUMODE;
+
 }
 
 void QCaMotor::goDialPosition(double pos, bool wait){
@@ -742,14 +764,13 @@ void QCaMotor::goDialPosition(double pos, bool wait){
     pos = numeric_limits<int>::max() * res;
   else if ( pos <= numeric_limits<int>::min() * res )
     pos = numeric_limits<int>::min() * res;
-  SuMode mode = getSuMode();
-  setSuMode(USE);
+  ENSURE_SUMODE(USE);
   setField(".DVAL", pos);
   if (wait) {
     qtWait(100); // needed to make sure the motor has started motion
     wait_stop();
   }
-  setSuMode(mode);
+  RESTORE_SUMODE;
 }
 
 void QCaMotor::goRawPosition(double pos, bool wait){
@@ -757,14 +778,13 @@ void QCaMotor::goRawPosition(double pos, bool wait){
     pos = numeric_limits<int>::max();
   else if ( pos <= numeric_limits<int>::min() )
     pos = numeric_limits<int>::min();
-  SuMode mode = getSuMode();
-  setSuMode(USE);
+  ENSURE_SUMODE(USE);
   setField(".RVAL", pos);
   if (wait) {
     qtWait(100); // needed to make sure the motor has started motion
     wait_stop();
   }
-  setSuMode(mode);
+  RESTORE_SUMODE;
 }
 
 void QCaMotor::goLimit(int direction, bool wait){
@@ -776,32 +796,29 @@ void QCaMotor::goLimit(int direction, bool wait){
 }
 
 void QCaMotor::goStep(int direction, bool wait){
-  SuMode mode = getSuMode();
-  setSuMode(USE);
+  ENSURE_SUMODE(USE);
   setField( ( direction > 0 ) ? ".TWF" : ".TWR", 1);
   if (wait) {
     qtWait(100); // needed to make sure the motor has started motion
     wait_stop();
   }
-  setSuMode(mode);
+  RESTORE_SUMODE;
 }
 
 void QCaMotor::goRelative(double dist, bool wait){
-  SuMode mode = getSuMode();
-  setSuMode(USE);
+  ENSURE_SUMODE(USE);
   setField(".RLV" , dist);
   if (wait) {
     qtWait(100); // needed to make sure the motor has started motion
     wait_stop();
   }
-  setSuMode(mode);
+  RESTORE_SUMODE;
 }
 
 void QCaMotor::jog(bool jg, int direction){
-  SuMode mode = getSuMode();
-  setSuMode(USE);
+  ENSURE_SUMODE(USE);
   setField( ( direction > 0 ) ? ".JOGF" : ".JOGR", jg ? 1 : 0 );
-  setSuMode(mode);
+  RESTORE_SUMODE;
 }
 
 void QCaMotor::undoLastMotion(bool wait) {
