@@ -89,7 +89,7 @@ void QMotorStack::initialize() {
 
 
 QCaMotorGUI * QMotorStack::addMotor(const QString & presetpv, bool lock, bool noFileSave){
-  QCaMotorGUI * motor = new QCaMotorGUI(this);
+  QCaMotorGUI * motor = new QCaMotorGUI;
   motor->motor()->setPv(presetpv);
   motor->lock(lock);
   addMotor(motor, noFileSave);
@@ -97,7 +97,7 @@ QCaMotorGUI * QMotorStack::addMotor(const QString & presetpv, bool lock, bool no
 }
 
 QCaMotorGUI * QMotorStack::addMotor(QCaMotor *motor, bool lock, bool noFileSave){
-  QCaMotorGUI * motorUi = new QCaMotorGUI(motor,this);
+  QCaMotorGUI * motorUi = new QCaMotorGUI(motor);
   motorUi->lock(lock);
   addMotor(motorUi, noFileSave);
   return motorUi;
