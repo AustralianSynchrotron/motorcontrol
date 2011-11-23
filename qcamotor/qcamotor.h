@@ -45,6 +45,15 @@ public:
     NEGATIVE=1                  ///< 1:"Neg"
   };
 
+  /// Tells when the functions which move the motor to return
+  enum MotionExit {
+    IMMIDIATELY=0, ///< right after the command was written
+    CONFIRMATION=1, ///< after recieving confirmation of the command
+    STARTED=2, ///< after start (DMOV -> 0)
+    ACCELERATED=3, ///< after finished the acceleration (theoretically calculated)
+    STOPPED=5 ///< after stop (DMOV ->1, may happen to be 1.5 sec after actual stop)
+  };
+
   /// Constructor
   ///
   /// @param parent Parent
@@ -88,7 +97,11 @@ private:
   /// @param key The field to be set: must be a key from the QCaMotor::motor.
   /// @param value Value to put into the field with the key.
   ///
-  void setField(const QString & key, const QVariant & value);
+  void setField(const QString & key, const QVariant & value, bool confirm=false);
+
+  SuMode ensureSuMode(SuMode mode);
+  SuMode prepareMotion(MotionExit ex);
+  void finilizeMotion(MotionExit ex, SuMode restore_mode);
 
 
   // Here I've got a member for each field to avoid conversion
@@ -472,8 +485,7 @@ public slots:
   /// if true then waits for the motion to complete and then returns
   /// (waiting is Qt-aware).
   ///
-  void goUserPosition(double pos, bool wait=false);
-  inline void go(double pos, bool wait=false) {goUserPosition(pos, wait);} //just the shortcut
+  void goUserPosition(double pos, MotionExit ex=IMMIDIATELY);
 
   /// Moves the motor to the absolute value of the dial position.
   ///
@@ -482,7 +494,7 @@ public slots:
   /// if true then waits for the motion to complete and then returns
   /// (waiting is Qt-aware).
   ///
-  void goDialPosition(double pos, bool wait=false);
+  void goDialPosition(double pos, MotionExit ex=IMMIDIATELY);
 
   /// Moves the motor to the absolute value of the raw position.
   ///
@@ -491,7 +503,7 @@ public slots:
   /// if true then waits for the motion to complete and then returns
   /// (waiting is Qt-aware).
   ///
-  void goRawPosition(double pos, bool wait=false);
+  void goRawPosition(double pos, MotionExit ex=IMMIDIATELY);
 
   /// Moves the motor to the limit (hard or soft, whatever is reached first).
   ///
@@ -500,7 +512,7 @@ public slots:
   /// if true then waits for the   /// WARNING: BUG (in EPICS's motor)motion to complete and then returns
   /// (waiting is Qt-aware).
   ///
-  void goLimit(int direction, bool wait=false);
+  void goLimit(int direction, MotionExit ex=IMMIDIATELY);
 
   /// Moves the motor by the one step (see ::setStep() and ::getStep() ).
   ///
@@ -509,7 +521,7 @@ public slots:
   /// if true then waits for the motion to complete and then returns
   /// (waiting is Qt-aware).
   ///
-  void goStep(int direction, bool wait=false);
+  void goStep(int direction, MotionExit ex=IMMIDIATELY);
 
   /// Moves the motor relatively by the specified distance.
   ///
@@ -518,7 +530,7 @@ public slots:
   /// if true then waits for the motion to complete and then returns
   /// (waiting is Qt-aware).
   ///
-  void goRelative(double dist, bool wait=false);
+  void goRelative(double dist, MotionExit ex=IMMIDIATELY);
 
   /// Starts/stops jogging the motor.
   ///
@@ -537,7 +549,7 @@ public slots:
   /// if true then waits for the motion to complete and then returns
   /// (waiting is Qt-aware).
   ///
-  void undoLastMotion(bool wait=false);
+  void undoLastMotion(MotionExit ex=IMMIDIATELY);
 
 
   /// Sets offset (OFF field).
@@ -652,7 +664,7 @@ public slots:
   /// if true then waits for the motion to complete and then returns
   /// (waiting is Qt-aware).
   ///
-  void stop(bool wait=false);
+  void stop(MotionExit ex=IMMIDIATELY);
 
   /// Sets "use readback" property (URIP field).
   /// @param use new value.

@@ -6,24 +6,6 @@
 #include <QFile>
 
 
-#define ENSURE_SUMODE(mode) \
-  SuMode curMode = getSuMode(); \
-  setSuMode(mode); \
-  QTimer tmpt; \
-  tmpt.setInterval(500); \
-  tmpt.setSingleShot(true); \
-  tmpt.start(); \
-  while ( getSuMode() != mode && tmpt.isActive() ) \
-  qtWait(this, SIGNAL(changedSuMode(QCaMotor::SuMode)), 100); \
-  if (getSuMode() != mode) { \
-  qDebug() << "ERROR! Could not set proper SU mode of the motor." << getPv(); \
-  return; \
-  }
-
-#define RESTORE_SUMODE \
-  if ( getSuMode() != curMode ) \
-  setSuMode(curMode);
-
 
 
 using namespace std;
@@ -687,11 +669,13 @@ void QCaMotor::updateWired(const QVariant & data) {
 
 
 
-void QCaMotor::setField(const QString & key, const QVariant & value){
+void QCaMotor::setField(const QString & key, const QVariant & value, bool confirm) {
   if ( ! fields.contains(key) )
     emit error("Unknown field \"" + key + "\".");
   else if ( ! fields[key] )
     emit error("Attempt to operate on uninitialized field \"" + key + "\".");
+  else if (confirm)
+    fields[key]->set(value, 1.5 * QEpicsPv::expectedResponse);
   else
     fields[key]->set(value);
 }
@@ -711,21 +695,24 @@ void QCaMotor::setUnits(const QString & units){
 
 
 void QCaMotor::setUserPosition(double pos){
-  ENSURE_SUMODE(SET);
+  SuMode restore_mode = ensureSuMode(SET);
   setField(".VAL", pos);
-  RESTORE_SUMODE;
+  if ( getSuMode() != restore_mode )
+    setSuMode(restore_mode);
 }
 
 void QCaMotor::setDialPosition(double pos){
-  ENSURE_SUMODE(SET);
+  SuMode restore_mode = ensureSuMode(SET);
   setField(".DVAL", pos);
-  RESTORE_SUMODE;
+  if ( getSuMode() != restore_mode )
+    setSuMode(restore_mode);
 }
 
 void QCaMotor::setRawPosition(double pos){
-  ENSURE_SUMODE(SET);
+  SuMode restore_mode = ensureSuMode(SET);
   setField(".RVAL", pos);
-  RESTORE_SUMODE;
+  if ( getSuMode() != restore_mode )
+    setSuMode(restore_mode);
 }
 
 void QCaMotor::wait_stop(){
@@ -740,7 +727,59 @@ void QCaMotor::wait_stop(){
 }
 
 
-void QCaMotor::goUserPosition(double pos, bool wait){
+
+QCaMotor::SuMode QCaMotor::ensureSuMode(SuMode mode) {
+  SuMode store_mode = getSuMode();
+
+  if (store_mode != mode) {
+
+    setSuMode(mode);
+    QTimer tmpt;
+    tmpt.setInterval(500);
+    tmpt.setSingleShot(true);
+    tmpt.start();
+
+    while ( getSuMode() != mode  &&  tmpt.isActive() )
+      qtWait(this, SIGNAL(changedSuMode(QCaMotor::SuMode)), 100);
+    if (getSuMode() != mode) {
+      qDebug() << "ERROR! Could not set proper SU mode of the motor." << getPv();
+      setSuMode(store_mode);
+    }
+
+  }
+
+  return store_mode;
+
+}
+
+
+QCaMotor::SuMode QCaMotor::prepareMotion(MotionExit ex) {
+  SuMode store_mode = ensureSuMode(USE);
+  if ( ex > CONFIRMATION )
+    fields[".DMOV"]->needUpdated();
+  return store_mode;
+}
+
+
+void QCaMotor::finilizeMotion(MotionExit ex, SuMode restore_mode) {
+
+  if ( ex > CONFIRMATION )
+    if ( ! fields[".DMOV"]->getUpdated(200).isValid() )
+      return; // did not start within specified time.
+
+  if ( ex == ACCELERATED )
+    qtWait( getAcceleration() * 1000 );
+  else if ( ex == STOPPED )
+    while ( isMoving() )
+      qtWait(this, SIGNAL(changedMoving(bool)));
+
+  if ( getSuMode() != restore_mode )
+    setSuMode(restore_mode);
+
+}
+
+
+void QCaMotor::goUserPosition(double pos, MotionExit ex) {
 
   double res = qAbs(getMotorResolution());
   if ( pos >= numeric_limits<int>::max() * res )
@@ -748,97 +787,81 @@ void QCaMotor::goUserPosition(double pos, bool wait){
   else if ( pos <= numeric_limits<int>::min() * res )
     pos = numeric_limits<int>::min() * res;
 
-  ENSURE_SUMODE(USE);
-  setField(".VAL", pos);
-  if (wait) {
-    qtWait(100); // needed to make sure the motor has started motion
-    wait_stop();
-  }
-  RESTORE_SUMODE;
+  SuMode store_mode = prepareMotion(ex);
+  setField(".VAL", pos, (bool) ex );
+  finilizeMotion(ex, store_mode);
 
 }
 
-void QCaMotor::goDialPosition(double pos, bool wait){
+void QCaMotor::goDialPosition(double pos, MotionExit ex) {
+
   double res = qAbs(getMotorResolution());
   if ( pos >= numeric_limits<int>::max() * res )
     pos = numeric_limits<int>::max() * res;
   else if ( pos <= numeric_limits<int>::min() * res )
     pos = numeric_limits<int>::min() * res;
-  ENSURE_SUMODE(USE);
-  setField(".DVAL", pos);
-  if (wait) {
-    qtWait(100); // needed to make sure the motor has started motion
-    wait_stop();
-  }
-  RESTORE_SUMODE;
+
+  SuMode store_mode = prepareMotion(ex);
+  setField(".DVAL", pos, (bool) ex );
+  finilizeMotion(ex, store_mode);
+
 }
 
-void QCaMotor::goRawPosition(double pos, bool wait){
+void QCaMotor::goRawPosition(double pos, MotionExit ex) {
+
   if ( pos >= numeric_limits<int>::max() )
     pos = numeric_limits<int>::max();
   else if ( pos <= numeric_limits<int>::min() )
     pos = numeric_limits<int>::min();
-  ENSURE_SUMODE(USE);
-  setField(".RVAL", pos);
-  if (wait) {
-    qtWait(100); // needed to make sure the motor has started motion
-    wait_stop();
-  }
-  RESTORE_SUMODE;
+
+  SuMode store_mode = prepareMotion(ex);
+  setField(".RVAL", pos, (bool) ex );
+  finilizeMotion(ex, store_mode);
+
 }
 
-void QCaMotor::goLimit(int direction, bool wait){
+void QCaMotor::goLimit(int direction, MotionExit ex) {
+  SuMode store_mode = prepareMotion(ex);
   jog(true, direction);
-  if (wait) {
-    qtWait(100); // needed to make sure the motor has started motion
-    wait_stop();
-  }
+  finilizeMotion(ex, store_mode);
 }
 
-void QCaMotor::goStep(int direction, bool wait){
-  ENSURE_SUMODE(USE);
+void QCaMotor::goStep(int direction, MotionExit ex) {
+  SuMode store_mode = prepareMotion(ex);
   setField( ( direction > 0 ) ? ".TWF" : ".TWR", 1);
-  if (wait) {
-    qtWait(100); // needed to make sure the motor has started motion
-    wait_stop();
-  }
-  RESTORE_SUMODE;
+  finilizeMotion(ex, store_mode);
 }
 
-void QCaMotor::goRelative(double dist, bool wait){
-  ENSURE_SUMODE(USE);
+void QCaMotor::goRelative(double dist, MotionExit ex) {
+  SuMode store_mode = prepareMotion(ex);
   setField(".RLV" , dist);
-  if (wait) {
-    qtWait(100); // needed to make sure the motor has started motion
-    wait_stop();
-  }
-  RESTORE_SUMODE;
+  finilizeMotion(ex, store_mode);
 }
 
-void QCaMotor::jog(bool jg, int direction){
-  ENSURE_SUMODE(USE);
+void QCaMotor::jog(bool jg, int direction) {
+  SuMode store_mode = prepareMotion(IMMIDIATELY);
   setField( ( direction > 0 ) ? ".JOGF" : ".JOGR", jg ? 1 : 0 );
-  RESTORE_SUMODE;
+  finilizeMotion(IMMIDIATELY, store_mode);
 }
 
-void QCaMotor::undoLastMotion(bool wait) {
-  if (getLastMotion())
-    goRawPosition( getRawPosition() - getLastMotion(), wait );
+void QCaMotor::undoLastMotion(MotionExit ex) {
+  if ( ! getLastMotion() )
+    goRawPosition( getRawPosition() - getLastMotion(), ex );
 }
 
-void QCaMotor::setStep(double step){
+void QCaMotor::setStep(double step) {
   setField(".TWV", step);
 }
 
-void QCaMotor::setOffset(double dist){
+void QCaMotor::setOffset(double dist) {
   setField(".OFF", dist);
 }
 
-void QCaMotor::setOffsetMode(OffMode mode){
+void QCaMotor::setOffsetMode(OffMode mode) {
   setField(".FOFF", mode);
 }
 
-void QCaMotor::setDirection(Direction direction){
+void QCaMotor::setDirection(Direction direction) {
   setField(".DIR", direction);
 }
 
@@ -924,9 +947,9 @@ void QCaMotor::setJogAcceleration(double acc){
 }
 
 
-void QCaMotor::stop(bool wait){
-  setField(".STOP", 1);
-  if (wait)
+void QCaMotor::stop(MotionExit ex){
+  setField(".STOP", 1, (bool) ex );
+  if ( ex == STOPPED )
     wait_stop();
 }
 
