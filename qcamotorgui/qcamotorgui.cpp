@@ -842,19 +842,25 @@ void QCaMotorGUI::setUnitsPerRevAndDirection(double res) {
 
 void QCaMotorGUI::setSpeedS(double spd) {
   if (spd<=0.0)
-    spd = sUi->speedS->value();
-  mot->setMaximumSpeed(spd);
-  mot->setJogSpeed(spd);
-  mot->setBacklashSpeed(spd);
-  mot->setNormalSpeed(spd);
+    return;
+  if ( ! sUi->lockMaximumSpeed->isChecked() ) {
+    mot->setMaximumSpeed(spd);
+    qtWait(200); // let the maximum speed to be updated.
+  }
+  if ( spd <= motor()->getMaximumSpeed() ) {
+    mot->setJogSpeed(spd);
+    mot->setBacklashSpeed(spd);
+    mot->setNormalSpeed(spd);
+  }
 }
 
 void QCaMotorGUI::setAccelerationS(double acc) {
   if (acc<=0.0)
     acc = sUi->accelerationS->value();
-  mot->setJogAcceleration(acc);
   mot->setBacklashAcceleration(acc);
   mot->setAcceleration(acc);
+  if (acc)
+    mot->setJogAcceleration( motor()->getNormalSpeed() / acc );
 }
 
 
@@ -1206,6 +1212,7 @@ void QCaMotorGUI::updateUnits(const QString & egu){
   sUi->offset->setSuffix(egu);
   sUi->backlashSpeed->setSuffix(egu+"/s");
   sUi->jogSpeed->setSuffix(egu+"/s");
+  sUi->jogAcceleration->setSuffix(egu+"/s"+QChar(0x00B2));
 }
 
 void QCaMotorGUI::updatePrecision(int prec){
@@ -1362,8 +1369,10 @@ void QCaMotorGUI::updateSpeeds() {
 
 void QCaMotorGUI::updateAccelerations() {
   double acc = mot->getAcceleration();
-  sUi->equalizeAccelerations->setVisible(
-        acc != mot->getBacklashAcceleration() ||  acc != mot->getJogAcceleration() );
+  sUi->equalizeAccelerations->setVisible (
+        acc != mot->getBacklashAcceleration() ||
+      mot->getJogAcceleration() ||
+      acc != mot->getNormalSpeed() / mot->getJogAcceleration() ) ;
 }
 
 void QCaMotorGUI::updateGoButtonStyle(){
