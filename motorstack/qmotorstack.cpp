@@ -88,6 +88,18 @@ void QMotorStack::initialize() {
 }
 
 
+void QMotorStack::addMotor(const QList<QCaMotor*> & motorList, bool noFileSave) {
+  foreach(QCaMotor * mot, motorList)
+    addMotor(mot, noFileSave);
+}
+
+
+void QMotorStack::addMotor(const QList<QCaMotorGUI*> & motorList, bool noFileSave) {
+  foreach(QCaMotorGUI * mot, motorList)
+    addMotor(mot, noFileSave);
+}
+
+
 QCaMotorGUI * QMotorStack::addMotor(const QString & presetpv, bool lock, bool noFileSave){
   QCaMotorGUI * motor = new QCaMotorGUI;
   motor->motor()->setPv(presetpv);
