@@ -82,7 +82,7 @@ public slots:
    /// @param motors existing motors.
    /// @param noFileSave Does not update the motorsFile if true.
    ///
-   void addMotor(const QList<QCaMotor*> & motorList, bool noFileSave = false);
+   void addMotor(const QList<QCaMotor*> & motorList, bool lock = false, bool noFileSave = false);
 
    /// Adds existing motors into the UI.
    ///

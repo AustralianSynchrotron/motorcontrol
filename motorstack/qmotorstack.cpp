@@ -88,9 +88,9 @@ void QMotorStack::initialize() {
 }
 
 
-void QMotorStack::addMotor(const QList<QCaMotor*> & motorList, bool noFileSave) {
+void QMotorStack::addMotor(const QList<QCaMotor*> & motorList, bool lock, bool noFileSave) {
   foreach(QCaMotor * mot, motorList)
-    addMotor(mot, noFileSave);
+    addMotor(mot, lock, noFileSave);
 }
 
 
