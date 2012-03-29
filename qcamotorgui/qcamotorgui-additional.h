@@ -98,6 +98,8 @@ public:
     stepValidator->setRange(min,max);
   }
 
+  void fixup();
+
 signals:
 
   /// Emitted when the value has changed and was confirmed.
@@ -113,6 +115,8 @@ private slots:
   inline void fixme(){ setValidator(stepValidator); }
 
 };
+
+
 
 
 /// QlineEdit with the "clear text" button imbedded into it.

@@ -15,7 +15,7 @@ StepValidator::StepValidator(QWidget * parent)  :
 QValidator::State StepValidator::validate ( QString & input, int &) const {
   bool okst;
   double ndouble = input.toDouble(&okst);
-  return ( input == "limit" || input == "jog" ||
+  return ( input == "jog" ||
            ( okst && ndouble >= min && ndouble <= max ) )
     ?  Acceptable  :  Intermediate ;
 }
@@ -37,8 +37,17 @@ void QMultiComboBox::focusInEvent(QFocusEvent * event){
   stepValidator->setLast(currentText());
 }
 
+void QMultiComboBox::fixup() {
+  QString fixstring = currentText();
+  validator()->fixup(fixstring);
+  int idx = findText(fixstring);
+  if (idx >= 0)
+    setCurrentIndex(idx);
+}
 
-QMultiComboBox:: QMultiComboBox(QWidget * parent)
+
+
+QMultiComboBox::QMultiComboBox(QWidget * parent)
   : QComboBox(parent),
   stepValidator(new StepValidator(this))
 {

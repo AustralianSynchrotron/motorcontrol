@@ -358,10 +358,6 @@ void QCaMotorGUI::init() {
           SLOT(setStep(QString)));
   connect(mUi->stop, SIGNAL(clicked()),
           SLOT(pressStop()));
-  connect(mUi->limitM, SIGNAL(clicked()),
-          SLOT(goLimitM()));
-  connect(mUi->limitP, SIGNAL(clicked()),
-          SLOT(goLimitP()));
   connect(mUi->jogM, SIGNAL(pressed()),
           SLOT(jogMstart()));
   connect(mUi->jogM, SIGNAL(released()),
@@ -403,6 +399,10 @@ void QCaMotorGUI::init() {
           SLOT(goLimitM()));
   connect(sUi->goLimitP, SIGNAL(clicked()),
           SLOT(goLimitP()));
+  connect(sUi->goHomeM, SIGNAL(clicked()),
+          SLOT(goHomeM()));
+  connect(sUi->goHomeP, SIGNAL(clicked()),
+          SLOT(goHomeP()));
   connect(sUi->goM, SIGNAL(clicked()),
           SLOT(goStepM()));
   connect(sUi->goP, SIGNAL(clicked()),
@@ -811,17 +811,20 @@ void QCaMotorGUI::setStep(const QString & _text){
     mUi->goP->setVisible(false);
     mUi->jogM->setVisible(true);
     mUi->jogP->setVisible(true);
-    mUi->limitM->setVisible(false);
-    mUi->limitP->setVisible(false);
   } else if (text == "relative") {
     relativeDialog->show();
-  } else if (text == "limit") {
-    mUi->goM->setVisible(false);
-    mUi->goP->setVisible(false);
-    mUi->jogM->setVisible(false);
-    mUi->jogP->setVisible(false);
-    mUi->limitM->setVisible(true);
-    mUi->limitP->setVisible(true);
+  } else if (text == "limit -") {
+    mot->goLimit(-1);
+    mUi->step->fixup();
+  } else if (text == "limit +") {
+    mot->goLimit(1);
+    mUi->step->fixup();
+  } else if (text == "home -") {
+    mot->goHome(-1);
+    mUi->step->fixup();
+  } else if (text == "home +") {
+    mot->goHome(1);
+    mUi->step->fixup();
   } else {
     if ( ok && val != mot->getStep() )
       mot->setStep(val);
@@ -829,8 +832,6 @@ void QCaMotorGUI::setStep(const QString & _text){
     mUi->goP->setVisible(true);
     mUi->jogM->setVisible(false);
     mUi->jogP->setVisible(false);
-    mUi->limitM->setVisible(false);
-    mUi->limitP->setVisible(false);
   }
 }
 
@@ -1106,7 +1107,7 @@ void QCaMotorGUI::updateStep(double stp) {
   QString textStep = QString::number(stp);
   int knownIndex = mUi->step->findText(textStep);
   if (knownIndex == -1)
-    mUi->step->insertItem(knownIndex = 3, textStep);
+    mUi->step->insertItem(knownIndex = 6, textStep);
   mUi->step->setCurrentIndex(knownIndex);
 }
 
@@ -1131,6 +1132,8 @@ void QCaMotorGUI::updateMoving(bool mov){
       mUi->goM->setDown(false);
     if ( mUi->goP->isDown() )
       mUi->goP->setDown(false);
+  } else {
+    mUi->userPosition->setFocus();
   }
 
   if (mov)
@@ -1390,9 +1393,9 @@ void QCaMotorGUI::updateGoButtonStyle(){
     style = "";
   mUi->goM->setStyleSheet(style);
   mUi->jogM->setStyleSheet(style);
-  mUi->limitM->setStyleSheet(style);
   sUi->goM->setStyleSheet(style);
   sUi->goLimitM->setStyleSheet(style);
+  sUi->goHomeM->setStyleSheet(style);
   sUi->jogM->setStyleSheet(style);
 
   if (mot->getHiLimitStatus())
@@ -1404,9 +1407,9 @@ void QCaMotorGUI::updateGoButtonStyle(){
     style = "";
   mUi->goP->setStyleSheet(style);
   mUi->jogP->setStyleSheet(style);
-  mUi->limitP->setStyleSheet(style);
   sUi->goP->setStyleSheet(style);
   sUi->goLimitP->setStyleSheet(style);
+  sUi->goHomeP->setStyleSheet(style);
   sUi->jogP->setStyleSheet(style);
 
 
@@ -1465,8 +1468,6 @@ void QCaMotorGUI::updateAllElements(){
 
   mUi->goM                    ->setEnabled(std && wr && pwr);
   mUi->goP                    ->setEnabled(std && wr && pwr);
-  mUi->limitM                 ->setEnabled(std && wr && pwr);
-  mUi->limitP                 ->setEnabled(std && wr && pwr);
   mUi->jogM                   ->setEnabled
     (cn && pwr && wr && ( ! mv || mUi->jogM->isDown()) );
   mUi->jogP                   ->setEnabled
@@ -1477,6 +1478,8 @@ void QCaMotorGUI::updateAllElements(){
 
   sUi->goLimitM               ->setEnabled(std && wr && pwr);
   sUi->goLimitP               ->setEnabled(std && wr && pwr);
+  sUi->goHomeM               ->setEnabled(std && wr && pwr);
+  sUi->goHomeP               ->setEnabled(std && wr && pwr);
   sUi->goM                    ->setEnabled(std && wr && pwr);
   sUi->goP                    ->setEnabled(std && wr && pwr);
   sUi->jogM                   ->setEnabled

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>701</width>
-    <height>32</height>
+    <width>452</width>
+    <height>25</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -118,25 +118,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QToolButton" name="limitM">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Go to negative limit (hard or soft - whatever is activated first)</string>
-        </property>
-        <property name="text">
-         <string>|&lt;</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
@@ -172,7 +153,22 @@
      </item>
      <item>
       <property name="text">
-       <string>limit</string>
+       <string>limit +</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>limit -</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>home +</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>home -</string>
       </property>
      </item>
     </widget>
@@ -186,25 +182,6 @@
       <property name="margin">
        <number>0</number>
       </property>
-      <item>
-       <widget class="QToolButton" name="limitP">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Go to positive limit (hard or soft - whatever is activated first)</string>
-        </property>
-        <property name="text">
-         <string>&gt;|</string>
-        </property>
-       </widget>
-      </item>
       <item>
        <widget class="QToolButton" name="jogP">
         <property name="enabled">

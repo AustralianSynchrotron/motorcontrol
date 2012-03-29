@@ -218,6 +218,12 @@ private slots:
   /// Catches the go-to-positive-limit commands from GUIs.
   inline void goLimitP(){ mot->goLimit(1);  }
 
+  /// Catches the go-to-negative-home commands from GUIs.
+  inline void goHomeM(){ mot->goHome(-1); }
+
+  /// Catches the go-to-positive-home commands from GUIs.
+  inline void goHomeP(){ mot->goHome(1);  }
+
   /// Catches the start-negative-jog commands from GUIs.
   inline void jogMstart(){ mot->jog(true, -1); }
 

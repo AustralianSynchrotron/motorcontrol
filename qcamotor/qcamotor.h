@@ -523,6 +523,15 @@ public slots:
   ///
   void goStep(int direction, MotionExit ex=IMMIDIATELY);
 
+  /// Moves the motor home.
+  ///
+  /// @param direction to move in (defined by the sign)
+  /// @param wait if false then sends the command and returns immediately,
+  /// if true then waits for the motion to complete and then returns
+  /// (waiting is Qt-aware).
+  ///
+  void goHome(int direction, MotionExit ex=IMMIDIATELY);
+
   /// Moves the motor relatively by the specified distance.
   ///
   /// @param dist distance to move.

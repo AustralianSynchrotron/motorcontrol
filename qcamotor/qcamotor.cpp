@@ -832,6 +832,12 @@ void QCaMotor::goStep(int direction, MotionExit ex) {
   finilizeMotion(ex, store_mode);
 }
 
+void QCaMotor::goHome(int direction, MotionExit ex) {
+  SuMode store_mode = prepareMotion(ex);
+  setField( ( direction > 0 ) ? ".HOMF" : ".HOMR", 1);
+  finilizeMotion(ex, store_mode);
+}
+
 void QCaMotor::goRelative(double dist, MotionExit ex) {
   SuMode store_mode = prepareMotion(ex);
   setField(".RLV" , dist);
@@ -907,6 +913,7 @@ void QCaMotor::setUnitsPerRev(double units){
 void QCaMotor::setStepsPerRev(int st) {
   if ( st <= 0 ) {
     qDebug() << "Error! Steps per revolution must be strictly positive. Ignoring request to set it to" << st << ".";
+    emit changedStepsPerRev(getStepsPerRev());
     return;
   }
   setField(".SREV", (qlonglong) st);
