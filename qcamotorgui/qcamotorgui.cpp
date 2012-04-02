@@ -819,12 +819,6 @@ void QCaMotorGUI::setStep(const QString & _text){
   } else if (text == "limit +") {
     mot->goLimit(1);
     mUi->step->fixup();
-  } else if (text == "home -") {
-    mot->goHome(-1);
-    mUi->step->fixup();
-  } else if (text == "home +") {
-    mot->goHome(1);
-    mUi->step->fixup();
   } else {
     if ( ok && val != mot->getStep() )
       mot->setStep(val);
@@ -923,6 +917,8 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->placeControlUser->setVisible(false);
     sUi->placeControlRaw->setVisible(false);
     sUi->layControlRel->insertWidget(0, sUi->userVarGoal);
+    sUi->goHomeM->setVisible(false);
+    sUi->goHomeP->setVisible(false);
     sUi->stepD2->setVisible(false);
     sUi->stepD10->setVisible(false);
     sUi->stepM2->setVisible(false);
@@ -961,6 +957,8 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->layControlRaw->insertWidget(0, sUi->userVarGoal);
     sUi->placeControlRaw->setVisible(true);
     sUi->layControlRel->insertWidget(0, sUi->callRelative);
+    sUi->goHomeM->setVisible(false);
+    sUi->goHomeP->setVisible(false);
     sUi->stepD2->setVisible(true);
     sUi->stepD10->setVisible(true);
     sUi->stepM2->setVisible(true);
@@ -1001,6 +999,8 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->layControlRaw->insertWidget(0, sUi->rawGoal);
     sUi->placeControlRaw->setVisible(true);
     sUi->layControlRel->insertWidget(0, sUi->callRelative);
+    sUi->goHomeM->setVisible(true);
+    sUi->goHomeP->setVisible(true);
     sUi->stepD2->setVisible(true);
     sUi->stepD10->setVisible(true);
     sUi->stepM2->setVisible(true);
@@ -1041,6 +1041,8 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->label_7->setVisible(false);
     sUi->label_21->setVisible(false);
     sUi->layControlRel->insertWidget(0, sUi->callRelative);
+    sUi->goHomeM->setVisible(true);
+    sUi->goHomeP->setVisible(true);
     sUi->stepD2->setVisible(true);
     sUi->stepD10->setVisible(true);
     sUi->stepM2->setVisible(true);
@@ -1107,7 +1109,7 @@ void QCaMotorGUI::updateStep(double stp) {
   QString textStep = QString::number(stp);
   int knownIndex = mUi->step->findText(textStep);
   if (knownIndex == -1)
-    mUi->step->insertItem(knownIndex = 6, textStep);
+    mUi->step->insertItem(knownIndex = 4, textStep);
   mUi->step->setCurrentIndex(knownIndex);
 }
 

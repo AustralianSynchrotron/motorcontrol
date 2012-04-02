@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>445</width>
-    <height>1050</height>
+    <width>653</width>
+    <height>1260</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -572,7 +572,7 @@ p, li { white-space: pre-wrap; }
          <string>Stop</string>
         </property>
         <attribute name="buttonGroup">
-         <string>spmgGroup</string>
+         <string notr="true">spmgGroup</string>
         </attribute>
        </widget>
       </item>
@@ -594,7 +594,7 @@ p, li { white-space: pre-wrap; }
          <string>Pause</string>
         </property>
         <attribute name="buttonGroup">
-         <string>spmgGroup</string>
+         <string notr="true">spmgGroup</string>
         </attribute>
        </widget>
       </item>
@@ -616,7 +616,7 @@ p, li { white-space: pre-wrap; }
          <string>Move</string>
         </property>
         <attribute name="buttonGroup">
-         <string>spmgGroup</string>
+         <string notr="true">spmgGroup</string>
         </attribute>
        </widget>
       </item>
@@ -638,7 +638,7 @@ p, li { white-space: pre-wrap; }
          <string>Go</string>
         </property>
         <attribute name="buttonGroup">
-         <string>spmgGroup</string>
+         <string notr="true">spmgGroup</string>
         </attribute>
        </widget>
       </item>
@@ -964,6 +964,22 @@ p, li { white-space: pre-wrap; }
          <number>0</number>
         </property>
         <item>
+         <widget class="QToolButton" name="goHomeP">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>go home in positive direction</string>
+          </property>
+          <property name="text">
+           <string>&gt;H</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QToolButton" name="goLimitP">
           <property name="enabled">
            <bool>false</bool>
@@ -979,22 +995,6 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="text">
            <string>&gt;|</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="goHomeP">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="toolTip">
-           <string>go home in positive direction</string>
-          </property>
-          <property name="text">
-           <string>&gt;H</string>
           </property>
          </widget>
         </item>
@@ -2097,7 +2097,7 @@ p, li { white-space: pre-wrap; }
             <string>Variable</string>
            </property>
            <attribute name="buttonGroup">
-            <string>offGroup</string>
+            <string notr="true">offGroup</string>
            </attribute>
           </widget>
          </item>
@@ -2119,7 +2119,7 @@ p, li { white-space: pre-wrap; }
             <string>Frozen</string>
            </property>
            <attribute name="buttonGroup">
-            <string>offGroup</string>
+            <string notr="true">offGroup</string>
            </attribute>
           </widget>
          </item>
@@ -2141,7 +2141,7 @@ p, li { white-space: pre-wrap; }
             <string>Positive</string>
            </property>
            <attribute name="buttonGroup">
-            <string>dirGroup</string>
+            <string notr="true">dirGroup</string>
            </attribute>
           </widget>
          </item>
@@ -2163,7 +2163,7 @@ p, li { white-space: pre-wrap; }
             <string>Negative</string>
            </property>
            <attribute name="buttonGroup">
-            <string>dirGroup</string>
+            <string notr="true">dirGroup</string>
            </attribute>
           </widget>
          </item>
@@ -2185,7 +2185,7 @@ p, li { white-space: pre-wrap; }
             <string>Use</string>
            </property>
            <attribute name="buttonGroup">
-            <string>setGroup</string>
+            <string notr="true">setGroup</string>
            </attribute>
           </widget>
          </item>
@@ -2207,7 +2207,7 @@ p, li { white-space: pre-wrap; }
             <string>Set</string>
            </property>
            <attribute name="buttonGroup">
-            <string>setGroup</string>
+            <string notr="true">setGroup</string>
            </attribute>
           </widget>
          </item>
