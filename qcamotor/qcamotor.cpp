@@ -851,7 +851,7 @@ void QCaMotor::jog(bool jg, int direction) {
 }
 
 void QCaMotor::undoLastMotion(MotionExit ex) {
-  if ( ! getLastMotion() )
+  if ( getLastMotion() )
     goRawPosition( getRawPosition() - getLastMotion(), ex );
 }
 
