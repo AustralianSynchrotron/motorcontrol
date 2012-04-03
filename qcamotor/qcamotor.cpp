@@ -3,6 +3,7 @@
 
 #include <QProcess>
 #include <QTimer>
+#include <QTime>
 #include <QFile>
 
 
@@ -467,13 +468,12 @@ void QCaMotor::updateStep(const QVariant & data){
   updateDouble(data, step, "step", &QCaMotor::changedStep);
 }
 
-
 void QCaMotor::updateHiLimitStatus(const QVariant & data){
   emit changedHiLimitStatus( hiLimitStatus = data.toBool() );
 }
 
 void QCaMotor::updateLoLimitStatus(const QVariant & data){
-  emit changedHiLimitStatus( loLimitStatus = data.toBool() );
+  emit changedLoLimitStatus( loLimitStatus = data.toBool() );
 }
 
 void QCaMotor::updateUserHiLimit(const QVariant & data){
@@ -535,7 +535,6 @@ void QCaMotor::updateStepsPerRev(const QVariant & data){
     qDebug() << "Warning! New value of the steps per revolution (SREV) field is negative.";
   emit changedStepsPerRev( stepsPerRev = new_val );
 }
-
 
 
 void QCaMotor::updateMaximumSpeed(const QVariant & data){
@@ -763,9 +762,10 @@ QCaMotor::SuMode QCaMotor::prepareMotion(MotionExit ex) {
 
 void QCaMotor::finilizeMotion(MotionExit ex, SuMode restore_mode) {
 
-  if ( ex > CONFIRMATION )
+  if ( ex > CONFIRMATION && ! isMoving() ) {
     if ( ! fields[".DMOV"]->getUpdated(200).isValid() )
       return; // did not start within specified time.
+  }
 
   if ( ex == ACCELERATED )
     qtWait( getAcceleration() * 1000 );
@@ -790,11 +790,9 @@ void QCaMotor::goUserPosition(double pos, MotionExit ex) {
   SuMode store_mode = prepareMotion(ex);
   setField(".VAL", pos, (bool) ex );
   finilizeMotion(ex, store_mode);
-
 }
 
 void QCaMotor::goDialPosition(double pos, MotionExit ex) {
-
   double res = qAbs(getMotorResolution());
   if ( pos >= numeric_limits<int>::max() * res )
     pos = numeric_limits<int>::max() * res;
@@ -808,7 +806,6 @@ void QCaMotor::goDialPosition(double pos, MotionExit ex) {
 }
 
 void QCaMotor::goRawPosition(double pos, MotionExit ex) {
-
   if ( pos >= numeric_limits<int>::max() )
     pos = numeric_limits<int>::max();
   else if ( pos <= numeric_limits<int>::min() )
@@ -854,6 +851,13 @@ void QCaMotor::undoLastMotion(MotionExit ex) {
   if ( getLastMotion() )
     goRawPosition( getRawPosition() - getLastMotion(), ex );
 }
+
+void QCaMotor::stop(MotionExit ex){
+  setField(".STOP", 1, (bool) ex );
+  if ( ex == STOPPED )
+    wait_stop();
+}
+
 
 void QCaMotor::setStep(double step) {
   setField(".TWV", step);
@@ -951,13 +955,6 @@ void QCaMotor::setBacklashAcceleration(double acc){
 
 void QCaMotor::setJogAcceleration(double acc){
   setField(".JAR", acc);
-}
-
-
-void QCaMotor::stop(MotionExit ex){
-  setField(".STOP", 1, (bool) ex );
-  if ( ex == STOPPED )
-    wait_stop();
 }
 
 void QCaMotor::setUseReadback(bool use){
