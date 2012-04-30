@@ -39,6 +39,7 @@ private slots:
   void powerOnAll();
   void powerOffAll();
   void updatePowerConnections(bool pwr=false);
+  void showGeneral(bool showall=true);
 
 public:
 

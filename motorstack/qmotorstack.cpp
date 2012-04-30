@@ -205,6 +205,10 @@ void QMotorStack::clear(){
     removeRow(crow);
 }
 
+void QMotorStack::showGeneral(bool showall) {
+  ui->all->setVisible(showall);
+}
+
 
 QList < QCaMotorGUI * > QMotorStack::motorList() const {
   QList<QCaMotorGUI*> list;
