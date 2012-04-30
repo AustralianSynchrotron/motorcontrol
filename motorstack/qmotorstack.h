@@ -39,7 +39,6 @@ private slots:
   void powerOnAll();
   void powerOffAll();
   void updatePowerConnections(bool pwr=false);
-  void showGeneral(bool showall=true);
 
 public:
 
@@ -55,6 +54,7 @@ public:
 public slots:
 
   void lock(bool lck);
+  void showGeneral(bool showall=true);
 
   /// Adds new motor into the UI.
   ///
