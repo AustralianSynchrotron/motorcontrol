@@ -818,9 +818,10 @@ void QCaMotor::goRawPosition(double pos, MotionExit ex) {
 }
 
 void QCaMotor::goLimit(int direction, MotionExit ex) {
-  SuMode store_mode = prepareMotion(ex);
-  jog(true, direction);
-  finilizeMotion(ex, store_mode);
+  double goal = (direction < 1) ?
+                getUserLoLimit() + 2 * qAbs(getBacklash()) :
+                getUserHiLimit() - 2 * qAbs(getBacklash()) ;
+  goUserPosition(goal, ex);
 }
 
 void QCaMotor::goStep(int direction, MotionExit ex) {
