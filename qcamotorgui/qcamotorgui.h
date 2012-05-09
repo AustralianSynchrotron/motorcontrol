@@ -139,6 +139,8 @@ public slots:
 
 private slots:
 
+  inline void updateName() { setObjectName("GUI for " + motor()->objectName()); }
+
   void onMotorDestruction();
 
   /// \brief Copies motor's PV into clipboard.

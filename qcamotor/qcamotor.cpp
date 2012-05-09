@@ -374,6 +374,8 @@ void QCaMotor::preSetPv(){
 
 void QCaMotor::setPv(const QString & pvName) {
 
+  setObjectName(pvName);
+
   if (iAmConnected)
     emit changedConnected(iAmConnected=false);
   pv = pvName.trimmed();

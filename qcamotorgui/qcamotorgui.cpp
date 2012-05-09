@@ -302,6 +302,8 @@ void QCaMotorGUI::init() {
 
   sUi->loadConfig->addItems(knownConfigs.keys());
 
+  connect(motor(), SIGNAL(changedPv(QString)), SLOT(updateName()));
+
   //
   // Connect GUI Actions
   //
