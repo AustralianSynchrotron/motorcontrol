@@ -1428,8 +1428,8 @@ void QCaMotorGUI::updateStopButtonStyle() {
   if ( ! mot->isConnected() ) {
     mUi->stop->setStyleSheet("");
     sUi->stop->setStyleSheet("");
-    mUi->stop->setText("Disconnected");
-    sUi->stop->setText("Disconnected");
+    mUi->stop->setText("No link");
+    sUi->stop->setText("No link");
   } else if (mot->isMoving()) {
     mUi->stop->setStyleSheet(movstyle);
     sUi->stop->setStyleSheet(movstyle);
