@@ -684,15 +684,10 @@ void QCaMotorGUI::pvFromSearch(){
 
 void QCaMotorGUI::updatePv(const QString & newpv){
   sUi->pv->setText(newpv);
-  mUi->setup->disconnect();
   if (newpv.isEmpty()) {
-    connect(mUi->setup, SIGNAL(clicked()),
-            pvDialog, SLOT(show()) );
     updateDescription("SETUP");
     mUi->setup->setContextMenuPolicy(Qt::NoContextMenu);
   } else {
-    connect(mUi->setup, SIGNAL(clicked()),
-            setupDialog, SLOT(show()) );
     updateDescription(newpv);
     mUi->setup->setContextMenuPolicy(Qt::ActionsContextMenu);
   }
@@ -777,10 +772,10 @@ void QCaMotorGUI::static_init() {
 
 
 void QCaMotorGUI::onSetupClicked() {
-  if (mot->getPv().isEmpty() )
-    pvDialog->show();
-  else
-    setupDialog->show();
+  QDialog * dlg = mot->getPv().isEmpty() ? pvDialog : setupDialog;
+  dlg->show();
+  dlg->activateWindow();
+  dlg->raise();
 }
 
 

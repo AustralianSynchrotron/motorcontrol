@@ -168,8 +168,7 @@ void QMotorStack::removeRow(int idx){
 
   QPushButton * mbtn = (QPushButton*) ui->table->cellWidget(idx, 0);
   ui->table->removeRow( idx );
-  delete motors[mbtn];
-  motors.remove(mbtn);
+  delete motors.take(mbtn);
 
   if (motors.isEmpty())
     ui->all->setEnabled(false);
