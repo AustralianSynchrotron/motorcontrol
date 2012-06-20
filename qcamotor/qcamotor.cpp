@@ -412,8 +412,13 @@ void QCaMotor::updateConnection(bool suc){
            key != "_ON_STATUS" && key != "_ON_CMD" &&
            key != "_CONNECTED_STATUS" ) // Nonstandard fields
         suc &= fields[key]->isConnected();
-  if (suc != iAmConnected)
+  if (suc != iAmConnected) {
     emit changedConnected(iAmConnected = suc);
+    // below want to set lastMotion to 0;
+    qtWait(fields[".DMOV"], SIGNAL(valueUpdated(QVariant)), 200);
+    qtWait(100); //needed to let the ::updateMoving() to deal with the lastMotion
+    lastMotion = 0;
+  }
 }
 
 void QCaMotor::updateDescription(const QVariant & data){
@@ -595,25 +600,17 @@ void QCaMotor::updateMoving(const QVariant & data) {
   else                       lastMotion = getRawPosition() - lastMotion;
 
   iAmMoving = newMov;
-
   emit changedMoving(iAmMoving);
   if ( ! iAmMoving )
     emit stopped();
 
   // detect the bug described at the motionAttempt declaration.
-  if ( ! iAmMoving  &&  qAbs( getRawGoal() - getRawPosition() ) >=2  &&
-       ! getLoLimitStatus()  &&  ! getHiLimitStatus()  &&
-       getSpmgMode() != PAUSE  &&  getSpmgMode() != STOP  &&
-       getUserGoal() >= getUserLoLimit()  &&  getUserGoal() <= getUserHiLimit() )  {
-
-
+  if ( ! iAmMoving  &&  getRawGoal() != getRawPosition() )  {
     if (secondMotionAttempt) // it is second time when the bug manifests itself.
       qDebug() << "The undone motion bug happened twice. Something is wrong. Please report to the developers.";
     else
-      setField(".PROC", 1);
-      //      goRawPosition(getRawGoal()); // do second attempt
+      goRawPosition(getRawGoal()); // do second attempt
     secondMotionAttempt = ! secondMotionAttempt;
-
   } else if ( ! iAmMoving ) // stopped without the bug
     secondMotionAttempt = false;
 
