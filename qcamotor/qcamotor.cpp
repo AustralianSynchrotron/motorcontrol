@@ -603,8 +603,11 @@ void QCaMotor::updateMoving(const QVariant & data) {
   emit changedMoving(iAmMoving);
   if ( ! iAmMoving )
     emit stopped();
+  else
+    return; // to avoid bug check
 
   // detect the bug described at the motionAttempt declaration.
+  qtWait(500); // to allow update of the raw goal and position
   if ( ! iAmMoving  &&  getRawGoal() != getRawPosition() )  {
     if (secondMotionAttempt) // it is second time when the bug manifests itself.
       qDebug() << "The undone motion bug happened twice. Something is wrong. Please report to the developers.";
