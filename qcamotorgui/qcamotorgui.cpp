@@ -348,6 +348,7 @@ void QCaMotorGUI::init() {
   mUi->setup->addAction(action);
   connect(action, SIGNAL(triggered()), pvDialog, SLOT(show()));
 
+  mUi->step->setCompleter(0);
 
   connect(rUi->goRelative, SIGNAL(valueEdited(double)),
           mot, SLOT(goRelative(double)));
@@ -1104,10 +1105,10 @@ void QCaMotorGUI::updateDialPosition(double ps) {
 void QCaMotorGUI::updateStep(double stp) {
   sUi->step->setValue(stp);
   QString textStep = QString::number(stp);
+  mUi->step->setItemText(4, textStep);
   int knownIndex = mUi->step->findText(textStep);
   if (knownIndex == -1)
     mUi->step->insertItem(knownIndex = 4, textStep);
-  mUi->step->setCurrentIndex(knownIndex);
 }
 
 
