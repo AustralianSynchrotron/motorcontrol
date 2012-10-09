@@ -67,6 +67,17 @@ public:
   /// Qt-aware function which returns only after any motion of the motor has finished.
   void wait_stop();
 
+  /// Qt-aware function which returns only after any motion of the motor has started.
+  void wait_start();
+
+  template <class Vclass> void waitUpdated (
+      const QString & field,
+      const Vclass expected,
+      Vclass (QCaMotor::* getMethod)() const,
+      int delay_msec=0 ) const;
+
+  void waitUpdated ( const QString & field, int delay_msec=0 ) const;
+
   void saveConfiguration(const QString & fileName) const;
   void saveConfiguration(QTextStream & stream) const;
   void loadConfiguration(const QString & fileName);
@@ -1090,6 +1101,22 @@ signals:
   void error(QString msg);
 
 };
+
+
+
+template <class Vclass> void QCaMotor::waitUpdated(
+    const QString & field,
+    const Vclass expected,
+    Vclass (QCaMotor::* getMethod)() const,
+    int delay_msec
+    ) const {
+  if ( (this->*getMethod)() == expected )
+    return;
+  if ( ! fields.contains(field) )
+    return;
+  qtWait(fields[field], SIGNAL(valueUpdated(QVariant)), delay_msec);
+}
+
 
 
 #endif // CAMOTOR_H

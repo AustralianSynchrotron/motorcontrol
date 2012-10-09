@@ -727,6 +727,24 @@ void QCaMotor::wait_stop(){
     qtWait(osS);
 }
 
+void QCaMotor::wait_start() {
+  QList<ObjSig> osS;
+  osS
+      << ObjSig(this, SIGNAL(changedMoving(bool)))
+      << ObjSig(this, SIGNAL(changedConnected(bool)))
+      << ObjSig(this, SIGNAL(changedPv(QString)))
+      << ObjSig(this, SIGNAL(destroyed()));
+  if ( isConnected() && ! isMoving() )
+    qtWait(osS, QEpicsPv::expectedResponse*1.5);
+}
+
+
+void QCaMotor::waitUpdated ( const QString & field, int delay_msec) const {
+  if ( ! fields.contains(field) )
+    return;
+  qtWait(fields[field], SIGNAL(valueUpdated(QVariant)), delay_msec);
+}
+
 
 
 QCaMotor::SuMode QCaMotor::ensureSuMode(SuMode mode) {
