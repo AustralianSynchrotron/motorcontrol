@@ -18,7 +18,9 @@ HEADERS += \
 FORMS += \
     motormx_mainwindow.ui
 
-LIBS += -L../qcamotor -lqcamotor \
+LIBS += \
+    -lqtpv \
+    -L../qcamotor -lqcamotor \
     -L../qcamotorgui -lqcamotorgui \
     -L../motorstack -lmotorstack \
 

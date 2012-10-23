@@ -133,6 +133,7 @@ private:
   double dialGoal;              ///< current value of the DVAL field
   double rawGoal;               ///< current value of the RVAL field
   double step;                  ///< current value of the TW field
+  double deadBand;
 
   double offset;                ///< current value of the OFF field
   OffMode offsetMode;           ///< current value of the FOFF field
@@ -253,6 +254,8 @@ private slots:
   /// from the corresponding field (a member of ::motor).
   /// @param data new step.
   void updateStep(const QVariant & data);
+
+  void updateDeadBand(const QVariant & data);
 
 
   /// \brief Updates hi limit status (::hiLimitStatus)
@@ -563,6 +566,8 @@ public slots:
   /// @param step new step.
   void setStep(double step);
 
+  void setDeadBand(double rdbd);
+
   /// Undo last motion seen by the object (cannot undo any motion done before the construction of the object).
   ///
   /// @param wait if false then sends the command and returns immediately,
@@ -767,6 +772,8 @@ public:
   /// @return ::step
   inline double    getStep() const { return step; }
 
+  inline double getDeadBand() const {return deadBand;}
+
   /// Returns current distance of the last motion
   /// @return lastMotion
   inline double    getLastMotion() const { return isMoving()  ?  0  :  lastMotion; }
@@ -955,6 +962,8 @@ signals:
   /// The signal is emitted whenever step is changed.
   /// @param pos new step
   void changedStep(double pos);
+
+  void changedDeadBand(double rdbd);
 
 
   /// The signal is emitted whenever offset is changed.

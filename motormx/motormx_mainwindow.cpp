@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)  :
   ui(new Ui::MainWindow)
 {
 
-  //QEpicsPv::setDebugLevel(1);
+  QEpicsPv::setDebugLevel(1);
 
   const QString configPath = QString(getenv("HOME")) + "/." + QCaMotorGUI::configsSearchBaseDir;
   QDir configDir(configPath);

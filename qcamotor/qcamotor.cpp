@@ -144,6 +144,9 @@ void QCaMotor::init() {
   connect(fields[".TWV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateStep(QVariant)));
   fields.insert(".RDBD",  new QEpicsPv(this));
+  connect(fields[".RDBD"], SIGNAL(valueUpdated(QVariant)),
+          this, SLOT(updateDeadBand(QVariant)));
+
 
   fields.insert(".TWR",  new QEpicsPv(this));
   fields.insert(".TWF",  new QEpicsPv(this));
@@ -476,6 +479,10 @@ void QCaMotor::updateStep(const QVariant & data){
   updateDouble(data, step, "step", &QCaMotor::changedStep);
 }
 
+void QCaMotor::updateDeadBand(const QVariant & data){
+  updateDouble(data, deadBand, "dead band", &QCaMotor::changedDeadBand);
+}
+
 void QCaMotor::updateHiLimitStatus(const QVariant & data){
   emit changedHiLimitStatus( hiLimitStatus = data.toBool() );
 }
@@ -513,9 +520,9 @@ void QCaMotor::updateMotorResolution(const QVariant & data){
   // Actually not a bug, but many users called it a bug:
   // When RDBD field is too high.
   double amres = qAbs( getMotorResolution() );
-  double ardbd = qAbs( fields[".RDBD"]->get().toDouble() );
+  double ardbd = qAbs( getDeadBand() );
   if ( amres > 0.0  &&  ardbd > amres * 2 )
-    fields[".RDBD"]->set(amres*2, 200);
+      setDeadBand(amres*2);
 }
 
 void QCaMotor::updateReadbackResolution(const QVariant & data){
@@ -609,7 +616,7 @@ void QCaMotor::updateMoving(const QVariant & data) {
 
   // detect the bug described at the motionAttempt declaration.
   qtWait(500); // to allow update of the raw goal and position
-  if ( ! iAmMoving  &&  qAbs(getUserGoal()-getUserPosition()) > qAbs(fields[".RDBD"]->get().toDouble()) )  {
+  if ( ! iAmMoving  &&  qAbs(getUserGoal()-getUserPosition()) > qAbs(getDeadBand()) )  {
     if (secondMotionAttempt) // it is second time when the bug manifests itself.
       qDebug() << "The undone motion bug happened twice. Something is wrong. Please report to the developers.";
     else
@@ -883,6 +890,10 @@ void QCaMotor::stop(MotionExit ex){
 
 void QCaMotor::setStep(double step) {
   setField(".TWV", step);
+}
+
+void QCaMotor::setDeadBand(double rdbd) {
+  setField(".RDBD", rdbd);
 }
 
 void QCaMotor::setOffset(double dist) {
