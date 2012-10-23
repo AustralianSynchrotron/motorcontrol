@@ -143,6 +143,7 @@ void QCaMotor::init() {
   fields.insert(".TWV",  new QEpicsPv(this));
   connect(fields[".TWV"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateStep(QVariant)));
+  fields.insert(".RDBD",  new QEpicsPv(this));
 
   fields.insert(".TWR",  new QEpicsPv(this));
   fields.insert(".TWF",  new QEpicsPv(this));
@@ -512,9 +513,9 @@ void QCaMotor::updateMotorResolution(const QVariant & data){
   // Actually not a bug, but many users called it a bug:
   // When RDBD field is too high.
   double amres = qAbs( getMotorResolution() );
-  double ardbd = qAbs( QEpicsPv::get(getPv()+".RDBD").toDouble() );
+  double ardbd = qAbs( fields[".RDBD"]->get().toDouble() );
   if ( amres > 0.0  &&  ardbd > amres * 2 )
-    QEpicsPv::set(getPv()+".RDBD", amres*2, 200);
+    fields[".RDBD"]->set(amres*2, 200);
 }
 
 void QCaMotor::updateReadbackResolution(const QVariant & data){
@@ -608,7 +609,7 @@ void QCaMotor::updateMoving(const QVariant & data) {
 
   // detect the bug described at the motionAttempt declaration.
   qtWait(500); // to allow update of the raw goal and position
-  if ( ! iAmMoving  &&  getRawGoal() != getRawPosition() )  {
+  if ( ! iAmMoving  &&  qAbs(getUserGoal()-getUserPosition()) > qAbs(fields[".RDBD"]->get().toDouble()) )  {
     if (secondMotionAttempt) // it is second time when the bug manifests itself.
       qDebug() << "The undone motion bug happened twice. Something is wrong. Please report to the developers.";
     else
