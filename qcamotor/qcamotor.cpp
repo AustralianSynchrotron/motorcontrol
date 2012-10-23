@@ -5,7 +5,7 @@
 #include <QTimer>
 #include <QTime>
 #include <QFile>
-
+#include <QtCore/qmath.h>
 
 
 
@@ -411,11 +411,11 @@ void QCaMotor::updateDouble(const QVariant & data,
 
 void QCaMotor::updateConnection(bool suc){
   if (suc)
-    foreach(QString key, fields.keys())
+    foreach(QString key, fields.keys()) 
       if ( suc &&
            key != "_ON_STATUS" && key != "_ON_CMD" &&
            key != "_CONNECTED_STATUS" ) // Nonstandard fields
-        suc &= fields[key]->isConnected();
+        suc &= fields[key]->isConnected(); 
   if (suc != iAmConnected) {
     emit changedConnected(iAmConnected = suc);
     // below want to set lastMotion to 0;
@@ -616,7 +616,7 @@ void QCaMotor::updateMoving(const QVariant & data) {
 
   // detect the bug described at the motionAttempt declaration.
   qtWait(500); // to allow update of the raw goal and position
-  if ( ! iAmMoving  &&  qAbs(getUserGoal()-getUserPosition()) > qAbs(getDeadBand()) )  {
+  if ( ! iAmMoving  &&  qAbs(getUserGoal()-getUserPosition()) > qMax( qAbs(getDeadBand()), qPow(-getPrecision(),10) ) ) {
     if (secondMotionAttempt) // it is second time when the bug manifests itself.
       qDebug() << "The undone motion bug happened twice. Something is wrong. Please report to the developers.";
     else
