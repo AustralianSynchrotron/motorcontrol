@@ -601,11 +601,12 @@ void QCaMotor::updateBacklash(const QVariant & data){
 
 void QCaMotor::updateMoving(const QVariant & data) {
 
-  bool newMov = ! data.toBool();
+  const bool newMov = ! data.toBool();
+  const bool firstUpdate = newMov == iAmMoving;
 
-  if ( newMov == iAmMoving ) lastMotion = 0; // first update
-  else if ( newMov )         lastMotion = getRawPosition();
-  else                       lastMotion = getRawPosition() - lastMotion;
+  if ( firstUpdate ) lastMotion = 0;
+  else if ( newMov ) lastMotion = getRawPosition();
+  else               lastMotion = getRawPosition() - lastMotion;
 
   iAmMoving = newMov;
   emit changedMoving(iAmMoving);
@@ -614,15 +615,18 @@ void QCaMotor::updateMoving(const QVariant & data) {
   else
     return; // to avoid bug check
 
+  if (firstUpdate)
+    return;
+
   // detect the bug described at the motionAttempt declaration.
-  qtWait(500); // to allow update of the raw goal and position
+  qtWait(100); // to allow update of the goal and position
   if ( ! iAmMoving  &&  qAbs(getUserGoal()-getUserPosition()) > qMax( qAbs(getDeadBand()), qPow(-getPrecision(),10) ) ) {
     if (secondMotionAttempt) // it is second time when the bug manifests itself.
       qDebug() << "The undone motion bug happened twice. Something is wrong. Please report to the developers.";
     else
       goRawPosition(getRawGoal()); // do second attempt
     secondMotionAttempt = ! secondMotionAttempt;
-  } else if ( ! iAmMoving ) // stopped without the bug
+  } else // stopped without the bug
     secondMotionAttempt = false;
 
 }
