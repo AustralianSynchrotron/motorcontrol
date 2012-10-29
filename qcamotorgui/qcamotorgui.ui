@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>627</width>
-    <height>29</height>
+    <height>31</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QMDoubleSpinBox" name="userPosition">
+    <widget class="QHistoryDSB" name="userPosition">
      <property name="enabled">
       <bool>false</bool>
      </property>
@@ -274,17 +274,13 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QMDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header location="global">qtpvwidgets.h</header>
-   <slots>
-    <signal>valueEdited(double)</signal>
-    <signal>escaped()</signal>
-   </slots>
-  </customwidget>
-  <customwidget>
    <class>QMultiComboBox</class>
    <extends>QComboBox</extends>
+   <header>qcamotorgui-additional.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QHistoryDSB</class>
+   <extends>QDoubleSpinBox</extends>
    <header>qcamotorgui-additional.h</header>
   </customwidget>
  </customwidgets>

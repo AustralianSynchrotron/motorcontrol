@@ -63,6 +63,7 @@ private:
   QDialog * relativeDialog;     ///< "Move relatively" dialog.
 
   QAction * pasteCfgAction;
+  QAction * pastePvAction;
 
   static QMap<QString,QString> knownConfigs;
   static KnownPVTable * knownPVs; ///< Table model for the table view in the "Choose PV".
@@ -158,10 +159,8 @@ private slots:
   /// \brief Pastes motor's configuration from clipboard and loads it.
   void pasteConfiguration();
 
+  void pastePv();
 
-  /*
-  void showContextMenu(const QPoint& pos);
-  */
 
   /// \brief Apply filter to the table view in the "Choose PV" GUI.
   /// Used to catch the text changes from the search line in the GUI.
@@ -207,36 +206,45 @@ private slots:
   /// @param res new resolution.
   void setUnitsPerRevAndDirection(double res);
 
+  void recordCurrent();
 
   /// Catches the go-backward-by-step commands from GUIs.
-  inline void goStepM(){ mot->goStep(-1); }
+  inline void goStepM(){ recordCurrent(); mot->goStep(-1); }
 
   /// Catches the go-forward-by-step commands from GUIs.
-  inline void goStepP(){ mot->goStep(1);  }
+  inline void goStepP(){ recordCurrent(); mot->goStep(1);  }
 
   /// Catches the go-to-negative-limit commands from GUIs.
-  inline void goLimitM(){ mot->goLimit(-1); }
+  inline void goLimitM(){ recordCurrent(); mot->goLimit(-1); }
 
   /// Catches the go-to-positive-limit commands from GUIs.
-  inline void goLimitP(){ mot->goLimit(1);  }
+  inline void goLimitP(){ recordCurrent(); mot->goLimit(1);  }
 
   /// Catches the go-to-negative-home commands from GUIs.
-  inline void goHomeM(){ mot->goHome(-1); }
+  inline void goHomeM(){ recordCurrent(); mot->goHome(-1); }
 
   /// Catches the go-to-positive-home commands from GUIs.
-  inline void goHomeP(){ mot->goHome(1);  }
+  inline void goHomeP(){ recordCurrent(); mot->goHome(1);  }
 
   /// Catches the start-negative-jog commands from GUIs.
-  inline void jogMstart(){ mot->jog(true, -1); }
+  inline void jogMstart(){ recordCurrent(); mot->jog(true, -1); }
 
   /// Catches the stop-negative-jog commands from GUIs.
   inline void jogMstop(){ mot->jog(false, -1); }
 
   /// Catches the start-positive-jog commands from GUIs.
-  inline void jogPstart(){ mot->jog(true, 1); }
+  inline void jogPstart(){ recordCurrent(); mot->jog(true, 1); }
 
   /// Catches the stop-positive-jog commands from GUIs.
   inline void jogPstop(){ mot->jog(false, 1); }
+
+  inline void goRelative(double dist) { recordCurrent(); mot->goRelative(dist);}
+
+  inline void goUserPosition(double pos) { recordCurrent(); mot->goUserPosition(pos);}
+
+  inline void goDialPosition(double pos) { recordCurrent(); mot->goDialPosition(pos);}
+
+  inline void goRawPosition(double pos) { recordCurrent(); mot->goRawPosition(pos);}
 
   /// Catches Stop/Undo commands from GUIs.
   ///

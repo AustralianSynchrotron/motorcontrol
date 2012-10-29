@@ -11,6 +11,10 @@
 #include <QLineEdit>
 #include <QToolButton>
 #include <QLabel>
+#include <qtpvwidgets.h>
+#include <QAction>
+#include <QMenu>
+#include <QPushButton>
 
 #include <math.h>
 
@@ -120,53 +124,50 @@ private slots:
 
 
 /// QlineEdit with the "clear text" button imbedded into it.
-class LineEdit : public QLineEdit
-{
+class LineEdit : public QLineEdit {
     Q_OBJECT;
 
 private:
   QToolButton *clearButton; ///< button which clears the text
 
 public:
-
   /// Constructor.
   /// @param parent object's parent.
-  LineEdit(QWidget *parent)
-    : QLineEdit(parent)
-  {
-    clearButton = new QToolButton(this);
-    clearButton->setToolTip("Clear text");
-    clearButton->setArrowType(Qt::LeftArrow);
-    clearButton->setCursor(Qt::ArrowCursor);
-    clearButton->setStyleSheet("QToolButton { border: none; padding: 0px; }");
-    clearButton->hide();
-    connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
-    connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(updateCloseButton(const QString&)));
-    int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
-    setStyleSheet(QString("QLineEdit { padding-right: %1px; } ").arg(clearButton->sizeHint().width() + frameWidth + 1));
-    QSize msz = minimumSizeHint();
-    setMinimumSize(qMax(msz.width(), clearButton->sizeHint().height() + frameWidth * 2 + 2),
-                   qMax(msz.height(), clearButton->sizeHint().height() + frameWidth * 2 + 2));
-  }
+  LineEdit(QWidget *parent);
 
 protected:
-
   /// Reimplemented resize event
-  void resizeEvent(QResizeEvent *) {
-    QSize sz = clearButton->sizeHint();
-    int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
-    clearButton->move(rect().right() - frameWidth - sz.width(),
-                      (rect().bottom() + 1 - sz.height())/2);
-  }
+  void resizeEvent(QResizeEvent *);
+
+private slots:
+  /// Shows/hides the button
+  void updateCloseButton(const QString& text);
+};
+
+
+
+
+class QHistoryDSB : public QMDoubleSpinBox {
+    Q_OBJECT;
+    QHash<QAction*,double> history;
+    QMenu * history_menu;
+    QAction * lastHistory;
+    QAction * rememberMe;
+
+protected:
+  bool eventFilter(QObject *obj, QEvent *event);
+
+public:
+  QHistoryDSB(QWidget * parent = 0);
+
+public slots:
+
+  void rememberInHistory();
 
 private slots:
 
-  /// Shows/hides the button
-  void updateCloseButton(const QString& text) {
-    clearButton->setVisible(!text.isEmpty());
-  }
+  void execHistory();
 
 };
-
 
 #endif // QMSPINBOX_H

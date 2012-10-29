@@ -323,9 +323,17 @@ void QCaMotorGUI::init() {
 
   QAction * action;
 
+  action = new QAction("Set PV", mUi->setup);
+  mUi->setup->addAction(action);
+  connect(action, SIGNAL(triggered()), pvDialog, SLOT(show()));
+
   action = new QAction("Copy PV", mUi->setup);
   mUi->setup->addAction(action);
   connect(action, SIGNAL(triggered()), SLOT(copyPV()));
+
+  pastePvAction = new QAction("Paste PV", mUi->setup);
+  mUi->setup->addAction(pastePvAction);
+  connect(pastePvAction, SIGNAL(triggered()), SLOT(pastePv()));
 
   action = new QAction("Copy description", mUi->setup);
   mUi->setup->addAction(action);
@@ -344,17 +352,15 @@ void QCaMotorGUI::init() {
   mUi->setup->addAction(pasteCfgAction);
   connect(pasteCfgAction, SIGNAL(triggered()), SLOT(pasteConfiguration()));
 
-  action = new QAction("Set PV", mUi->setup);
-  mUi->setup->addAction(action);
-  connect(action, SIGNAL(triggered()), pvDialog, SLOT(show()));
+
 
   mUi->step->setCompleter(0);
 
   connect(rUi->goRelative, SIGNAL(valueEdited(double)),
-          mot, SLOT(goRelative(double)));
+          SLOT(goRelative(double)));
 
   connect(mUi->userPosition, SIGNAL(valueEdited(double)),
-          mot, SLOT(goUserPosition(double)));
+          SLOT(goUserPosition(double)));
   connect(mUi->step, SIGNAL(textEdited(QString)),
           SLOT(setStep(QString)));
   connect(mUi->step, SIGNAL(activated(QString)),
@@ -434,7 +440,7 @@ void QCaMotorGUI::init() {
   connect(sUi->dialPosition, SIGNAL(valueEdited(double)),
           mot, SLOT(setDialPosition(double)));
   connect(sUi->dialGoal, SIGNAL(valueEdited(double)),
-          mot, SLOT(goDialPosition(double)));
+          SLOT(goDialPosition(double)));
   connect(sUi->limitLoDial, SIGNAL(valueEdited(double)),
           mot, SLOT(setDialLoLimit(double)));
   connect(sUi->limitHiDial, SIGNAL(valueEdited(double)),
@@ -498,11 +504,11 @@ void QCaMotorGUI::init() {
   connect(sUi->rawPosition, SIGNAL(valueEdited(double)),
           mot, SLOT(setRawPosition(double)));
   connect(sUi->userVarGoal, SIGNAL(valueEdited(double)),
-          mot, SLOT(goUserPosition(double)));
+          SLOT(goUserPosition(double)));
   connect(sUi->userGoal, SIGNAL(valueEdited(double)),
-          mot, SLOT(goUserPosition(double)));
+          SLOT(goUserPosition(double)));
   connect(sUi->rawGoal, SIGNAL(valueEdited(double)),
-          mot, SLOT(goRawPosition(double)));
+          SLOT(goRawPosition(double)));
   connect(sUi->callRelative, SIGNAL(clicked()),
           relativeDialog, SLOT(show()) );
   connect(sUi->offset, SIGNAL(valueEdited(double)),
@@ -665,6 +671,12 @@ void QCaMotorGUI::pasteConfiguration() {
   QTextStream stream(&cfg);
   mot->loadConfiguration(stream);
 }
+
+
+void QCaMotorGUI::pastePv() {
+  mot->setPv(QApplication::clipboard()->text());
+}
+
 
 void QCaMotorGUI::filterPV(const QString & _text){
   proxyModel->setSearch(_text);
@@ -1109,6 +1121,8 @@ void QCaMotorGUI::updateStep(double stp) {
   int knownIndex = mUi->step->findText(textStep);
   if (knownIndex == -1)
     mUi->step->insertItem(knownIndex = 4, textStep);
+  if ( mUi->step->currentText() == "jog" && mUi->jogM->isHidden() )
+    mUi->step->setCurrentIndex(knownIndex);
 }
 
 
@@ -1120,26 +1134,33 @@ void QCaMotorGUI::updateDescription(const QString & dsc){
 }
 
 
+void QCaMotorGUI::recordCurrent() {
+    if ( ! mot->isConnected() )
+        return;
+    mUi->userPosition->rememberInHistory();
+    sUi->userGoal->rememberInHistory();
+    sUi->userVarGoal->rememberInHistory();
+    sUi->rawGoal->rememberInHistory();
+}
+
+
 void QCaMotorGUI::updateMoving(bool mov){
 
   updateAllElements();
 
-  // Updates status of the jog buttons on stop
-  if ( !mov ) {
-    sUi->jogM->setDown(false);
-    sUi->jogP->setDown(false);
-    if ( mUi->goM->isDown() )
-      mUi->goM->setDown(false);
-    if ( mUi->goP->isDown() )
-      mUi->goP->setDown(false);
+  if ( mov ) {
+      mUi->userPosition->setFocus();
+      sUi->message->setText("Moving...");
   } else {
-    mUi->userPosition->setFocus();
+      sUi->jogM->setDown(false);
+      sUi->jogP->setDown(false);
+      if ( mUi->goM->isDown() )
+        mUi->goM->setDown(false);
+      if ( mUi->goP->isDown() )
+        mUi->goP->setDown(false);
+      if (sUi->message->text() == "Moving...")
+          sUi->message->clear();
   }
-
-  if (mov)
-    sUi->message->setText("Moving...");
-  else if (sUi->message->text() == "Moving...")
-    sUi->message->clear();
 
   updateStopButtonStyle();
 
