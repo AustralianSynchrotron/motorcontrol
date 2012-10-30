@@ -804,6 +804,8 @@ public:
   /// @return ::loLimitStatus
   inline bool      getLoLimitStatus() const { return loLimitStatus; }
 
+  inline bool      getLimitStatus() const {return getLoLimitStatus() || getHiLimitStatus();}
+
   /// Returns current high user limit
   /// @return ::userHiLimit
   inline double    getUserHiLimit() const { return userHiLimit; }
