@@ -93,12 +93,10 @@ void LineEdit::updateCloseButton(const QString& text) {
 
 QHistoryDSB::QHistoryDSB(QWidget * parent) :
     QMDoubleSpinBox(parent),
-    history_menu(new QMenu(this)),
-    rememberMe(new QAction("Record current in history", this))
+    history_menu(new QMenu(this))
 {
     lineEdit()->installEventFilter(this);
     history_menu->setDisabled(true);
-    connect(rememberMe, SIGNAL(triggered()), SLOT(rememberInHistory()));
 }
 
 
@@ -110,8 +108,6 @@ bool QHistoryDSB::eventFilter(QObject *obj, QEvent *event) {
         action->setMenu(history_menu);
         QAction * fact = menu->actions().value(0);
         menu->insertAction(fact, action);
-        menu->insertAction(fact, rememberMe);
-        menu->insertSeparator(fact);
     }
     return QDoubleSpinBox::eventFilter(obj,event);
 }

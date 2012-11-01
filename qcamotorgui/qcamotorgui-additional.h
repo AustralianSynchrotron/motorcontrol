@@ -152,7 +152,6 @@ class QHistoryDSB : public QMDoubleSpinBox {
     QHash<QAction*,double> history;
     QMenu * history_menu;
     QAction * lastHistory;
-    QAction * rememberMe;
 
 protected:
   bool eventFilter(QObject *obj, QEvent *event);
