@@ -733,7 +733,7 @@ void QCaMotorGUI::static_init() {
   // WARNING: PORTING ISSUE.
   QStringList fileNames;
   fileNames
-    << "/etc/" + configsSearchBaseDir + "/" + pvListBaseName
+    << "/etc/" + pvListBaseName
     << QString(getenv("HOME")) + "/." + configsSearchBaseDir + "/" + pvListBaseName;
 
   QStringList readPVs;
