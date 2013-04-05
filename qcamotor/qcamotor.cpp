@@ -803,7 +803,7 @@ void QCaMotor::finilizeMotion(MotionExit ex, SuMode restore_mode) {
     qtWait( getAcceleration() * 1000 );
   else if ( ex == STOPPED )
     while ( isMoving() )
-      qtWait(this, SIGNAL(changedMoving(bool)));
+      qtWait(this, SIGNAL(changedMoving(bool)), 1000);
 
   if ( getSuMode() != restore_mode )
     setSuMode(restore_mode);
