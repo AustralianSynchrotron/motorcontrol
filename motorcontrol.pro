@@ -7,8 +7,7 @@ CONFIG += ordered
 SUBDIRS = qcamotor \
       qcamotorgui \
       motorstack \
-      motormx \
-    DesignerPlugins
+      motormx 
 
 TEMPLATE = subdirs
 
