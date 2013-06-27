@@ -16,10 +16,18 @@ FORMS += qcamotorgui.ui \
 LIBS += -L../qcamotor -lqcamotor \
         -lqtpvwidgets
 
+OTHER_FILES += \
+    listOfKnownMotorPVs.txt
+
 headers.files = qcamotorgui.h
 headers.path = $$[INSTALLBASE]/include
 INSTALLS += headers
 target.files = $$[TARGET]
 target.path = $$[INSTALLBASE]/lib
 INSTALLS += target
+
+config.files = $$OTHER_FILES
+config.path = /../../../../../../../../../../../etc # This is how I force it to be installed in /etc
+INSTALLS += config
+
 
