@@ -25,6 +25,9 @@
      <property name="toolTip">
       <string>Setup and advanced control dialog</string>
      </property>
+     <property name="styleSheet">
+      <string notr="true">text-align: left</string>
+     </property>
      <property name="text">
       <string>SETUP</string>
      </property>
@@ -274,13 +277,13 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QMultiComboBox</class>
-   <extends>QComboBox</extends>
+   <class>QHistoryDSB</class>
+   <extends>QDoubleSpinBox</extends>
    <header>qcamotorgui-additional.h</header>
   </customwidget>
   <customwidget>
-   <class>QHistoryDSB</class>
-   <extends>QDoubleSpinBox</extends>
+   <class>QMultiComboBox</class>
+   <extends>QComboBox</extends>
    <header>qcamotorgui-additional.h</header>
   </customwidget>
  </customwidgets>
