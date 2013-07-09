@@ -1,0 +1,139 @@
+[SR08ID01MCS08%3AMTR63D]
+description=3B CT - rotation
+units=deg
+position=0
+speed=20
+lo_limit=-100
+hi_limit=200
+steps_per_revol=1
+units_per_revol=0.0003125
+
+[SR08ID01MCS09%3AMTR64G]
+description=CT 3B - tilt X (top)
+units=deg
+position=0
+speed=2
+lo_limit=-9
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=9.72656e-05
+
+[SR08ID01MCS09%3AMTR64F]
+description=CT 3B - tilt Y (bot)
+units=deg
+position=0
+speed=2
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=7.03125e-05
+
+[SR08ID01MCS09%3AMTR64E]
+description=CT 3B - Y
+units=mm
+position=0
+speed=6
+lo_limit=-50
+hi_limit=137
+steps_per_revol=1
+units_per_revol=0.0003125
+
+[SR08ID01MCS08%3AMTR63B]
+description=3B Table1 Y
+units=mm
+position=-0.1
+speed=20
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=0.00078125
+
+[SR08ID01MCS08%3AMTR63A]
+description=3B Table1 Z
+units=mm
+position=-92.88659375
+speed=0.8
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=3.125e-05
+
+[SR08ID01MCS10%3AMTR65A]
+description=3B CT - cross trans TOP
+units=mm
+position=0
+speed=2
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=0.00015625
+
+[SR08ID01MCS10%3AMTR65B]
+description=3B CT - cross trans BOT
+units=mm
+position=0
+speed=12800
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=0.00015625
+
+[SR08ID01MCS06%3AMTR61B]
+description=3B Table2 Y
+units=mm
+position=-56.0614002
+speed=20.00128
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=0.0007813
+
+[SR08ID01MCS06%3AMTR61A]
+description=3B Table2 Z
+units=mm
+position=-269.6268388
+speed=0.80128
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=3.13e-05
+
+[SR08ID01MCS12%3AZGAP]
+description=Papa Bear - Z aperture
+units=mm
+position=48
+speed=5
+lo_limit=-2
+hi_limit=48
+steps_per_revol=1000
+units_per_revol=0.1
+
+[SR08ID01MCS12%3AYGAP]
+description=Papa Bear - Y aperture
+units=mm
+position=100
+speed=5
+lo_limit=-2
+hi_limit=700
+steps_per_revol=1000
+units_per_revol=0.1
+
+[SR08ID01MCS12%3AZCENTRE]
+description=Papa Bear - Z
+units=mm
+position=-196.32265625
+speed=1
+lo_limit=-1279.6
+hi_limit=720.4
+steps_per_revol=1000
+units_per_revol=0.78125
+
+[SR08ID01MCS12%3AYCENTRE]
+description=Papa Bear - Y
+units=mm
+position=0
+speed=20
+lo_limit=-1000
+hi_limit=1000
+steps_per_revol=1000
+units_per_revol=0.1
