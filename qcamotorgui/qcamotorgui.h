@@ -252,7 +252,7 @@ private slots:
   void pressStop();
 
   /// Divides current step by 10.
-  void stepD10();
+  inline void stepD10() { mot->setStep( 0.1 * mot->getStep() ); }
 
   /// Divides current step by 2.
   inline void stepD2() { mot->setStep( 0.5 * mot->getStep() ); }
