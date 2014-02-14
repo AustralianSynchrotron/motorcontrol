@@ -17,7 +17,7 @@ QValidator::State StepValidator::validate ( QString & input, int &) const {
   double ndouble = input.toDouble(&okst);
   return ( input == "jog" ||
            ( okst && ndouble >= min && ndouble <= max ) )
-    ?  Acceptable  :  Intermediate ;
+      ?  Acceptable  :  Intermediate ;
 }
 
 
@@ -37,6 +37,12 @@ void QMultiComboBox::focusInEvent(QFocusEvent * event){
   stepValidator->setLast(currentText());
 }
 
+void QMultiComboBox::focusOutEvent(QFocusEvent * event){
+  QComboBox::focusOutEvent(event);
+  emit escaped();
+}
+
+
 void QMultiComboBox::fixup() {
   QString fixstring = currentText();
   validator()->fixup(fixstring);
@@ -49,7 +55,7 @@ void QMultiComboBox::fixup() {
 
 QMultiComboBox::QMultiComboBox(QWidget * parent)
   : QComboBox(parent),
-  stepValidator(new StepValidator(this))
+    stepValidator(new StepValidator(this))
 {
   // Direct call to the setValidator(stepValidator) does not work
   // here because the construction has to be completed in prior.
@@ -92,46 +98,49 @@ void LineEdit::updateCloseButton(const QString& text) {
 
 
 QHistoryDSB::QHistoryDSB(QWidget * parent) :
-    QMDoubleSpinBox(parent),
-    history_menu(new QMenu(this))
+  QMDoubleSpinBox(parent),
+  history_menu(new QMenu(this))
 {
-    lineEdit()->installEventFilter(this);
-    history_menu->setDisabled(true);
+  lineEdit()->installEventFilter(this);
+  history_menu->setDisabled(true);
 }
 
 
 bool QHistoryDSB::eventFilter(QObject *obj, QEvent *event) {
-    QChildEvent * chev = dynamic_cast<QChildEvent*>(event);
-    QMenu * menu=0;
-    if ( chev && chev->polished() && (menu = dynamic_cast<QMenu*>(chev->child())) ) {
-        QAction * action = new QAction(QString("History"), menu);
-        action->setMenu(history_menu);
-        QAction * fact = menu->actions().value(0);
-        menu->insertAction(fact, action);
-    }
-    return QDoubleSpinBox::eventFilter(obj,event);
+  QChildEvent * chev = dynamic_cast<QChildEvent*>(event);
+  QMenu * menu=0;
+  if ( chev && chev->polished() &&
+       (menu = dynamic_cast<QMenu*>(chev->child())) ) {
+    QAction * action = new QAction(QString("History"), menu);
+    action->setMenu(history_menu);
+    QAction * fact = menu->actions().value(0);
+    menu->insertAction(fact, action);
+  }
+  return QDoubleSpinBox::eventFilter(obj,event);
 }
 
 void QHistoryDSB::rememberInHistory() {
-    history_menu->setEnabled(true);
-    QAction * exists = history.key(value());
-    if ( exists ) {
-        history.remove(exists);
-        history_menu->removeAction(exists);
-    }
-    QAction * act = new QAction(QString::number(value()), history_menu);
-    connect(act, SIGNAL(triggered()), SLOT(execHistory()));
-    history[act] = value();
-    history_menu->insertAction(lastHistory, act);
-    lastHistory = act;
-  }
+  history_menu->setEnabled(true);
+  QAction * act = new QAction(QString::number(value()), history_menu);
+  connect(act, SIGNAL(triggered()), SLOT(execHistory()));
+  history_menu->insertAction(lastHistory, act);
+  lastHistory = act;
+}
 
 void QHistoryDSB::execHistory() {
-    QAction * act = dynamic_cast<QAction*> (sender());
-    if (act && history.contains(act)) {
-        setValue(history[act]);
-        emit valueEdited(history[act]);
-    }
+
+  QAction * act = dynamic_cast<QAction*> (sender());
+  if (!act)
+    return;
+
+  bool convok;
+  double his=act->text().toDouble(&convok);
+  if (!convok)
+    return;
+
+  setValue(his);
+  emit valueEdited(his);
+
 }
 
 

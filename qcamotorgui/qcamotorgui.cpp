@@ -365,6 +365,8 @@ void QCaMotorGUI::init() {
           SLOT(setStep(QString)));
   connect(mUi->step, SIGNAL(activated(QString)),
           SLOT(setStep(QString)));
+  connect(mUi->step, SIGNAL(escaped()),
+          SLOT(updateStep()));
   connect(mUi->stop, SIGNAL(clicked()),
           SLOT(pressStop()));
   connect(mUi->jogM, SIGNAL(pressed()),
@@ -545,7 +547,7 @@ void QCaMotorGUI::init() {
   connect(mot, SIGNAL(changedRawGoal(double)),
           sUi->rawGoal, SLOT(setValue(double)));
   connect(mot, SIGNAL(changedStep(double)),
-          SLOT(updateStep(double)));
+          SLOT(updateStep()));
 
   connect(mot, SIGNAL(changedOffset(double)),
           sUi->offset, SLOT(setValue(double)));
@@ -1114,14 +1116,16 @@ void QCaMotorGUI::updateDialPosition(double ps) {
   updateGoButtonStyle();
 }
 
-void QCaMotorGUI::updateStep(double stp) {
+void QCaMotorGUI::updateStep() {
+  double stp = mot->getStep();
   sUi->step->setValue(stp);
+  sUi->step->QDoubleSpinBox::setValue(stp); // needed to update it even if it has focus
   QString textStep = QString::number(stp);
   mUi->step->setItemText(4, textStep);
   int knownIndex = mUi->step->findText(textStep);
   if (knownIndex == -1)
     mUi->step->insertItem(knownIndex = 4, textStep);
-  if ( mUi->step->currentText() == "jog" && mUi->jogM->isHidden() )
+  if ( mUi->step->currentText() == "jog" || mUi->jogM->isHidden() )
     mUi->step->setCurrentIndex(knownIndex);
 }
 

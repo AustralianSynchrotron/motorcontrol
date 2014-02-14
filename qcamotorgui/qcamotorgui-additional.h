@@ -87,6 +87,8 @@ private:
   /// @param event focusing event.
   void focusInEvent(QFocusEvent * event);
 
+  void focusOutEvent(QFocusEvent * event);
+
   StepValidator * stepValidator; ///< the validator
 
 public:
@@ -149,7 +151,6 @@ private slots:
 
 class QHistoryDSB : public QMDoubleSpinBox {
     Q_OBJECT;
-    QHash<QAction*,double> history;
     QMenu * history_menu;
     QAction * lastHistory;
 

@@ -252,7 +252,7 @@ private slots:
   void pressStop();
 
   /// Divides current step by 10.
-  inline void stepD10() { mot->setStep( 0.1 * mot->getStep() ); }
+  void stepD10();
 
   /// Divides current step by 2.
   inline void stepD2() { mot->setStep( 0.5 * mot->getStep() ); }
@@ -287,7 +287,7 @@ private slots:
 
   void updateDialPosition(double ps);
 
-  void updateStep(double stp);
+  void updateStep();
 
   void updateUserHiLimit(double hiL);
 
