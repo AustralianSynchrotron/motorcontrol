@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONFIGFILE="/etc/motormx/listOfKnownMotorPVs.txt"
+CONFIGFILE="/etc/listOfKnownMotorPVs.txt"
 
 if [ -e $CONFIGFILE ] ; then # everywhere except for the motor's IOC
 

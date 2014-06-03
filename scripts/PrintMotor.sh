@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FIELDS="EGU PREC LLM HLM MRES UREV SREV OFF DIR VMAX VELO BVEL JVEL S ACCL BACC JAR BDST"
+FIELDS="EGU PREC LLM HLM DLLM DHLM MRES ERES UREV SREV UEIP OFF DIR VMAX VELO BVEL JVEL S ACCL BACC JAR BDST RDBD ADEL"
 
 printOneMotor() {
 
@@ -12,8 +12,9 @@ printOneMotor() {
   for fld in $FIELDS; do
     ALLPVS="$ALLPVS $1.$fld "
   done
-
+  echo caget -t $ALLPVS
   OUTSTRING=$(caget -t $ALLPVS 2>/dev/null)
+  echo DONE $OUTSTRING
   if [ $? -eq 0 ] ; then
     echo $1: $OUTSTRING \"$(caget -t $1.DESC)\"
     return $?
@@ -28,7 +29,7 @@ printOneMotor() {
 beverbose=false
 if [ "$1" == "-v" ] ; then
   beverbose=true
-  echo "#" PV Units Precision LoLimit HiLimit Units-per-step Units-per-revolution Steps-per-revolution Offset Direction MaxSpeed Speed BacklashSpeed JogSpeed Steps-per-second Acceleration BacklashAcceleration JogAcceleration Backlash Description 
+  echo "#" PV Units Precision LoLimit HiLimit DialLoLimit DialHiLimit Units-per-step Encode-units-per-step Units-per-revolution Steps-per-revolution Offset Direction MaxSpeed Speed BacklashSpeed JogSpeed Steps-per-second Acceleration BacklashAcceleration JogAcceleration Backlash RDBD ADEL Description 
   echo "#" PV $FIELDS DESC
   shift
 fi

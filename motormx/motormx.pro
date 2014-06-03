@@ -24,7 +24,7 @@ LIBS += \
     -L../qcamotorgui -lqcamotorgui \
     -L../motorstack -lmotorstack \
 
-target.files = $$[TARGET]
+target.files = $$[TARGET] ../scripts/AllMotorPVs.sh   ../scripts/PrintMotor.sh   ../scripts/WaitMotorsUp.sh
 target.path = $$[INSTALLBASE]/bin
 INSTALLS += target
 
