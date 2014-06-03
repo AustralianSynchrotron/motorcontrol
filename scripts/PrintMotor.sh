@@ -12,9 +12,7 @@ printOneMotor() {
   for fld in $FIELDS; do
     ALLPVS="$ALLPVS $1.$fld "
   done
-  echo caget -t $ALLPVS
   OUTSTRING=$(caget -t $ALLPVS 2>/dev/null)
-  echo DONE $OUTSTRING
   if [ $? -eq 0 ] ; then
     echo $1: $OUTSTRING \"$(caget -t $1.DESC)\"
     return $?
