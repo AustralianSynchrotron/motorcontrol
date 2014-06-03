@@ -720,6 +720,9 @@ Ui::MotorControl * QCaMotorGUI::basicUI() {
 
 void QCaMotorGUI::lock(bool lck){
   locked = lck;
+  foreach ( QAction * action, mUi->setup->actions() )
+    if ( action->text() == "Set PV" || action->text() == "Paste PV" )
+      action->setDisabled(lck);
   pvDialog->hide();
 }
 
