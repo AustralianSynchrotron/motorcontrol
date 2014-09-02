@@ -749,7 +749,7 @@ void QCaMotorGUI::static_init() {
       while (!file.atEnd()) {
         QByteArray line = file.readLine().trimmed();
         //line.chop(1);
-        if ( ! line.isEmpty() )
+        if ( ! line.isEmpty() && line.at(0) != '#' )
           readPVs << line;
       }
       file.close();
