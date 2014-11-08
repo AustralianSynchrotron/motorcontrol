@@ -1,0 +1,199 @@
+[SR08ID01PCO01%3AZOOM]
+description=Ruby Zoom in 3B
+units=mm
+position=70.6
+speed=3
+lo_limit=-1000
+hi_limit=1000
+steps_per_revol=1000
+units_per_revol=0.78125
+
+[SR08ID01TBL32%3AY]
+description=3B Table2 Y
+units=mm
+position=97.49765625
+speed=20
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1000
+units_per_revol=-0.78125
+
+[SR08ID01TBL32%3AZ]
+description=3B Table2 Z
+units=mm
+position=-165.6325
+speed=0.8
+lo_limit=-5071.8625
+hi_limit=4928.1375
+steps_per_revol=1000
+units_per_revol=0.03125
+
+[SR08ID01SST01%3ASAMPLEX]
+description=3B CT - Sample trans top
+units=mm
+position=-1.73
+speed=1
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1000
+units_per_revol=-0.15625
+
+[SR08ID01SST01%3ASAMPLEY]
+description=3B CT - Sample trans bot
+units=mm
+position=0.03
+speed=0.5
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1000
+units_per_revol=-0.15625
+
+[SR08ID01SST01%3AROTATION]
+description=3B CT - Rotation
+units=deg
+position=0.004
+speed=20
+lo_limit=-48
+hi_limit=148
+steps_per_revol=1000
+units_per_revol=1
+
+[SR08ID01SST01%3ATILT1]
+description=3B CT - Tilt Bottom
+units=deg
+position=0
+speed=2
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1000
+units_per_revol=0.0703125
+
+[SR08ID01SST01%3ATILT2]
+description=3B CT - Tilt Top
+units=deg
+position=0.01995625
+speed=2.7555555555556
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1000
+units_per_revol=0.096875
+
+[SR08ID01SST23%3AY]
+description=2B Large CT Y
+units=mm
+position=-81
+speed=10
+lo_limit=-1000
+hi_limit=1000
+steps_per_revol=1000
+units_per_revol=-0.2
+
+[SR08ID01SST23%3AZ]
+description=2B Large CT Z
+units=mm
+position=0
+speed=5
+lo_limit=-1000
+hi_limit=1000
+steps_per_revol=1000
+units_per_revol=0.2
+
+[SR08ID01TBL31%3AY]
+description=3B Table1 Y
+units=mm
+position=0
+speed=20
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1000
+units_per_revol=-0.78125
+
+[SR08ID01TBL31%3AZ]
+description=3B Table1 Z
+units=mm
+position=-134.02715625
+speed=0.8
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1000
+units_per_revol=0.03125
+
+[SR08ID01SLM03%3AYCENTRE]
+description=Papa Bear - Y
+units=mm
+position=-3.0664
+speed=20
+lo_limit=-1000
+hi_limit=1200
+steps_per_revol=1000
+units_per_revol=0.1
+
+[SR08ID01SLM03%3AYGAP]
+description=Papa Bear - Y aperture
+units=mm
+position=60
+speed=5
+lo_limit=-7
+hi_limit=1200
+steps_per_revol=1000
+units_per_revol=0.1
+
+[SR08ID01SLM03%3AZCENTRE]
+description=Papa Bear - Z
+units=mm
+position=0.976606250000003
+speed=1
+lo_limit=-917.1398
+hi_limit=1082.8602
+steps_per_revol=1000
+units_per_revol=-0.78125
+
+[SR08ID01SLM03%3AZGAP]
+description=Papa Bear - Z aperture
+units=mm
+position=2
+speed=5
+lo_limit=-10.18
+hi_limit=47.82
+steps_per_revol=1000
+units_per_revol=0.1
+
+[SR08ID01SLM21%3AY]
+description=Mama Bear Y
+units=mm
+position=0.5
+speed=16
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1000
+units_per_revol=-0.15625
+
+[SR08ID01SLM21%3AYGAP]
+description=Mama Bear Y Aperture
+units=mm
+position=40.000035
+speed=1.5
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1000
+units_per_revol=0.095
+
+[SR08ID01SLM21%3AZ]
+description=Mama Bear Z
+units=mm
+position=0.100020263
+speed=2
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1000
+units_per_revol=-0.041867
+
+[SR08ID01SLM21%3AZGAP]
+description=Mama Bear Z Aperture
+units=mm
+position=9.999985
+speed=1.5
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1000
+units_per_revol=0.095
