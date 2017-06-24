@@ -1,0 +1,169 @@
+[SR08ID01MCS06%3AMTR61E]
+description=clean-up slit BOT
+units=mm
+position=20
+speed=3
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=6400
+units_per_revol=0.5
+
+[SR08ID01MCS06%3AMTR61F]
+description=clean-up slit TOP
+units=mm
+position=20
+speed=1.5
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=6400
+units_per_revol=0.5
+
+[SR08ID01MCS06%3AMTR61G]
+description=clean-up slit LEFT
+units=mm
+position=20
+speed=2
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=6400
+units_per_revol=0.5
+
+[SR08ID01MCS06%3AMTR61H]
+description=clean-up slit RIGHT
+units=mm
+position=20
+speed=1
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=6400
+units_per_revol=0.5
+
+[SR08ID01MCS03%3AMTRA]
+description=clean-up slits table Y
+units=mm
+position=-0.81796875
+speed=15
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=0.00078125
+
+[SR08ID01MCS03%3AMTRB]
+description=clean-up slits table Z
+units=mm
+position=-96.98621875
+speed=0.5
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=1.5625e-05
+
+[SR08ID01MCS09%3AMTR64D]
+description=MRT Collimator Y
+units=mm
+position=-200
+speed=2.5
+lo_limit=-200
+hi_limit=130
+steps_per_revol=6400
+units_per_revol=1
+
+[SR08ID01MCS09%3AMTR64F]
+description=MRT Collimator Z
+units=mm
+position=-7.5523875
+speed=0.4
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=6400
+units_per_revol=0.24
+
+[SR08ID01MCS06%3AMTR61D]
+description=MRT collimator Y (TOP) tilt
+units=deg
+position=0
+speed=0.5
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=6400
+units_per_revol=1.31
+
+[SR08ID01MCS06%3AMTR61C]
+description=MRT collimator X (BOT) tilt
+units=deg
+position=0
+speed=0.5
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=6400
+units_per_revol=1
+
+[SR08ID01MCS09%3AMTR64E]
+description=MRT Sample Y
+units=mm
+position=-121.79
+speed=2.5
+lo_limit=-500
+hi_limit=500
+steps_per_revol=6400
+units_per_revol=1
+
+[SR08ID01MCS09%3AMTR64G]
+description=MRT Sample Z
+units=mm
+position=-112.77296875
+speed=5
+lo_limit=-200
+hi_limit=5000
+steps_per_revol=6400
+units_per_revol=1
+
+[SR08ID01MCS09%3AMTR64H]
+description=MRT Sample Rotation
+units=deg
+position=0
+speed=6.08519269776876
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=6400
+units_per_revol=5
+
+[SR08ID01MCS08%3AMTR63B]
+description=MRT Table Y
+units=mm
+position=-206.278125
+speed=20
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=0.00078125
+
+[SR08ID01MCS08%3AMTR63A]
+description=MRT Table Z
+units=mm
+position=-106.07821875
+speed=0.8
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=3.125e-05
+
+[SR08ID01MCS06%3AMTR61B]
+description=Amber 1B Table Y
+units=mm
+position=0
+speed=20.00128
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=0.0007813
+
+[SR08ID01MCS06%3AMTR61A]
+description=Amber 1B Table Z
+units=mm
+position=-79.5047231
+speed=0.80128
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=3.13e-05

@@ -1,0 +1,129 @@
+[SR08ID01MCS03%3AMTRA]
+description=clean-up slits 1B table Y
+units=mm
+position=0
+speed=15
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=6400
+units_per_revol=5
+
+[SR08ID01MCS03%3AMTRB]
+description=clean-up slits 1B table Z
+units=mm
+position=-20
+speed=0.5
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=6400
+units_per_revol=0.1
+
+[SR08ID01%3AMTR12A]
+description=MRT table Y
+units=mm
+position=0
+speed=18
+lo_limit=-42273.3
+hi_limit=42273.3
+steps_per_revol=400
+units_per_revol=5
+
+[SR08ID01%3AMTR12B]
+description=MRT table Z
+units=mm
+position=-20
+speed=0.5
+lo_limit=-42273.3
+hi_limit=42273.3
+steps_per_revol=400
+units_per_revol=0.2
+
+[SR08ID01%3AMTR11B]
+description=clean-up slit TOP
+units=mm
+position=0.5
+speed=2
+lo_limit=-1000
+hi_limit=1000
+steps_per_revol=2000
+units_per_revol=0.5
+
+[SR08ID01%3AMTR11A]
+description=clean-up slit BOT
+units=mm
+position=0.5
+speed=1.5
+lo_limit=-42273.3
+hi_limit=42273.3
+steps_per_revol=2000
+units_per_revol=0.5
+
+[SR08ID01%3AMTR11C]
+description=clean-up slit LEFT
+units=mm
+position=0.5
+speed=2
+lo_limit=-42273.3
+hi_limit=42273.3
+steps_per_revol=2000
+units_per_revol=0.5
+
+[SR08ID01%3AMTR11D]
+description=clean-up slit RIGHT
+units=mm
+position=0.5
+speed=2
+lo_limit=-42273.3
+hi_limit=42273.3
+steps_per_revol=2000
+units_per_revol=0.5
+
+[SR08ID01%3AMTR10B]
+description=Amber 1B table Y
+units=mm
+position=0
+speed=10
+lo_limit=-42273.3
+hi_limit=42273.3
+steps_per_revol=2000
+units_per_revol=-5
+
+[SR08ID01%3AMTR10C]
+description=Amber 1B table Z
+units=mm
+position=-20
+speed=1.2
+lo_limit=-42273.3
+hi_limit=42273.3
+steps_per_revol=2000
+units_per_revol=0.2
+
+[SR08ID01MCS03%3AMTRD]
+description=MRT sample Y
+units=mm
+position=8.0000592
+speed=6.252
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=0.0001563
+
+[SR08ID01MCS03%3AMTRC]
+description=MRT sample Z
+units=mm
+position=20
+speed=1
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=0.00015625
+
+[SR08ID01%3AMTR12D]
+description=MRT sample rotation
+units=deg
+position=0
+speed=10
+lo_limit=-42273.3
+hi_limit=42273.3
+steps_per_revol=400
+units_per_revol=5

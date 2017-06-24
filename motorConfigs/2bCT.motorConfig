@@ -1,0 +1,199 @@
+[SR08ID01MCS11%3AMTR66E]
+description=Mama table
+units=mm
+position=20
+speed=2
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=3.125e-05
+
+[SR08ID01MCS11%3AMTR66B]
+description=Mama bear - Y
+units=mm
+position=0
+speed=16
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=0.00015625
+
+[SR08ID01MCS11%3AMTR66D]
+description=Mama bear - Y aperture
+units=mm
+position=0.99997
+speed=1.52
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=9.5e-05
+
+[SR08ID01MCS11%3AMTR66A]
+description=Mama bear - Z
+units=mm
+position=0
+speed=2
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=4.1867e-05
+
+[SR08ID01MCS11%3AMTR66C]
+description=Mama bear - Z aperture
+units=mm
+position=0.99997
+speed=1.52
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=9.5e-05
+
+[SR08ID01%3AMTR31B]
+description=2B MRT slit TOP
+units=mm
+position=1.2325
+speed=5
+lo_limit=-42273.3
+hi_limit=42273.3
+steps_per_revol=1000
+units_per_revol=0.5
+
+[SR08ID01%3AMTR31A]
+description=2B MRT slit BOT
+units=mm
+position=-18.7085
+speed=1.5
+lo_limit=-42273.3
+hi_limit=42273.3
+steps_per_revol=1000
+units_per_revol=0.5
+
+[SR08ID01%3AMTR31C]
+description=2B MRT slit LEFT
+units=mm
+position=-9.007
+speed=2
+lo_limit=-42273.3
+hi_limit=42273.3
+steps_per_revol=1000
+units_per_revol=0.5
+
+[SR08ID01%3AMTR31D]
+description=2B MRT slit RIGHT
+units=mm
+position=-8.673
+speed=5
+lo_limit=-42273.3
+hi_limit=42273.3
+steps_per_revol=1000
+units_per_revol=0.5
+
+[SR08ID01MCS04%3AMTR32A]
+description=2B table1 Y
+units=mm
+position=-64.00078125
+speed=20
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=0.00078125
+
+[SR08ID01MCS04%3AMTR32B]
+description=2B table1 Z
+units=mm
+position=5.115359375
+speed=0.8
+lo_limit=-5000
+hi_limit=1000
+steps_per_revol=1
+units_per_revol=1.5625e-05
+
+[SR08ID01MCS04%3AMTR32C]
+description=2B CT - X-trans bottom
+units=mm
+position=-1.3684375
+speed=5
+lo_limit=-50
+hi_limit=50
+steps_per_revol=1
+units_per_revol=0.00015625
+
+[SR08ID01MCS04%3AMTR32D]
+description=2B CT - X-trans top
+units=mm
+position=-5.305
+speed=2.5
+lo_limit=-20000
+hi_limit=20000
+steps_per_revol=1
+units_per_revol=0.00015625
+
+[SR08ID01MCS04%3AMTR32F]
+description=2B CT rotation
+units=deg
+position=-19.98
+speed=20
+lo_limit=-20
+hi_limit=200
+steps_per_revol=1
+units_per_revol=0.0003125
+
+[SR08ID01MCS04%3AMTR32H]
+description=2B CT - tilt top
+units=deg
+position=0.0229546875
+speed=3.1125
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=9.7265625e-05
+
+[SR08ID01MCS04%3AMTR32G]
+description=2B CT - tilt bottom
+units=deg
+position=0
+speed=4
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1
+units_per_revol=7.03125e-05
+
+[SR08ID01MCS04%3AMTR32E]
+description=2B CT sample Y
+units=mm
+position=-87.9
+speed=7
+lo_limit=-138
+hi_limit=48
+steps_per_revol=1
+units_per_revol=0.0003125
+
+[SR08ID01%3AMTR30B]
+description=2B table2 Y
+units=mm
+position=89.26
+speed=10
+lo_limit=-42273.3
+hi_limit=42273.3
+steps_per_revol=1000
+units_per_revol=5
+
+[SR08ID01%3AMTR30C]
+description=2B table2 Z
+units=mm
+position=0.6688
+speed=0.6
+lo_limit=-1000
+hi_limit=42273.3
+steps_per_revol=1000
+units_per_revol=0.1
+
+[SR08ID01%3AMTR30E]
+description=2B Ruby Zoom
+units=mm
+position=132.36
+speed=10
+lo_limit=-2000
+hi_limit=2000
+steps_per_revol=1000
+units_per_revol=5

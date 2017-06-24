@@ -1,0 +1,69 @@
+[SR08ID01SST24%3AROTATION]
+description=2B CT Rotation
+units=deg
+position=0.001
+speed=60
+lo_limit=-5000
+hi_limit=5000
+steps_per_revol=1000
+units_per_revol=0.5
+
+[SR08ID01SST24%3ASAMPLEV]
+description=2B CT Vertical Trans
+units=mm
+position=-50.005
+speed=16
+lo_limit=-2000
+hi_limit=2000
+steps_per_revol=1000
+units_per_revol=-1.25
+
+[SR08ID01SST24%3ASAMPLEH1]
+description=2B CT cross - II
+units=mm
+position=0
+speed=7.5
+lo_limit=-2000
+hi_limit=31.3
+steps_per_revol=1000
+units_per_revol=0.5
+
+[SR08ID01SST24%3ASAMPLEH2]
+description=2B CT cross - T
+units=mm
+position=0
+speed=7.5
+lo_limit=-19
+hi_limit=29.84
+steps_per_revol=1000
+units_per_revol=0.5
+
+[SR08ID01SST24%3AY]
+description=2B CT Y
+units=mm
+position=0
+speed=20
+lo_limit=-330.375
+hi_limit=1669.625
+steps_per_revol=1000
+units_per_revol=-1
+
+[SR08ID01SST24%3ATILTX]
+description=2B CT Tilt X
+units=mm
+position=-0.000103574810606061
+speed=0.75
+lo_limit=-2000
+hi_limit=11
+steps_per_revol=1000
+units_per_revol=0.00739820075757576
+
+[SR08ID01SST24%3ATILTY]
+description=2B CT Tilt Y
+units=mm
+position=-0.000103574810606061
+speed=0.75
+lo_limit=-3.5
+hi_limit=13
+steps_per_revol=1000
+units_per_revol=0.00739820075757576
