@@ -112,7 +112,7 @@ public:
 
   /// Gives an external application access to the setup button.
   QPushButton * setupButton();
-  QDoubleSpinBox * currentPosition();
+  QDoubleSpinBox * currentPosition(bool readOnly);
 
   /// Gives an external application access to the widgets of the
   /// basic control UI.

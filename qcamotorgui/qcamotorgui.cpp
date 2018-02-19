@@ -713,7 +713,10 @@ QPushButton * QCaMotorGUI::setupButton() {
 }
 
 
-QDoubleSpinBox * QCaMotorGUI::currentPosition() {
+QDoubleSpinBox * QCaMotorGUI::currentPosition(bool readOnly) {
+  mUi->userPosition->setButtonSymbols( readOnly ? QAbstractSpinBox::NoButtons : QAbstractSpinBox::UpDownArrows );
+  mUi->userPosition->setReadOnly(readOnly);
+  mUi->userPosition->setFrame(!readOnly);
   return mUi->userPosition;
 }
 
