@@ -6,6 +6,7 @@
 #include <QAbstractButton>
 #include <QAbstractTableModel>
 #include <QSortFilterProxyModel>
+#include <QDoubleSpinBox>
 #include <QMap>
 #include <QMenu>
 #include <QDialog>
@@ -111,6 +112,7 @@ public:
 
   /// Gives an external application access to the setup button.
   QPushButton * setupButton();
+  QDoubleSpinBox * currentPosition();
 
   /// Gives an external application access to the widgets of the
   /// basic control UI.

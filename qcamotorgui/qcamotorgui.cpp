@@ -713,6 +713,11 @@ QPushButton * QCaMotorGUI::setupButton() {
 }
 
 
+QDoubleSpinBox * QCaMotorGUI::currentPosition() {
+  return mUi->userPosition;
+}
+
+
 Ui::MotorControl * QCaMotorGUI::basicUI() {
   return mUi;
 }
