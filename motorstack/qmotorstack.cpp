@@ -309,6 +309,7 @@ void QMotorStack::saveConfiguration(const QString & fileName) {
       sett.setValue("speed",mot->getNormalSpeed());
       sett.setValue("lo_limit",mot->getUserLoLimit());
       sett.setValue("hi_limit",mot->getUserHiLimit());
+      sett.setValue("offset",mot->getOffset());
       sett.setValue("steps_per_revol",mot->getStepsPerRev());
       sett.setValue("units_per_revol",mot->getUnitsPerRev());
       sett.endGroup();
