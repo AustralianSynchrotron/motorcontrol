@@ -1,122 +1,134 @@
 [SR08ID01SLM12%3AHCENTRE]
-description=1B Horiz Centre
+description=Baby Bear - Y
 units=mm
-position=0.5487
+position=12.5037
 speed=0.85
 lo_limit=-40.245
 hi_limit=38.4
 steps_per_revol=1000
 units_per_revol=0.1
+offset=-0.8
 
 [SR08ID01SLM12%3AHSIZE]
-description=1B Horiz Size
+description=Baby Bear - Y Aperture
 units=mm
-position=17.3973
+position=19.9873
 speed=1.7
 lo_limit=-16
 hi_limit=81
 steps_per_revol=1000
 units_per_revol=0.1
+offset=1.5
 
 [SR08ID01SLM12%3AVCENTRE]
-description=1B Vert Centre
+description=Baby Bear - Z
 units=mm
-position=8.4626
+position=20
 speed=0.85
 lo_limit=-28.695
 hi_limit=25
 steps_per_revol=1000
 units_per_revol=0.1
+offset=-3.365
 
 [SR08ID01SLM12%3AVSIZE]
-description=1B Vert Size
+description=Baby Bear - Z Aperture
 units=mm
-position=4.8009
+position=4.5947
 speed=1.7
 lo_limit=-21.5
 hi_limit=78.93
 steps_per_revol=1000
 units_per_revol=0.1
+offset=28.5
 
 [SR08ID01SLM21%3AY]
 description=Mama Bear Y
 units=mm
-position=0
+position=20.3
 speed=16
 lo_limit=-5083.25
 hi_limit=4916.75
 steps_per_revol=1000
 units_per_revol=-0.15625
+offset=-83.25
 
 [SR08ID01SLM21%3AYGAP]
 description=Mama Bear Y Aperture
 units=mm
-position=30.00003
+position=23.4
 speed=1.5
-lo_limit=1
-hi_limit=50
+lo_limit=-100
+hi_limit=100
 steps_per_revol=1000
 units_per_revol=0.095
+offset=-2.858
 
 [SR08ID01SLM21%3AZ]
 description=Mama Bear Z
 units=mm
-position=2.5579000000775e-05
+position=-0.0999946840000003
 speed=2
 lo_limit=-5009.61
 hi_limit=4990.39
 steps_per_revol=1000
 units_per_revol=-0.041867
+offset=-9.61
 
 [SR08ID01SLM21%3AZGAP]
 description=Mama Bear Z Aperture
 units=mm
-position=7.360005
+position=5.599965
 speed=1.5
-lo_limit=-5001.853
-hi_limit=4998.147
+lo_limit=-5000
+hi_limit=5000
 steps_per_revol=1000
 units_per_revol=0.095
+offset=0
 
 [SR08ID01SLM03%3AYCENTRE]
 description=Papa Bear - Y
 units=mm
-position=1.8
+position=86.1
 speed=20
 lo_limit=-1000
 hi_limit=1200
 steps_per_revol=1000
 units_per_revol=0.1
+offset=0
 
 [SR08ID01SLM03%3AYGAP]
 description=Papa Bear - Y aperture
 units=mm
-position=116
+position=117
 speed=5
 lo_limit=-2001.43
 hi_limit=1198.57
 steps_per_revol=1000
 units_per_revol=0.1
+offset=-1.43
 
 [SR08ID01SLM03%3AZCENTRE]
 description=Papa Bear - Z
 units=mm
-position=0.000156250000003411
+position=20.00015625
 speed=1
 lo_limit=-957.41
 hi_limit=1042.59
 steps_per_revol=1000
 units_per_revol=-0.78125
+offset=42.59
 
 [SR08ID01SLM03%3AZGAP]
 description=Papa Bear - Z aperture
 units=mm
-position=32
+position=34
 speed=5
 lo_limit=-1000
 hi_limit=1148
 steps_per_revol=1000
 units_per_revol=0.1
+offset=0
 
 [SR08ID01TBL21%3AZ]
 description=Mama Bear Table Z
@@ -127,3 +139,15 @@ lo_limit=-5244.3
 hi_limit=4755.7
 steps_per_revol=1000
 units_per_revol=0.03125
+offset=-244.3
+
+[----------]
+description=
+units=
+position=0
+speed=1
+lo_limit=0
+hi_limit=0
+offset=0
+steps_per_revol=0
+units_per_revol=0
