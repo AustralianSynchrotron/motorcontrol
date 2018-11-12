@@ -53,6 +53,23 @@ void QMotorStack::initialize() {
 
   ui->setupUi(this);
 
+
+#if QT_VERSION >= 0x050000
+
+  ui->table->verticalHeader()->setSectionsMovable(true);
+  ui->table->verticalHeader()->setSectionsClickable(true);
+  ui->table->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+  ui->table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+  ui->table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+  ui->table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+  ui->table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+  ui->table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
+  ui->table->horizontalHeader()->setSectionResizeMode(5, QHeaderView::ResizeToContents);
+  ui->table->horizontalHeader()->setSectionResizeMode(6, QHeaderView::ResizeToContents);
+
+#else
+
   ui->table->verticalHeader()->setMovable(true);
   ui->table->verticalHeader()->setClickable(true);
   ui->table->verticalHeader()->setResizeMode(QHeaderView::Fixed);
@@ -64,6 +81,8 @@ void QMotorStack::initialize() {
   ui->table->horizontalHeader()->setResizeMode(4, QHeaderView::ResizeToContents);
   ui->table->horizontalHeader()->setResizeMode(5, QHeaderView::ResizeToContents);
   ui->table->horizontalHeader()->setResizeMode(6, QHeaderView::ResizeToContents);
+
+#endif
 
   connect(ui->add, SIGNAL(clicked()), SLOT(addMotor()));
   connect(ui->viewModeAll, SIGNAL(currentIndexChanged(int)), SLOT(viewModeAll()));
@@ -226,7 +245,11 @@ void QMotorStack::updateMotorsFile() {
   motorsFile.reset();
   motorsFile.resize(0);
   foreach (QCaMotorGUI * motor, motorList() )
+    #if QT_VERSION >= 0x050000
+    motorsFile.write( ( motor->motor()->getPv() + "\n" ).toLatin1());
+    #else
     motorsFile.write( ( motor->motor()->getPv() + "\n" ).toAscii());
+    #endif
   motorsFile.flush();
 }
 

@@ -2,6 +2,9 @@
 # Project created by QtCreator 2009-10-27T18:48:44
 # -------------------------------------------------
 
+
+QT += widgets
+
 TARGET = motormx
 
 TEMPLATE = app

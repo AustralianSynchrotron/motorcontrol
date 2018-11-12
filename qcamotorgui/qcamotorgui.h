@@ -1,7 +1,7 @@
 #ifndef MOTORCONTROL_H
 #define MOTORCONTROL_H
 
-#include <QtGui/QWidget>
+#include <QWidget>
 #include <QValidator>
 #include <QAbstractButton>
 #include <QAbstractTableModel>
@@ -135,9 +135,9 @@ public slots:
   /// @param mode view mode (must be the integer from the ::ViewMode enumeration).
   inline void setViewMode(int mode){ setViewMode( (ViewMode) mode ); }
 
-  inline void showSetup(bool shown=true) { setupDialog->setShown(shown); }
+  inline void showSetup(bool shown=true) { setupDialog->setVisible(shown); }
 
-  inline void showPvSetup(bool shown=true) { pvDialog->setShown(shown); }
+  inline void showPvSetup(bool shown=true) { pvDialog->setVisible(shown); }
 
 
 private slots:
