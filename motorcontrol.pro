@@ -5,6 +5,7 @@
 CONFIG += ordered
 
 SUBDIRS = qcamotor \
+          pqcamotor \
       qcamotorgui \
       motorstack \
       motormx 

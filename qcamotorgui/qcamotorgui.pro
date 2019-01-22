@@ -17,8 +17,7 @@ FORMS += qcamotorgui.ui \
 LIBS += -L../qcamotor -lqcamotor \
         -lqtpvwidgets
 
-OTHER_FILES += \
-    listOfKnownMotorPVs.txt
+OTHER_FILES += listOfKnownMotorPVs.txt
 
 headers.files = qcamotorgui.h
 headers.path = $$[INSTALLBASE]/include
