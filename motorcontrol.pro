@@ -5,10 +5,11 @@
 CONFIG += ordered
 
 SUBDIRS = qcamotor \
-          pqcamotor \
-      qcamotorgui \
-      motorstack \
-      motormx 
+          qcamotor_py \
+          qcamotorgui \
+          qcamotorgui_py \
+          motorstack \
+          motormx
 
 TEMPLATE = subdirs
 
