@@ -25,7 +25,7 @@ LIBS += \
     -lqtpv \
     -L../qcamotor -lqcamotor \
     -L../qcamotorgui -lqcamotorgui \
-    -L../qmotorstack -lqmotorstack \
+    -L../qmotorstack -lqmotorstack 
 
 target.files = $$[TARGET]
 target.path = $$[INSTALLBASE]/bin
