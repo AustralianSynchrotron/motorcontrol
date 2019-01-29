@@ -21,7 +21,7 @@ public:
   bool isLocked();
   QList < QCaMotorGUI * > motorList() const;
 
-// public slots:
+public slots:
 
   void lock(bool lck);
   void showGeneral(bool showall=true);
@@ -35,7 +35,7 @@ public:
   void saveConfiguration(const QString & fileName);
   void loadConfiguration(const QString & fileName);
 
-// signals:
+signals:
 
   void listChanged();
 

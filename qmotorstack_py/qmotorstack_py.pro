@@ -19,7 +19,7 @@ SOURCES += sipqmotorstackcmodule.cpp \
            sipqmotorstackQMotorStack.cpp 
 HEADERS += sipAPIqmotorstack.h 
 
-LIBS += -L../motorstack -lqcamotorgui -lmotorstack
+LIBS += -L../qmotorstack -lqcamotorgui -lqmotorstack
 
 QMAKE_CXXFLAGS += $$system(python3-config  --includes)
 

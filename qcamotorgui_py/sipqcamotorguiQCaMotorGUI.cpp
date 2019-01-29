@@ -2862,33 +2862,6 @@ static PyObject *meth_QCaMotorGUI_showPvSetup(PyObject *sipSelf, PyObject *sipAr
 }
 
 
-extern "C" {static PyObject *meth_QCaMotorGUI_ioPositionChanged(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotorGUI_ioPositionChanged(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-         ::QString* a0;
-        int a0State = 0;
-         ::QCaMotorGUI *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QCaMotorGUI, &sipCpp, sipType_QString,&a0, &a0State))
-        {
-            sipCpp->ioPositionChanged(*a0);
-            sipReleaseType(a0,sipType_QString,a0State);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotorGUI, sipName_ioPositionChanged, NULL);
-
-    return NULL;
-}
-
-
 /* Cast a pointer to a type somewhere in its inheritance hierarchy. */
 extern "C" {static void *cast_QCaMotorGUI(void *, const sipTypeDef *);}
 static void *cast_QCaMotorGUI(void *sipCppV, const sipTypeDef *targetType)
@@ -3002,7 +2975,6 @@ static PyMethodDef methods_QCaMotorGUI[] = {
     {SIP_MLNAME_CAST(sipName_hideEvent), (PyCFunction)meth_QCaMotorGUI_hideEvent, METH_VARARGS|METH_KEYWORDS, NULL},
     {SIP_MLNAME_CAST(sipName_initPainter), (PyCFunction)meth_QCaMotorGUI_initPainter, METH_VARARGS|METH_KEYWORDS, NULL},
     {SIP_MLNAME_CAST(sipName_inputMethodEvent), (PyCFunction)meth_QCaMotorGUI_inputMethodEvent, METH_VARARGS|METH_KEYWORDS, NULL},
-    {SIP_MLNAME_CAST(sipName_ioPositionChanged), meth_QCaMotorGUI_ioPositionChanged, METH_VARARGS, NULL},
     {SIP_MLNAME_CAST(sipName_isSignalConnected), (PyCFunction)meth_QCaMotorGUI_isSignalConnected, METH_VARARGS|METH_KEYWORDS, NULL},
     {SIP_MLNAME_CAST(sipName_keyPressEvent), (PyCFunction)meth_QCaMotorGUI_keyPressEvent, METH_VARARGS|METH_KEYWORDS, NULL},
     {SIP_MLNAME_CAST(sipName_keyReleaseEvent), (PyCFunction)meth_QCaMotorGUI_keyReleaseEvent, METH_VARARGS|METH_KEYWORDS, NULL},
@@ -3084,10 +3056,17 @@ sipVariableDef variables_QCaMotorGUI[] = {
 };
 
 
+/* Define this type's signals. */
+static const pyqt5QtSignal signals_QCaMotorGUI[] = {
+    {"ioPositionChanged(QString)", 0, 0, 0},
+    {0, 0, 0, 0}
+};
+
+
 static pyqt5ClassPluginDef plugin_QCaMotorGUI = {
     & ::QCaMotorGUI::staticMetaObject,
     0,
-    0,
+    signals_QCaMotorGUI,
     0
 };
 
@@ -3105,7 +3084,7 @@ sipClassTypeDef sipTypeDef_qcamotorgui_QCaMotorGUI = {
     {
         sipNameNr_QCaMotorGUI,
         {0, 0, 1},
-        54, methods_QCaMotorGUI,
+        53, methods_QCaMotorGUI,
         5, enummembers_QCaMotorGUI,
         3, variables_QCaMotorGUI,
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},

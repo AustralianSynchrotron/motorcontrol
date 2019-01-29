@@ -57,55 +57,6 @@ public:
   void saveConfiguration(const QString & fileName) const;
   void loadConfiguration(const QString & fileName);
 
-public:
-
-  void setPv(const QString & pvName="");
-  void setDescription(const QString & desc);
-  void setPrecision(int prec);
-  void setUnits(const QString & units);
-  void setUserPosition(double pos);
-  void setDialPosition(double pos);
-  void setRawPosition(double pos);
-  void goUserPosition(double pos, MotionExit ex=IMMIDIATELY);
-  void goDialPosition(double pos, MotionExit ex=IMMIDIATELY);
-  void goRawPosition(double pos, MotionExit ex=IMMIDIATELY);
-  void goLimit(int direction, MotionExit ex=IMMIDIATELY);
-  void goStep(int direction, MotionExit ex=IMMIDIATELY);
-  void goHome(int direction, MotionExit ex=IMMIDIATELY);
-  void goRelative(double dist, MotionExit ex=IMMIDIATELY);
-  void jog(bool jg, int direction);
-  void setStep(double step);
-  void setDeadBand(double rdbd);
-  void undoLastMotion(MotionExit ex=IMMIDIATELY);
-  void setOffset(double dist);
-  void setOffsetMode(OffMode mode);
-  void setDirection(Direction direction);
-  void setSuMode(SuMode mode);
-  void setUserHiLimit(double limit);
-  void setUserLoLimit(double limit);
-  void setDialHiLimit(double limit);
-  void setDialLoLimit(double limit);
-  void setMotorResolution(double res);
-  void setReadbackResolution(double res);
-  void setEncoderResolution(double res);
-  void setUnitsPerRev(double units);
-  void setStepsPerRev(int st);
-  void setMaximumSpeed(double speed);
-  void setNormalSpeed(double speed);
-  void setRevSpeed(double speed);
-  void setBacklashSpeed(double speed);
-  void setJogSpeed(double speed);
-  void setAcceleration(double acc);
-  void setBacklashAcceleration(double acc);
-  void setJogAcceleration(double acc);
-  void stop(MotionExit ex=IMMIDIATELY);
-  void setUseReadback(bool use);
-  void setUseEncoder(bool use);
-  void setBacklash(double dist);
-  void setSpmgMode(SpmgMode mode);
-  void setPower(bool pwr);
-  void printError(const QString & err) const;
-
   const QString & getPv() const;
   const QString & getDescription() const;
   int getPrecision() const;
@@ -154,7 +105,56 @@ public:
   bool getPowerConnection() const;
   bool isWired() const;
 
-// signals:
+public slots:
+
+  void setPv(const QString & pvName="");
+  void setDescription(const QString & desc);
+  void setPrecision(int prec);
+  void setUnits(const QString & units);
+  void setUserPosition(double pos);
+  void setDialPosition(double pos);
+  void setRawPosition(double pos);
+  void goUserPosition(double pos, MotionExit ex=IMMIDIATELY);
+  void goDialPosition(double pos, MotionExit ex=IMMIDIATELY);
+  void goRawPosition(double pos, MotionExit ex=IMMIDIATELY);
+  void goLimit(int direction, MotionExit ex=IMMIDIATELY);
+  void goStep(int direction, MotionExit ex=IMMIDIATELY);
+  void goHome(int direction, MotionExit ex=IMMIDIATELY);
+  void goRelative(double dist, MotionExit ex=IMMIDIATELY);
+  void jog(bool jg, int direction);
+  void setStep(double step);
+  void setDeadBand(double rdbd);
+  void undoLastMotion(MotionExit ex=IMMIDIATELY);
+  void setOffset(double dist);
+  void setOffsetMode(OffMode mode);
+  void setDirection(Direction direction);
+  void setSuMode(SuMode mode);
+  void setUserHiLimit(double limit);
+  void setUserLoLimit(double limit);
+  void setDialHiLimit(double limit);
+  void setDialLoLimit(double limit);
+  void setMotorResolution(double res);
+  void setReadbackResolution(double res);
+  void setEncoderResolution(double res);
+  void setUnitsPerRev(double units);
+  void setStepsPerRev(int st);
+  void setMaximumSpeed(double speed);
+  void setNormalSpeed(double speed);
+  void setRevSpeed(double speed);
+  void setBacklashSpeed(double speed);
+  void setJogSpeed(double speed);
+  void setAcceleration(double acc);
+  void setBacklashAcceleration(double acc);
+  void setJogAcceleration(double acc);
+  void stop(MotionExit ex=IMMIDIATELY);
+  void setUseReadback(bool use);
+  void setUseEncoder(bool use);
+  void setBacklash(double dist);
+  void setSpmgMode(SpmgMode mode);
+  void setPower(bool pwr);
+  void printError(const QString & err) const;
+
+signals:
 
   void changedPv(QString pvName=QString());
   void changedDescription(QString desc);

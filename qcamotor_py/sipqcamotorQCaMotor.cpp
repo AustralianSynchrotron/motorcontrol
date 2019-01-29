@@ -715,1173 +715,6 @@ static PyObject *meth_QCaMotor_loadConfiguration(PyObject *sipSelf, PyObject *si
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_setPv(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setPv(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        const  ::QString& a0def = "";
-        const  ::QString* a0 = &a0def;
-        int a0State = 0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "B|J1", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QString,&a0, &a0State))
-        {
-            sipCpp->setPv(*a0);
-            sipReleaseType(const_cast< ::QString *>(a0),sipType_QString,a0State);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setPv, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setDescription(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setDescription(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        const  ::QString* a0;
-        int a0State = 0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QString,&a0, &a0State))
-        {
-            sipCpp->setDescription(*a0);
-            sipReleaseType(const_cast< ::QString *>(a0),sipType_QString,a0State);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setDescription, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setPrecision(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setPrecision(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        int a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bi", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setPrecision(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setPrecision, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setUnits(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setUnits(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        const  ::QString* a0;
-        int a0State = 0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QString,&a0, &a0State))
-        {
-            sipCpp->setUnits(*a0);
-            sipReleaseType(const_cast< ::QString *>(a0),sipType_QString,a0State);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUnits, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setUserPosition(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setUserPosition(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setUserPosition(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUserPosition, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setDialPosition(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setDialPosition(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setDialPosition(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setDialPosition, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setRawPosition(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setRawPosition(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setRawPosition(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setRawPosition, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_goUserPosition(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_goUserPosition(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
-        {
-            sipCpp->goUserPosition(a0,a1);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goUserPosition, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_goDialPosition(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_goDialPosition(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
-        {
-            sipCpp->goDialPosition(a0,a1);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goDialPosition, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_goRawPosition(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_goRawPosition(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
-        {
-            sipCpp->goRawPosition(a0,a1);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goRawPosition, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_goLimit(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_goLimit(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        int a0;
-         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bi|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
-        {
-            sipCpp->goLimit(a0,a1);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goLimit, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_goStep(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_goStep(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        int a0;
-         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bi|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
-        {
-            sipCpp->goStep(a0,a1);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goStep, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_goHome(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_goHome(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        int a0;
-         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bi|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
-        {
-            sipCpp->goHome(a0,a1);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goHome, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_goRelative(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_goRelative(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
-        {
-            sipCpp->goRelative(a0,a1);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goRelative, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_jog(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_jog(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        bool a0;
-        int a1;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bbi", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, &a1))
-        {
-            sipCpp->jog(a0,a1);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_jog, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setStep(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setStep(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setStep(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setStep, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setDeadBand(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setDeadBand(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setDeadBand(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setDeadBand, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_undoLastMotion(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_undoLastMotion(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-         ::QCaMotor::MotionExit a0 =  ::QCaMotor::IMMIDIATELY;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "B|E", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QCaMotor_MotionExit, &a0))
-        {
-            sipCpp->undoLastMotion(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_undoLastMotion, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setOffset(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setOffset(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setOffset(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setOffset, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setOffsetMode(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setOffsetMode(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-         ::QCaMotor::OffMode a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "BE", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QCaMotor_OffMode, &a0))
-        {
-            sipCpp->setOffsetMode(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setOffsetMode, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setDirection(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setDirection(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-         ::QCaMotor::Direction a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "BE", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QCaMotor_Direction, &a0))
-        {
-            sipCpp->setDirection(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setDirection, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setSuMode(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setSuMode(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-         ::QCaMotor::SuMode a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "BE", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QCaMotor_SuMode, &a0))
-        {
-            sipCpp->setSuMode(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setSuMode, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setUserHiLimit(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setUserHiLimit(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setUserHiLimit(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUserHiLimit, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setUserLoLimit(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setUserLoLimit(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setUserLoLimit(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUserLoLimit, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setDialHiLimit(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setDialHiLimit(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setDialHiLimit(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setDialHiLimit, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setDialLoLimit(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setDialLoLimit(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setDialLoLimit(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setDialLoLimit, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setMotorResolution(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setMotorResolution(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setMotorResolution(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setMotorResolution, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setReadbackResolution(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setReadbackResolution(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setReadbackResolution(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setReadbackResolution, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setEncoderResolution(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setEncoderResolution(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setEncoderResolution(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setEncoderResolution, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setUnitsPerRev(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setUnitsPerRev(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setUnitsPerRev(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUnitsPerRev, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setStepsPerRev(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setStepsPerRev(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        int a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bi", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setStepsPerRev(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setStepsPerRev, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setMaximumSpeed(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setMaximumSpeed(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setMaximumSpeed(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setMaximumSpeed, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setNormalSpeed(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setNormalSpeed(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setNormalSpeed(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setNormalSpeed, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setRevSpeed(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setRevSpeed(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setRevSpeed(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setRevSpeed, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setBacklashSpeed(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setBacklashSpeed(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setBacklashSpeed(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setBacklashSpeed, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setJogSpeed(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setJogSpeed(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setJogSpeed(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setJogSpeed, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setAcceleration(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setAcceleration(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setAcceleration(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setAcceleration, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setBacklashAcceleration(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setBacklashAcceleration(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setBacklashAcceleration(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setBacklashAcceleration, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setJogAcceleration(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setJogAcceleration(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setJogAcceleration(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setJogAcceleration, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_stop(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_stop(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-         ::QCaMotor::MotionExit a0 =  ::QCaMotor::IMMIDIATELY;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "B|E", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QCaMotor_MotionExit, &a0))
-        {
-            sipCpp->stop(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_stop, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setUseReadback(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setUseReadback(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        bool a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bb", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setUseReadback(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUseReadback, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setUseEncoder(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setUseEncoder(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        bool a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bb", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setUseEncoder(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUseEncoder, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setBacklash(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setBacklash(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setBacklash(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setBacklash, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setSpmgMode(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setSpmgMode(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-         ::QCaMotor::SpmgMode a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "BE", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QCaMotor_SpmgMode, &a0))
-        {
-            sipCpp->setSpmgMode(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setSpmgMode, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_setPower(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_setPower(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        bool a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bb", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->setPower(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setPower, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_printError(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_printError(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        const  ::QString* a0;
-        int a0State = 0;
-        const  ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QString,&a0, &a0State))
-        {
-            sipCpp->printError(*a0);
-            sipReleaseType(const_cast< ::QString *>(a0),sipType_QString,a0State);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_printError, NULL);
-
-    return NULL;
-}
-
-
 extern "C" {static PyObject *meth_QCaMotor_getPv(PyObject *, PyObject *);}
 static PyObject *meth_QCaMotor_getPv(PyObject *sipSelf, PyObject *sipArgs)
 {
@@ -3057,21 +1890,21 @@ static PyObject *meth_QCaMotor_isWired(PyObject *sipSelf, PyObject *sipArgs)
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedPv(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedPv(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setPv(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setPv(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
     {
-         ::QString a0def = QString();
-         ::QString* a0 = &a0def;
+        const  ::QString& a0def = "";
+        const  ::QString* a0 = &a0def;
         int a0State = 0;
          ::QCaMotor *sipCpp;
 
         if (sipParseArgs(&sipParseErr, sipArgs, "B|J1", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QString,&a0, &a0State))
         {
-            sipCpp->changedPv(*a0);
-            sipReleaseType(a0,sipType_QString,a0State);
+            sipCpp->setPv(*a0);
+            sipReleaseType(const_cast< ::QString *>(a0),sipType_QString,a0State);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3079,26 +1912,26 @@ static PyObject *meth_QCaMotor_changedPv(PyObject *sipSelf, PyObject *sipArgs)
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedPv, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setPv, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedDescription(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedDescription(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setDescription(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setDescription(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
     {
-         ::QString* a0;
+        const  ::QString* a0;
         int a0State = 0;
          ::QCaMotor *sipCpp;
 
         if (sipParseArgs(&sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QString,&a0, &a0State))
         {
-            sipCpp->changedDescription(*a0);
-            sipReleaseType(a0,sipType_QString,a0State);
+            sipCpp->setDescription(*a0);
+            sipReleaseType(const_cast< ::QString *>(a0),sipType_QString,a0State);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3106,14 +1939,14 @@ static PyObject *meth_QCaMotor_changedDescription(PyObject *sipSelf, PyObject *s
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedDescription, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setDescription, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedPrecision(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedPrecision(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setPrecision(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setPrecision(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3123,7 +1956,7 @@ static PyObject *meth_QCaMotor_changedPrecision(PyObject *sipSelf, PyObject *sip
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bi", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedPrecision(a0);
+            sipCpp->setPrecision(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3131,26 +1964,26 @@ static PyObject *meth_QCaMotor_changedPrecision(PyObject *sipSelf, PyObject *sip
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedPrecision, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setPrecision, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedUnits(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedUnits(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setUnits(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setUnits(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
     {
-         ::QString* a0;
+        const  ::QString* a0;
         int a0State = 0;
          ::QCaMotor *sipCpp;
 
         if (sipParseArgs(&sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QString,&a0, &a0State))
         {
-            sipCpp->changedUnits(*a0);
-            sipReleaseType(a0,sipType_QString,a0State);
+            sipCpp->setUnits(*a0);
+            sipReleaseType(const_cast< ::QString *>(a0),sipType_QString,a0State);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3158,14 +1991,14 @@ static PyObject *meth_QCaMotor_changedUnits(PyObject *sipSelf, PyObject *sipArgs
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedUnits, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUnits, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedUserPosition(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedUserPosition(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setUserPosition(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setUserPosition(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3175,7 +2008,7 @@ static PyObject *meth_QCaMotor_changedUserPosition(PyObject *sipSelf, PyObject *
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedUserPosition(a0);
+            sipCpp->setUserPosition(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3183,14 +2016,14 @@ static PyObject *meth_QCaMotor_changedUserPosition(PyObject *sipSelf, PyObject *
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedUserPosition, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUserPosition, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedDialPosition(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedDialPosition(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setDialPosition(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setDialPosition(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3200,7 +2033,7 @@ static PyObject *meth_QCaMotor_changedDialPosition(PyObject *sipSelf, PyObject *
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedDialPosition(a0);
+            sipCpp->setDialPosition(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3208,14 +2041,14 @@ static PyObject *meth_QCaMotor_changedDialPosition(PyObject *sipSelf, PyObject *
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedDialPosition, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setDialPosition, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedRawPosition(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedRawPosition(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setRawPosition(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setRawPosition(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3225,7 +2058,7 @@ static PyObject *meth_QCaMotor_changedRawPosition(PyObject *sipSelf, PyObject *s
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedRawPosition(a0);
+            sipCpp->setRawPosition(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3233,14 +2066,222 @@ static PyObject *meth_QCaMotor_changedRawPosition(PyObject *sipSelf, PyObject *s
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedRawPosition, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setRawPosition, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedUserGoal(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedUserGoal(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_goUserPosition(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_goUserPosition(PyObject *sipSelf, PyObject *sipArgs)
+{
+    PyObject *sipParseErr = NULL;
+
+    {
+        double a0;
+         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
+         ::QCaMotor *sipCpp;
+
+        if (sipParseArgs(&sipParseErr, sipArgs, "Bd|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
+        {
+            sipCpp->goUserPosition(a0,a1);
+
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+    }
+
+    /* Raise an exception if the arguments couldn't be parsed. */
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goUserPosition, NULL);
+
+    return NULL;
+}
+
+
+extern "C" {static PyObject *meth_QCaMotor_goDialPosition(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_goDialPosition(PyObject *sipSelf, PyObject *sipArgs)
+{
+    PyObject *sipParseErr = NULL;
+
+    {
+        double a0;
+         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
+         ::QCaMotor *sipCpp;
+
+        if (sipParseArgs(&sipParseErr, sipArgs, "Bd|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
+        {
+            sipCpp->goDialPosition(a0,a1);
+
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+    }
+
+    /* Raise an exception if the arguments couldn't be parsed. */
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goDialPosition, NULL);
+
+    return NULL;
+}
+
+
+extern "C" {static PyObject *meth_QCaMotor_goRawPosition(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_goRawPosition(PyObject *sipSelf, PyObject *sipArgs)
+{
+    PyObject *sipParseErr = NULL;
+
+    {
+        double a0;
+         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
+         ::QCaMotor *sipCpp;
+
+        if (sipParseArgs(&sipParseErr, sipArgs, "Bd|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
+        {
+            sipCpp->goRawPosition(a0,a1);
+
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+    }
+
+    /* Raise an exception if the arguments couldn't be parsed. */
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goRawPosition, NULL);
+
+    return NULL;
+}
+
+
+extern "C" {static PyObject *meth_QCaMotor_goLimit(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_goLimit(PyObject *sipSelf, PyObject *sipArgs)
+{
+    PyObject *sipParseErr = NULL;
+
+    {
+        int a0;
+         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
+         ::QCaMotor *sipCpp;
+
+        if (sipParseArgs(&sipParseErr, sipArgs, "Bi|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
+        {
+            sipCpp->goLimit(a0,a1);
+
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+    }
+
+    /* Raise an exception if the arguments couldn't be parsed. */
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goLimit, NULL);
+
+    return NULL;
+}
+
+
+extern "C" {static PyObject *meth_QCaMotor_goStep(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_goStep(PyObject *sipSelf, PyObject *sipArgs)
+{
+    PyObject *sipParseErr = NULL;
+
+    {
+        int a0;
+         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
+         ::QCaMotor *sipCpp;
+
+        if (sipParseArgs(&sipParseErr, sipArgs, "Bi|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
+        {
+            sipCpp->goStep(a0,a1);
+
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+    }
+
+    /* Raise an exception if the arguments couldn't be parsed. */
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goStep, NULL);
+
+    return NULL;
+}
+
+
+extern "C" {static PyObject *meth_QCaMotor_goHome(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_goHome(PyObject *sipSelf, PyObject *sipArgs)
+{
+    PyObject *sipParseErr = NULL;
+
+    {
+        int a0;
+         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
+         ::QCaMotor *sipCpp;
+
+        if (sipParseArgs(&sipParseErr, sipArgs, "Bi|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
+        {
+            sipCpp->goHome(a0,a1);
+
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+    }
+
+    /* Raise an exception if the arguments couldn't be parsed. */
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goHome, NULL);
+
+    return NULL;
+}
+
+
+extern "C" {static PyObject *meth_QCaMotor_goRelative(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_goRelative(PyObject *sipSelf, PyObject *sipArgs)
+{
+    PyObject *sipParseErr = NULL;
+
+    {
+        double a0;
+         ::QCaMotor::MotionExit a1 =  ::QCaMotor::IMMIDIATELY;
+         ::QCaMotor *sipCpp;
+
+        if (sipParseArgs(&sipParseErr, sipArgs, "Bd|E", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, sipType_QCaMotor_MotionExit, &a1))
+        {
+            sipCpp->goRelative(a0,a1);
+
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+    }
+
+    /* Raise an exception if the arguments couldn't be parsed. */
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_goRelative, NULL);
+
+    return NULL;
+}
+
+
+extern "C" {static PyObject *meth_QCaMotor_jog(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_jog(PyObject *sipSelf, PyObject *sipArgs)
+{
+    PyObject *sipParseErr = NULL;
+
+    {
+        bool a0;
+        int a1;
+         ::QCaMotor *sipCpp;
+
+        if (sipParseArgs(&sipParseErr, sipArgs, "Bbi", &sipSelf, sipType_QCaMotor, &sipCpp, &a0, &a1))
+        {
+            sipCpp->jog(a0,a1);
+
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+    }
+
+    /* Raise an exception if the arguments couldn't be parsed. */
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_jog, NULL);
+
+    return NULL;
+}
+
+
+extern "C" {static PyObject *meth_QCaMotor_setStep(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setStep(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3250,7 +2291,7 @@ static PyObject *meth_QCaMotor_changedUserGoal(PyObject *sipSelf, PyObject *sipA
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedUserGoal(a0);
+            sipCpp->setStep(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3258,14 +2299,14 @@ static PyObject *meth_QCaMotor_changedUserGoal(PyObject *sipSelf, PyObject *sipA
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedUserGoal, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setStep, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedDialGoal(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedDialGoal(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setDeadBand(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setDeadBand(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3275,7 +2316,7 @@ static PyObject *meth_QCaMotor_changedDialGoal(PyObject *sipSelf, PyObject *sipA
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedDialGoal(a0);
+            sipCpp->setDeadBand(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3283,14 +2324,39 @@ static PyObject *meth_QCaMotor_changedDialGoal(PyObject *sipSelf, PyObject *sipA
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedDialGoal, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setDeadBand, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedRawGoal(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedRawGoal(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_undoLastMotion(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_undoLastMotion(PyObject *sipSelf, PyObject *sipArgs)
+{
+    PyObject *sipParseErr = NULL;
+
+    {
+         ::QCaMotor::MotionExit a0 =  ::QCaMotor::IMMIDIATELY;
+         ::QCaMotor *sipCpp;
+
+        if (sipParseArgs(&sipParseErr, sipArgs, "B|E", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QCaMotor_MotionExit, &a0))
+        {
+            sipCpp->undoLastMotion(a0);
+
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+    }
+
+    /* Raise an exception if the arguments couldn't be parsed. */
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_undoLastMotion, NULL);
+
+    return NULL;
+}
+
+
+extern "C" {static PyObject *meth_QCaMotor_setOffset(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setOffset(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3300,7 +2366,7 @@ static PyObject *meth_QCaMotor_changedRawGoal(PyObject *sipSelf, PyObject *sipAr
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedRawGoal(a0);
+            sipCpp->setOffset(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3308,89 +2374,14 @@ static PyObject *meth_QCaMotor_changedRawGoal(PyObject *sipSelf, PyObject *sipAr
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedRawGoal, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setOffset, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedStep(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedStep(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->changedStep(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedStep, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_changedDeadBand(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedDeadBand(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->changedDeadBand(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedDeadBand, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_changedOffset(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedOffset(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        double a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->changedOffset(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedOffset, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_changedOffsetMode(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedOffsetMode(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setOffsetMode(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setOffsetMode(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3400,7 +2391,7 @@ static PyObject *meth_QCaMotor_changedOffsetMode(PyObject *sipSelf, PyObject *si
 
         if (sipParseArgs(&sipParseErr, sipArgs, "BE", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QCaMotor_OffMode, &a0))
         {
-            sipCpp->changedOffsetMode(a0);
+            sipCpp->setOffsetMode(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3408,14 +2399,14 @@ static PyObject *meth_QCaMotor_changedOffsetMode(PyObject *sipSelf, PyObject *si
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedOffsetMode, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setOffsetMode, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedDirection(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedDirection(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setDirection(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setDirection(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3425,7 +2416,7 @@ static PyObject *meth_QCaMotor_changedDirection(PyObject *sipSelf, PyObject *sip
 
         if (sipParseArgs(&sipParseErr, sipArgs, "BE", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QCaMotor_Direction, &a0))
         {
-            sipCpp->changedDirection(a0);
+            sipCpp->setDirection(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3433,14 +2424,14 @@ static PyObject *meth_QCaMotor_changedDirection(PyObject *sipSelf, PyObject *sip
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedDirection, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setDirection, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedSuMode(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedSuMode(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setSuMode(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setSuMode(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3450,7 +2441,7 @@ static PyObject *meth_QCaMotor_changedSuMode(PyObject *sipSelf, PyObject *sipArg
 
         if (sipParseArgs(&sipParseErr, sipArgs, "BE", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QCaMotor_SuMode, &a0))
         {
-            sipCpp->changedSuMode(a0);
+            sipCpp->setSuMode(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3458,64 +2449,14 @@ static PyObject *meth_QCaMotor_changedSuMode(PyObject *sipSelf, PyObject *sipArg
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedSuMode, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setSuMode, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedHiLimitStatus(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedHiLimitStatus(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        bool a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bb", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->changedHiLimitStatus(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedHiLimitStatus, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_changedLoLimitStatus(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedLoLimitStatus(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        bool a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bb", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->changedLoLimitStatus(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedLoLimitStatus, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_changedUserHiLimit(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedUserHiLimit(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setUserHiLimit(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setUserHiLimit(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3525,7 +2466,7 @@ static PyObject *meth_QCaMotor_changedUserHiLimit(PyObject *sipSelf, PyObject *s
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedUserHiLimit(a0);
+            sipCpp->setUserHiLimit(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3533,14 +2474,14 @@ static PyObject *meth_QCaMotor_changedUserHiLimit(PyObject *sipSelf, PyObject *s
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedUserHiLimit, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUserHiLimit, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedUserLoLimit(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedUserLoLimit(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setUserLoLimit(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setUserLoLimit(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3550,7 +2491,7 @@ static PyObject *meth_QCaMotor_changedUserLoLimit(PyObject *sipSelf, PyObject *s
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedUserLoLimit(a0);
+            sipCpp->setUserLoLimit(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3558,14 +2499,14 @@ static PyObject *meth_QCaMotor_changedUserLoLimit(PyObject *sipSelf, PyObject *s
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedUserLoLimit, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUserLoLimit, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedDialLoLimit(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedDialLoLimit(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setDialHiLimit(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setDialHiLimit(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3575,7 +2516,7 @@ static PyObject *meth_QCaMotor_changedDialLoLimit(PyObject *sipSelf, PyObject *s
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedDialLoLimit(a0);
+            sipCpp->setDialHiLimit(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3583,14 +2524,14 @@ static PyObject *meth_QCaMotor_changedDialLoLimit(PyObject *sipSelf, PyObject *s
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedDialLoLimit, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setDialHiLimit, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedDialHiLimit(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedDialHiLimit(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setDialLoLimit(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setDialLoLimit(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3600,7 +2541,7 @@ static PyObject *meth_QCaMotor_changedDialHiLimit(PyObject *sipSelf, PyObject *s
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedDialHiLimit(a0);
+            sipCpp->setDialLoLimit(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3608,14 +2549,14 @@ static PyObject *meth_QCaMotor_changedDialHiLimit(PyObject *sipSelf, PyObject *s
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedDialHiLimit, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setDialLoLimit, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedMotorResolution(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedMotorResolution(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setMotorResolution(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setMotorResolution(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3625,7 +2566,7 @@ static PyObject *meth_QCaMotor_changedMotorResolution(PyObject *sipSelf, PyObjec
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedMotorResolution(a0);
+            sipCpp->setMotorResolution(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3633,14 +2574,14 @@ static PyObject *meth_QCaMotor_changedMotorResolution(PyObject *sipSelf, PyObjec
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedMotorResolution, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setMotorResolution, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedReadbackResolution(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedReadbackResolution(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setReadbackResolution(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setReadbackResolution(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3650,7 +2591,7 @@ static PyObject *meth_QCaMotor_changedReadbackResolution(PyObject *sipSelf, PyOb
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedReadbackResolution(a0);
+            sipCpp->setReadbackResolution(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3658,14 +2599,14 @@ static PyObject *meth_QCaMotor_changedReadbackResolution(PyObject *sipSelf, PyOb
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedReadbackResolution, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setReadbackResolution, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedEncoderResolution(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedEncoderResolution(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setEncoderResolution(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setEncoderResolution(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3675,7 +2616,7 @@ static PyObject *meth_QCaMotor_changedEncoderResolution(PyObject *sipSelf, PyObj
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedEncoderResolution(a0);
+            sipCpp->setEncoderResolution(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3683,14 +2624,14 @@ static PyObject *meth_QCaMotor_changedEncoderResolution(PyObject *sipSelf, PyObj
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedEncoderResolution, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setEncoderResolution, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedUnitsPerRev(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedUnitsPerRev(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setUnitsPerRev(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setUnitsPerRev(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3700,7 +2641,7 @@ static PyObject *meth_QCaMotor_changedUnitsPerRev(PyObject *sipSelf, PyObject *s
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedUnitsPerRev(a0);
+            sipCpp->setUnitsPerRev(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3708,14 +2649,14 @@ static PyObject *meth_QCaMotor_changedUnitsPerRev(PyObject *sipSelf, PyObject *s
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedUnitsPerRev, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUnitsPerRev, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedStepsPerRev(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedStepsPerRev(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setStepsPerRev(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setStepsPerRev(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3725,7 +2666,7 @@ static PyObject *meth_QCaMotor_changedStepsPerRev(PyObject *sipSelf, PyObject *s
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bi", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedStepsPerRev(a0);
+            sipCpp->setStepsPerRev(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3733,14 +2674,14 @@ static PyObject *meth_QCaMotor_changedStepsPerRev(PyObject *sipSelf, PyObject *s
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedStepsPerRev, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setStepsPerRev, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedMaximumSpeed(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedMaximumSpeed(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setMaximumSpeed(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setMaximumSpeed(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3750,7 +2691,7 @@ static PyObject *meth_QCaMotor_changedMaximumSpeed(PyObject *sipSelf, PyObject *
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedMaximumSpeed(a0);
+            sipCpp->setMaximumSpeed(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3758,14 +2699,14 @@ static PyObject *meth_QCaMotor_changedMaximumSpeed(PyObject *sipSelf, PyObject *
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedMaximumSpeed, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setMaximumSpeed, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedNormalSpeed(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedNormalSpeed(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setNormalSpeed(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setNormalSpeed(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3775,7 +2716,7 @@ static PyObject *meth_QCaMotor_changedNormalSpeed(PyObject *sipSelf, PyObject *s
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedNormalSpeed(a0);
+            sipCpp->setNormalSpeed(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3783,14 +2724,14 @@ static PyObject *meth_QCaMotor_changedNormalSpeed(PyObject *sipSelf, PyObject *s
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedNormalSpeed, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setNormalSpeed, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedRevSpeed(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedRevSpeed(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setRevSpeed(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setRevSpeed(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3800,7 +2741,7 @@ static PyObject *meth_QCaMotor_changedRevSpeed(PyObject *sipSelf, PyObject *sipA
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedRevSpeed(a0);
+            sipCpp->setRevSpeed(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3808,14 +2749,14 @@ static PyObject *meth_QCaMotor_changedRevSpeed(PyObject *sipSelf, PyObject *sipA
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedRevSpeed, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setRevSpeed, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedBacklashSpeed(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedBacklashSpeed(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setBacklashSpeed(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setBacklashSpeed(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3825,7 +2766,7 @@ static PyObject *meth_QCaMotor_changedBacklashSpeed(PyObject *sipSelf, PyObject 
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedBacklashSpeed(a0);
+            sipCpp->setBacklashSpeed(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3833,14 +2774,14 @@ static PyObject *meth_QCaMotor_changedBacklashSpeed(PyObject *sipSelf, PyObject 
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedBacklashSpeed, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setBacklashSpeed, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedJogSpeed(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedJogSpeed(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setJogSpeed(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setJogSpeed(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3850,7 +2791,7 @@ static PyObject *meth_QCaMotor_changedJogSpeed(PyObject *sipSelf, PyObject *sipA
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedJogSpeed(a0);
+            sipCpp->setJogSpeed(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3858,14 +2799,14 @@ static PyObject *meth_QCaMotor_changedJogSpeed(PyObject *sipSelf, PyObject *sipA
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedJogSpeed, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setJogSpeed, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedAcceleration(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedAcceleration(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setAcceleration(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setAcceleration(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3875,7 +2816,7 @@ static PyObject *meth_QCaMotor_changedAcceleration(PyObject *sipSelf, PyObject *
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedAcceleration(a0);
+            sipCpp->setAcceleration(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3883,14 +2824,14 @@ static PyObject *meth_QCaMotor_changedAcceleration(PyObject *sipSelf, PyObject *
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedAcceleration, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setAcceleration, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedBacklashAcceleration(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedBacklashAcceleration(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setBacklashAcceleration(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setBacklashAcceleration(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3900,7 +2841,7 @@ static PyObject *meth_QCaMotor_changedBacklashAcceleration(PyObject *sipSelf, Py
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedBacklashAcceleration(a0);
+            sipCpp->setBacklashAcceleration(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3908,14 +2849,14 @@ static PyObject *meth_QCaMotor_changedBacklashAcceleration(PyObject *sipSelf, Py
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedBacklashAcceleration, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setBacklashAcceleration, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedJogAcceleration(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedJogAcceleration(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setJogAcceleration(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setJogAcceleration(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3925,7 +2866,7 @@ static PyObject *meth_QCaMotor_changedJogAcceleration(PyObject *sipSelf, PyObjec
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedJogAcceleration(a0);
+            sipCpp->setJogAcceleration(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3933,14 +2874,39 @@ static PyObject *meth_QCaMotor_changedJogAcceleration(PyObject *sipSelf, PyObjec
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedJogAcceleration, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setJogAcceleration, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedConnected(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedConnected(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_stop(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_stop(PyObject *sipSelf, PyObject *sipArgs)
+{
+    PyObject *sipParseErr = NULL;
+
+    {
+         ::QCaMotor::MotionExit a0 =  ::QCaMotor::IMMIDIATELY;
+         ::QCaMotor *sipCpp;
+
+        if (sipParseArgs(&sipParseErr, sipArgs, "B|E", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QCaMotor_MotionExit, &a0))
+        {
+            sipCpp->stop(a0);
+
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+    }
+
+    /* Raise an exception if the arguments couldn't be parsed. */
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_stop, NULL);
+
+    return NULL;
+}
+
+
+extern "C" {static PyObject *meth_QCaMotor_setUseReadback(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setUseReadback(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3950,7 +2916,7 @@ static PyObject *meth_QCaMotor_changedConnected(PyObject *sipSelf, PyObject *sip
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bb", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedConnected(a0);
+            sipCpp->setUseReadback(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3958,14 +2924,14 @@ static PyObject *meth_QCaMotor_changedConnected(PyObject *sipSelf, PyObject *sip
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedConnected, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUseReadback, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedMoving(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedMoving(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setUseEncoder(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setUseEncoder(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -3975,7 +2941,7 @@ static PyObject *meth_QCaMotor_changedMoving(PyObject *sipSelf, PyObject *sipArg
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bb", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedMoving(a0);
+            sipCpp->setUseEncoder(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -3983,88 +2949,14 @@ static PyObject *meth_QCaMotor_changedMoving(PyObject *sipSelf, PyObject *sipArg
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedMoving, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setUseEncoder, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_stopped(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_stopped(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "B", &sipSelf, sipType_QCaMotor, &sipCpp))
-        {
-            sipCpp->stopped();
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_stopped, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_changedUseReadback(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedUseReadback(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        bool a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bb", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->changedUseReadback(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedUseReadback, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_changedUseEncoder(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedUseEncoder(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        bool a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bb", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->changedUseEncoder(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedUseEncoder, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_changedBacklash(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedBacklash(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setBacklash(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setBacklash(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -4074,7 +2966,7 @@ static PyObject *meth_QCaMotor_changedBacklash(PyObject *sipSelf, PyObject *sipA
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bd", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedBacklash(a0);
+            sipCpp->setBacklash(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -4082,14 +2974,14 @@ static PyObject *meth_QCaMotor_changedBacklash(PyObject *sipSelf, PyObject *sipA
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedBacklash, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setBacklash, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedSpmgMode(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedSpmgMode(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setSpmgMode(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setSpmgMode(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -4099,7 +2991,7 @@ static PyObject *meth_QCaMotor_changedSpmgMode(PyObject *sipSelf, PyObject *sipA
 
         if (sipParseArgs(&sipParseErr, sipArgs, "BE", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QCaMotor_SpmgMode, &a0))
         {
-            sipCpp->changedSpmgMode(a0);
+            sipCpp->setSpmgMode(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -4107,14 +2999,14 @@ static PyObject *meth_QCaMotor_changedSpmgMode(PyObject *sipSelf, PyObject *sipA
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedSpmgMode, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setSpmgMode, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedPower(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedPower(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_setPower(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_setPower(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
@@ -4124,7 +3016,7 @@ static PyObject *meth_QCaMotor_changedPower(PyObject *sipSelf, PyObject *sipArgs
 
         if (sipParseArgs(&sipParseErr, sipArgs, "Bb", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
         {
-            sipCpp->changedPower(a0);
+            sipCpp->setPower(a0);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -4132,76 +3024,26 @@ static PyObject *meth_QCaMotor_changedPower(PyObject *sipSelf, PyObject *sipArgs
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedPower, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_setPower, NULL);
 
     return NULL;
 }
 
 
-extern "C" {static PyObject *meth_QCaMotor_changedPowerConnection(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedPowerConnection(PyObject *sipSelf, PyObject *sipArgs)
+extern "C" {static PyObject *meth_QCaMotor_printError(PyObject *, PyObject *);}
+static PyObject *meth_QCaMotor_printError(PyObject *sipSelf, PyObject *sipArgs)
 {
     PyObject *sipParseErr = NULL;
 
     {
-        bool a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bb", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->changedPowerConnection(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedPowerConnection, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_changedWired(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_changedWired(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-        bool a0;
-         ::QCaMotor *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "Bb", &sipSelf, sipType_QCaMotor, &sipCpp, &a0))
-        {
-            sipCpp->changedWired(a0);
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedWired, NULL);
-
-    return NULL;
-}
-
-
-extern "C" {static PyObject *meth_QCaMotor_error(PyObject *, PyObject *);}
-static PyObject *meth_QCaMotor_error(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-         ::QString* a0;
+        const  ::QString* a0;
         int a0State = 0;
-         ::QCaMotor *sipCpp;
+        const  ::QCaMotor *sipCpp;
 
         if (sipParseArgs(&sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QCaMotor, &sipCpp, sipType_QString,&a0, &a0State))
         {
-            sipCpp->error(*a0);
-            sipReleaseType(a0,sipType_QString,a0State);
+            sipCpp->printError(*a0);
+            sipReleaseType(const_cast< ::QString *>(a0),sipType_QString,a0State);
 
             Py_INCREF(Py_None);
             return Py_None;
@@ -4209,7 +3051,7 @@ static PyObject *meth_QCaMotor_error(PyObject *sipSelf, PyObject *sipArgs)
     }
 
     /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_error, NULL);
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_printError, NULL);
 
     return NULL;
 }
@@ -4297,55 +3139,10 @@ static sipEncodedTypeDef supers_QCaMotor[] = {{3, 0, 1}};
 
 
 static PyMethodDef methods_QCaMotor[] = {
-    {SIP_MLNAME_CAST(sipName_changedAcceleration), meth_QCaMotor_changedAcceleration, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedBacklash), meth_QCaMotor_changedBacklash, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedBacklashAcceleration), meth_QCaMotor_changedBacklashAcceleration, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedBacklashSpeed), meth_QCaMotor_changedBacklashSpeed, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedConnected), meth_QCaMotor_changedConnected, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedDeadBand), meth_QCaMotor_changedDeadBand, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedDescription), meth_QCaMotor_changedDescription, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedDialGoal), meth_QCaMotor_changedDialGoal, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedDialHiLimit), meth_QCaMotor_changedDialHiLimit, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedDialLoLimit), meth_QCaMotor_changedDialLoLimit, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedDialPosition), meth_QCaMotor_changedDialPosition, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedDirection), meth_QCaMotor_changedDirection, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedEncoderResolution), meth_QCaMotor_changedEncoderResolution, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedHiLimitStatus), meth_QCaMotor_changedHiLimitStatus, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedJogAcceleration), meth_QCaMotor_changedJogAcceleration, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedJogSpeed), meth_QCaMotor_changedJogSpeed, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedLoLimitStatus), meth_QCaMotor_changedLoLimitStatus, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedMaximumSpeed), meth_QCaMotor_changedMaximumSpeed, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedMotorResolution), meth_QCaMotor_changedMotorResolution, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedMoving), meth_QCaMotor_changedMoving, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedNormalSpeed), meth_QCaMotor_changedNormalSpeed, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedOffset), meth_QCaMotor_changedOffset, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedOffsetMode), meth_QCaMotor_changedOffsetMode, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedPower), meth_QCaMotor_changedPower, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedPowerConnection), meth_QCaMotor_changedPowerConnection, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedPrecision), meth_QCaMotor_changedPrecision, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedPv), meth_QCaMotor_changedPv, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedRawGoal), meth_QCaMotor_changedRawGoal, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedRawPosition), meth_QCaMotor_changedRawPosition, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedReadbackResolution), meth_QCaMotor_changedReadbackResolution, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedRevSpeed), meth_QCaMotor_changedRevSpeed, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedSpmgMode), meth_QCaMotor_changedSpmgMode, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedStep), meth_QCaMotor_changedStep, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedStepsPerRev), meth_QCaMotor_changedStepsPerRev, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedSuMode), meth_QCaMotor_changedSuMode, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedUnits), meth_QCaMotor_changedUnits, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedUnitsPerRev), meth_QCaMotor_changedUnitsPerRev, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedUseEncoder), meth_QCaMotor_changedUseEncoder, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedUseReadback), meth_QCaMotor_changedUseReadback, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedUserGoal), meth_QCaMotor_changedUserGoal, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedUserHiLimit), meth_QCaMotor_changedUserHiLimit, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedUserLoLimit), meth_QCaMotor_changedUserLoLimit, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedUserPosition), meth_QCaMotor_changedUserPosition, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_changedWired), meth_QCaMotor_changedWired, METH_VARARGS, NULL},
     {SIP_MLNAME_CAST(sipName_childEvent), (PyCFunction)meth_QCaMotor_childEvent, METH_VARARGS|METH_KEYWORDS, NULL},
     {SIP_MLNAME_CAST(sipName_connectNotify), (PyCFunction)meth_QCaMotor_connectNotify, METH_VARARGS|METH_KEYWORDS, NULL},
     {SIP_MLNAME_CAST(sipName_customEvent), (PyCFunction)meth_QCaMotor_customEvent, METH_VARARGS|METH_KEYWORDS, NULL},
     {SIP_MLNAME_CAST(sipName_disconnectNotify), (PyCFunction)meth_QCaMotor_disconnectNotify, METH_VARARGS|METH_KEYWORDS, NULL},
-    {SIP_MLNAME_CAST(sipName_error), meth_QCaMotor_error, METH_VARARGS, NULL},
     {SIP_MLNAME_CAST(sipName_get), meth_QCaMotor_get, METH_VARARGS, NULL},
     {SIP_MLNAME_CAST(sipName_getAcceleration), meth_QCaMotor_getAcceleration, METH_VARARGS, NULL},
     {SIP_MLNAME_CAST(sipName_getBacklash), meth_QCaMotor_getBacklash, METH_VARARGS, NULL},
@@ -4444,7 +3241,6 @@ static PyMethodDef methods_QCaMotor[] = {
     {SIP_MLNAME_CAST(sipName_setUserLoLimit), meth_QCaMotor_setUserLoLimit, METH_VARARGS, NULL},
     {SIP_MLNAME_CAST(sipName_setUserPosition), meth_QCaMotor_setUserPosition, METH_VARARGS, NULL},
     {SIP_MLNAME_CAST(sipName_stop), meth_QCaMotor_stop, METH_VARARGS, NULL},
-    {SIP_MLNAME_CAST(sipName_stopped), meth_QCaMotor_stopped, METH_VARARGS, NULL},
     {SIP_MLNAME_CAST(sipName_timerEvent), (PyCFunction)meth_QCaMotor_timerEvent, METH_VARARGS|METH_KEYWORDS, NULL},
     {SIP_MLNAME_CAST(sipName_undoLastMotion), meth_QCaMotor_undoLastMotion, METH_VARARGS, NULL},
     {SIP_MLNAME_CAST(sipName_wait_start), meth_QCaMotor_wait_start, METH_VARARGS, NULL},
@@ -4470,10 +3266,92 @@ static sipEnumMemberDef enummembers_QCaMotor[] = {
 };
 
 
+extern "C" {static int emit_QCaMotor_changedPv(void *, PyObject *);}
+
+static int emit_QCaMotor_changedPv(void *sipCppV, PyObject *sipArgs)
+{
+    PyObject *sipParseErr = NULL;
+    QCaMotor *sipCpp = reinterpret_cast<QCaMotor *>(sipCppV);
+
+    {
+         ::QString a0def = QString();
+         ::QString* a0 = &a0def;
+        int a0State = 0;
+
+        if (sipParseArgs(&sipParseErr, sipArgs, "|J1", sipType_QString,&a0, &a0State))
+        {
+            Py_BEGIN_ALLOW_THREADS
+            sipCpp->changedPv(*a0);
+            Py_END_ALLOW_THREADS
+
+            sipReleaseType(a0,sipType_QString,a0State);
+
+            return 0;
+        }
+    }
+
+    sipNoMethod(sipParseErr, sipName_QCaMotor, sipName_changedPv, NULL);
+
+    return -1;
+}
+
+
+/* Define this type's signals. */
+static const pyqt5QtSignal signals_QCaMotor[] = {
+    {"error(QString)", 0, 0, 0},
+    {"changedWired(bool)", 0, 0, 0},
+    {"changedPowerConnection(bool)", 0, 0, 0},
+    {"changedPower(bool)", 0, 0, 0},
+    {"changedSpmgMode(QCaMotor::SpmgMode)", 0, 0, 0},
+    {"changedBacklash(double)", 0, 0, 0},
+    {"changedUseEncoder(bool)", 0, 0, 0},
+    {"changedUseReadback(bool)", 0, 0, 0},
+    {"stopped()", 0, 0, 0},
+    {"changedMoving(bool)", 0, 0, 0},
+    {"changedConnected(bool)", 0, 0, 0},
+    {"changedJogAcceleration(double)", 0, 0, 0},
+    {"changedBacklashAcceleration(double)", 0, 0, 0},
+    {"changedAcceleration(double)", 0, 0, 0},
+    {"changedJogSpeed(double)", 0, 0, 0},
+    {"changedBacklashSpeed(double)", 0, 0, 0},
+    {"changedRevSpeed(double)", 0, 0, 0},
+    {"changedNormalSpeed(double)", 0, 0, 0},
+    {"changedMaximumSpeed(double)", 0, 0, 0},
+    {"changedStepsPerRev(int)", 0, 0, 0},
+    {"changedUnitsPerRev(double)", 0, 0, 0},
+    {"changedEncoderResolution(double)", 0, 0, 0},
+    {"changedReadbackResolution(double)", 0, 0, 0},
+    {"changedMotorResolution(double)", 0, 0, 0},
+    {"changedDialHiLimit(double)", 0, 0, 0},
+    {"changedDialLoLimit(double)", 0, 0, 0},
+    {"changedUserLoLimit(double)", 0, 0, 0},
+    {"changedUserHiLimit(double)", 0, 0, 0},
+    {"changedLoLimitStatus(bool)", 0, 0, 0},
+    {"changedHiLimitStatus(bool)", 0, 0, 0},
+    {"changedSuMode(QCaMotor::SuMode)", 0, 0, 0},
+    {"changedDirection(QCaMotor::Direction)", 0, 0, 0},
+    {"changedOffsetMode(QCaMotor::OffMode)", 0, 0, 0},
+    {"changedOffset(double)", 0, 0, 0},
+    {"changedDeadBand(double)", 0, 0, 0},
+    {"changedStep(double)", 0, 0, 0},
+    {"changedRawGoal(double)", 0, 0, 0},
+    {"changedDialGoal(double)", 0, 0, 0},
+    {"changedUserGoal(double)", 0, 0, 0},
+    {"changedRawPosition(double)", 0, 0, 0},
+    {"changedDialPosition(double)", 0, 0, 0},
+    {"changedUserPosition(double)", 0, 0, 0},
+    {"changedUnits(QString)", 0, 0, 0},
+    {"changedPrecision(int)", 0, 0, 0},
+    {"changedDescription(QString)", 0, 0, 0},
+    {"changedPv(QString)", 0, 0, emit_QCaMotor_changedPv},
+    {0, 0, 0, 0}
+};
+
+
 static pyqt5ClassPluginDef plugin_QCaMotor = {
     & ::QCaMotor::staticMetaObject,
     0,
-    0,
+    signals_QCaMotor,
     0
 };
 
@@ -4491,7 +3369,7 @@ sipClassTypeDef sipTypeDef_qcamotor_QCaMotor = {
     {
         sipNameNr_QCaMotor,
         {0, 0, 1},
-        152, methods_QCaMotor,
+        106, methods_QCaMotor,
         15, enummembers_QCaMotor,
         0, 0,
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},

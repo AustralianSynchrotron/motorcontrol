@@ -3001,30 +3001,6 @@ static PyObject *meth_QMotorStack_loadConfiguration(PyObject *sipSelf, PyObject 
 }
 
 
-extern "C" {static PyObject *meth_QMotorStack_listChanged(PyObject *, PyObject *);}
-static PyObject *meth_QMotorStack_listChanged(PyObject *sipSelf, PyObject *sipArgs)
-{
-    PyObject *sipParseErr = NULL;
-
-    {
-         ::QMotorStack *sipCpp;
-
-        if (sipParseArgs(&sipParseErr, sipArgs, "B", &sipSelf, sipType_QMotorStack, &sipCpp))
-        {
-            sipCpp->listChanged();
-
-            Py_INCREF(Py_None);
-            return Py_None;
-        }
-    }
-
-    /* Raise an exception if the arguments couldn't be parsed. */
-    sipNoMethod(sipParseErr, sipName_QMotorStack, sipName_listChanged, NULL);
-
-    return NULL;
-}
-
-
 /* Cast a pointer to a type somewhere in its inheritance hierarchy. */
 extern "C" {static void *cast_QMotorStack(void *, const sipTypeDef *);}
 static void *cast_QMotorStack(void *sipCppV, const sipTypeDef *targetType)
@@ -3181,7 +3157,6 @@ static PyMethodDef methods_QMotorStack[] = {
     {SIP_MLNAME_CAST(sipName_keyPressEvent), (PyCFunction)meth_QMotorStack_keyPressEvent, METH_VARARGS|METH_KEYWORDS, NULL},
     {SIP_MLNAME_CAST(sipName_keyReleaseEvent), (PyCFunction)meth_QMotorStack_keyReleaseEvent, METH_VARARGS|METH_KEYWORDS, NULL},
     {SIP_MLNAME_CAST(sipName_leaveEvent), (PyCFunction)meth_QMotorStack_leaveEvent, METH_VARARGS|METH_KEYWORDS, NULL},
-    {SIP_MLNAME_CAST(sipName_listChanged), meth_QMotorStack_listChanged, METH_VARARGS, NULL},
     {SIP_MLNAME_CAST(sipName_loadConfiguration), meth_QMotorStack_loadConfiguration, METH_VARARGS, NULL},
     {SIP_MLNAME_CAST(sipName_lock), meth_QMotorStack_lock, METH_VARARGS, NULL},
     {SIP_MLNAME_CAST(sipName_metric), (PyCFunction)meth_QMotorStack_metric, METH_VARARGS|METH_KEYWORDS, NULL},
@@ -3209,10 +3184,17 @@ static PyMethodDef methods_QMotorStack[] = {
 };
 
 
+/* Define this type's signals. */
+static const pyqt5QtSignal signals_QMotorStack[] = {
+    {"listChanged()", 0, 0, 0},
+    {0, 0, 0, 0}
+};
+
+
 static pyqt5ClassPluginDef plugin_QMotorStack = {
     & ::QMotorStack::staticMetaObject,
     0,
-    0,
+    signals_QMotorStack,
     0
 };
 
@@ -3230,7 +3212,7 @@ sipClassTypeDef sipTypeDef_qmotorstack_QMotorStack = {
     {
         sipNameNr_QMotorStack,
         {0, 0, 1},
-        56, methods_QMotorStack,
+        55, methods_QMotorStack,
         0, 0,
         0, 0,
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},

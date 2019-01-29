@@ -39,6 +39,7 @@ public:
   void showSetup(bool shown=true);
   void showPvSetup(bool shown=true);
 
+signals:
   void ioPositionChanged(QString);
 
 };
