@@ -9,6 +9,7 @@ SUBDIRS = qcamotor \
           qcamotorgui \
           qcamotorgui_py \
           motorstack \
+          motorstack_py \
           motormx
 
 TEMPLATE = subdirs
