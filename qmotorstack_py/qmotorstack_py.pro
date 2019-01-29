@@ -4,11 +4,11 @@
 
 TEMPLATE = lib
 QT += widgets
-TARGET = motorstack
+TARGET = qmotorstack
 CONFIG += plugin no_plugin_name_prefix
 QMAKE_EXTENSION_SHLIB = so
 
-INCLUDEPATH += ../motorstack
+INCLUDEPATH += ../qmotorstack
 OTHER_FILES += qmotorstack.sip
 
 # files were generated with following command:

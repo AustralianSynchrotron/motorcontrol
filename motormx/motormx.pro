@@ -9,7 +9,7 @@ TARGET = motormx
 
 TEMPLATE = app
 
-INCLUDEPATH += ../qcamotor ../qcamotorgui ../motorstack
+INCLUDEPATH += ../qcamotor ../qcamotorgui ../qmotorstack
 
 SOURCES += \
     motormx_mainwindow.cpp \
@@ -25,7 +25,7 @@ LIBS += \
     -lqtpv \
     -L../qcamotor -lqcamotor \
     -L../qcamotorgui -lqcamotorgui \
-    -L../motorstack -lmotorstack \
+    -L../qmotorstack -lqmotorstack \
 
 target.files = $$[TARGET]
 target.path = $$[INSTALLBASE]/bin

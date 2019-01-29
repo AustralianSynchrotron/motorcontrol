@@ -1,5 +1,5 @@
 #include "ui_qcamotorgui.h"
-#include "ui_motorstack.h"
+#include "ui_qmotorstack.h"
 #include "qmotorstack.h"
 #include <QSettings>
 #include <QFileDialog>

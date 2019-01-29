@@ -2,10 +2,10 @@
 # Project created by QtCreator 2009-10-27T18:48:44
 # -------------------------------------------------
 QT += widgets
-TARGET = motorstack
+TARGET = qmotorstack
 TEMPLATE = lib
 INCLUDEPATH += ../qcamotor ../qcamotorgui
-FORMS += motorstack.ui
+FORMS += qmotorstack.ui
 HEADERS += qmotorstack.h
 SOURCES += qmotorstack.cpp
 LIBS += -L../qcamotor -L../qcamotorgui \
