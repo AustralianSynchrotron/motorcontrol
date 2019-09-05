@@ -8,7 +8,7 @@ TARGET = qmotorstack
 CONFIG += plugin no_plugin_name_prefix
 QMAKE_EXTENSION_SHLIB = so
 
-INCLUDEPATH += ../qmotorstack
+INCLUDEPATH += ../qmotorstack ../qcamotor ../qcamotorgui
 OTHER_FILES += qmotorstack.sip
 
 # files were generated with following command:
@@ -19,7 +19,7 @@ SOURCES += sipqmotorstackcmodule.cpp \
            sipqmotorstackQMotorStack.cpp 
 HEADERS += sipAPIqmotorstack.h 
 
-LIBS += -L../qmotorstack -lqcamotorgui -lqmotorstack
+LIBS += -L../qmotorstack -L../qmotorstack -L../qcamotor -L../qcamotorgui -lqcamotorgui -lqmotorstack
 
 QMAKE_CXXFLAGS += $$system(python3-config  --includes)
 

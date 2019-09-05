@@ -8,7 +8,7 @@ TARGET = qcamotorgui
 CONFIG += plugin no_plugin_name_prefix
 QMAKE_EXTENSION_SHLIB = so
 
-INCLUDEPATH += ../qcamotorgui
+INCLUDEPATH += ../qcamotorgui ../qcamotor
 OTHER_FILES += qcamotorgui.sip
 
 # files were generated with following command:
