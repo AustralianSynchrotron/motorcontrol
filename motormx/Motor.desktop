@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Motor Contorl
+Comment=Raw motor access
+Exec=motormx
+Icon=Stepper_motor_1
+Terminal=false
+Categories=Science;X-IMBL;
+StartupNotify=true

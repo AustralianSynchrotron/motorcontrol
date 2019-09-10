@@ -27,9 +27,15 @@ LIBS += \
     -L../qcamotorgui -lqcamotorgui \
     -L../qmotorstack -lqmotorstack 
 
+icon.path = $$[INSTALLBASE]/share/icons
+icon.files += Stepper_motor_1.png
+
+desktop.path = $$[INSTALLBASE]/share/applications
+desktop.files += Motor.desktop
+
 target.files = $$[TARGET]
 target.path = $$[INSTALLBASE]/bin
-INSTALLS += target
+INSTALLS += target desktop icon
 
 RESOURCES += \
     motormx.qrc
