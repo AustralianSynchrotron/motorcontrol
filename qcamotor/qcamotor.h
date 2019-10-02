@@ -7,6 +7,39 @@
 #include <QCoreApplication>
 #include <qtpv.h>
 
+// :HOME_FLAG_USER.SVAL - home reference limit
+// :ABORT_HOME
+// :HOMING - homing in progress
+// .MSTA - status
+//         ULONG 	The motor status as received from the hardware.  The MSTA bits are defined as follows:
+//         DIRECTION: last raw direction; (0:Negative, 1:Positive)
+//         DONE: motion is complete.
+//         PLUS_LS: plus limit switch has been hit.
+//         HOMELS: state of the home limit switch.
+//         Unused
+//         POSITION: closed-loop position control is enabled.
+//         SLIP_STALL: Slip/Stall detected (eg. fatal following error)
+//         HOME: if at home position.
+//         PRESENT: encoder is present.
+//         PROBLEM: driver stopped polling, or hardware problem
+//         MOVING: non-zero velocity present.
+//         GAIN_SUPPORT: motor supports closed-loop position control.
+//         COMM_ERR: Controller communication error.
+//         MINUS_LS: minus limit switch has been hit.
+//         HOMED: the motor has been homed.
+// :AMPFAULT
+// :AMPFAULTRESET.PROC
+// :ELOSS - encoder loss
+// :ELOSSRC.A
+// :WRONGLIMIT - unexpected limit
+// :WRONGLIMITRESET.PROC
+// :UNINIT - uninitialized
+// :INIT.PROC
+// .UEIP - closed/open loop
+// :DRIVECURRENT (_RBV)
+// :HOLDPERCENTAGE (_RBV)
+
+
 
 /// \brief Class representing the EPICS motor.
 ///
@@ -153,7 +186,6 @@ private:
   double unitsPerRev;           ///< current value of the UREV field
   int    stepsPerRev;           ///< current value of the SREV field
 
-
   double maximumSpeed;          ///< current value of the VMAX field
   double normalSpeed;           ///< current value of the VELO field
   double revSpeed;              ///< current value of the S field
@@ -189,6 +221,23 @@ private:
   bool secondMotionAttempt;
 
 private slots:
+
+
+  /////////////////////
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  //  UPDATE SLOTS   //
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  /////////////////////
+
 
   /// \brief Updates connection status (::iAmConnected)
   /// Used to catch the signal valueUpdated(QVariant) signal
@@ -458,6 +507,23 @@ private slots:
 
 public slots:
 
+  /////////////////
+  //             //
+  //             //
+  //             //
+  //             //
+  //             //
+  //  SET SLOTS  //
+  //             //
+  //             //
+  //             //
+  //             //
+  //             //
+  //             //
+  /////////////////
+
+
+
   /// Sets the new PV name of the motor or disconnects current motor if the name is empty.
   ///
   /// @param pvName new PV name.
@@ -723,6 +789,26 @@ public slots:
 
 public:
 
+
+  /////////////////////
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  //  GET METHODS    //
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  /////////////////////
+
+
+
+
+
   /// Returns current pv name
   /// @return ::pv
   inline const QString &  getPv() const { return pv; }
@@ -919,6 +1005,22 @@ public:
 
 
 signals:
+
+  /////////////////////
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  //  CHANGED SIGS   //
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  //                 //
+  /////////////////////
+
 
   /// The signal is emitted whenever pv name is changed.
   /// @param pvName new pv name

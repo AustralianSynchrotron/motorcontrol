@@ -4,7 +4,7 @@
 
 TEMPLATE = lib
 QT += widgets
-TARGET = qcamotorgui
+TARGET = pyqcamotorgui
 CONFIG += plugin no_plugin_name_prefix
 QMAKE_EXTENSION_SHLIB = so
 

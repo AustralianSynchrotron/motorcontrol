@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/new/prefix1">
-        <file>Stepper_motor_1.png</file>
+        <file>MotorControl.png</file>
     </qresource>
 </RCC>

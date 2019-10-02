@@ -25,13 +25,13 @@ LIBS += \
     -lqtpv \
     -L../qcamotor -lqcamotor \
     -L../qcamotorgui -lqcamotorgui \
-    -L../qmotorstack -lqmotorstack 
+    -L../qmotorstack -lqmotorstack
 
 icon.path = $$[INSTALLBASE]/share/icons
-icon.files += Stepper_motor_1.png
+icon.files += MotorControl.png
 
 desktop.path = $$[INSTALLBASE]/share/applications
-desktop.files += Motor.desktop
+desktop.files += MotorControl.desktop
 
 target.files = $$[TARGET]
 target.path = $$[INSTALLBASE]/bin

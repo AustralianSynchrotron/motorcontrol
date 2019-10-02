@@ -4,7 +4,7 @@
 
 TEMPLATE = lib
 QT += widgets
-TARGET = qmotorstack
+TARGET = pyqmotorstack
 CONFIG += plugin no_plugin_name_prefix
 QMAKE_EXTENSION_SHLIB = so
 
@@ -16,8 +16,8 @@ OTHER_FILES += qmotorstack.sip
 SOURCES += sipqmotorstackcmodule.cpp \
            sipqmotorstackQList0101QCaMotor.cpp \
            sipqmotorstackQList0101QCaMotorGUI.cpp \
-           sipqmotorstackQMotorStack.cpp 
-HEADERS += sipAPIqmotorstack.h 
+           sipqmotorstackQMotorStack.cpp
+HEADERS += sipAPIqmotorstack.h
 
 LIBS += -L../qmotorstack -L../qmotorstack -L../qcamotor -L../qcamotorgui -lqcamotorgui -lqmotorstack
 
