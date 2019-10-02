@@ -9,15 +9,15 @@ CONFIG += plugin no_plugin_name_prefix
 QMAKE_EXTENSION_SHLIB = so
 
 INCLUDEPATH += ../qmotorstack ../qcamotor ../qcamotorgui
-OTHER_FILES += qmotorstack.sip
+OTHER_FILES += pyqmotorstack.sip
 
 # files were generated with following command:
 # sip -c .  -I /usr/share/sip/PyQt5 -I ../qcamotorgui_py -I ../qcamotor_py  -n sip -t WS_X11 -t Qt_5 qmotorstack.sip
-SOURCES += sipqmotorstackcmodule.cpp \
-           sipqmotorstackQList0101QCaMotor.cpp \
-           sipqmotorstackQList0101QCaMotorGUI.cpp \
-           sipqmotorstackQMotorStack.cpp
-HEADERS += sipAPIqmotorstack.h
+SOURCES += sippyqmotorstackcmodule.cpp \
+           sippyqmotorstackQList0101QCaMotor.cpp \
+           sippyqmotorstackQList0101QCaMotorGUI.cpp \
+           sippyqmotorstackQMotorStack.cpp
+HEADERS += sipAPIpyqmotorstack.h
 
 LIBS += -L../qmotorstack -L../qmotorstack -L../qcamotor -L../qcamotorgui -lqcamotorgui -lqmotorstack
 

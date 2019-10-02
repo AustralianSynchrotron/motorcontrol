@@ -1,6 +1,6 @@
 
 
-%Module qcamotor
+%Module pyqcamotor
 
 %Import QtCore/QtCoremod.sip
 

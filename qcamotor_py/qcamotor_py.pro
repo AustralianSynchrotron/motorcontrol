@@ -9,12 +9,12 @@ CONFIG += plugin no_plugin_name_prefix
 QMAKE_EXTENSION_SHLIB = so
 
 INCLUDEPATH += ../qcamotor
-OTHER_FILES += qcamotor.sip
+OTHER_FILES += pyqcamotor.sip
 
 # files were generated with following command:
 # sip -c .  -I /usr/share/sip/PyQt5 -n sip -t WS_X11 -t Qt_5 qcamotor.sip
-SOURCES += sipqcamotorcmodule.cpp sipqcamotorQCaMotor.cpp
-HEADERS += sipAPIqcamotor.h
+SOURCES += sippyqcamotorcmodule.cpp sippyqcamotorQCaMotor.cpp
+HEADERS += sippyAPIqcamotor.h
 
 LIBS += -L../qcamotor -lqcamotor -lqtpvwidgets
 

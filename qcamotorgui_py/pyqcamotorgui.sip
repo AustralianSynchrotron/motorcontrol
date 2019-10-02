@@ -1,8 +1,8 @@
 
 
-%Module qcamotorgui
+%Module pyqcamotorgui
 
-%Import qcamotor.sip
+%Import pyqcamotor.sip
 %Import QtWidgets/QtWidgetsmod.sip
 
 

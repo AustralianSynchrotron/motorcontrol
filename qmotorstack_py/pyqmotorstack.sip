@@ -1,7 +1,7 @@
 
-%Module qmotorstack
+%Module pyqmotorstack
 
-%Import qcamotorgui.sip
+%Import pyqcamotorgui.sip
 %Import QtWidgets/QtWidgetsmod.sip
 
 

@@ -1,15 +1,28 @@
 
-Python3_add_library(pyqcamotor MODULE
-  qcamotor.sip
-  sipAPIqcamotor.h
-  sipqcamotorcmodule.cpp
-  sipqcamotorQCaMotor.cpp
-)
+if (SIP_EXECUTABLE)
 
-target_include_directories(pyqcamotor
-  PRIVATE ../qcamotor
-)
+  set(SIP_INCLUDE_DIRS ${PYQT5_SIP_DIR})
+  separate_arguments(PYQT5_SIP_FLAGS)
+  set(SIP_EXTRA_OPTIONS ${PYQT5_SIP_FLAGS})
+  add_sip_python_module(pyqcamotor
+    pyqcamotor.sip
+    qcamotor
+  )
 
-install(TARGETS pyqcamotor
-    DESTINATION ${Python3_SITEARCH}
-)
+else()
+
+  Python3_add_library(pyqcamotor MODULE
+    sipAPIpyqcamotor.h
+    sippyqcamotorcmodule.cpp
+    sippyqcamotorQCaMotor.cpp
+  )
+
+  target_include_directories(pyqcamotor
+    PRIVATE ../qcamotor
+  )
+
+  install(TARGETS pyqcamotor
+      DESTINATION ${Python3_SITEARCH}
+  )
+
+endif()
