@@ -1,4 +1,3 @@
-
 %Module pyqmotorstack
 
 %Import pyqcamotorgui.sip

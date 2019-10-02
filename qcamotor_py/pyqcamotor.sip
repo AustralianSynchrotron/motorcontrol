@@ -1,5 +1,3 @@
-
-
 %Module pyqcamotor
 
 %Import QtCore/QtCoremod.sip

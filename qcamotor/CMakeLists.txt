@@ -10,6 +10,7 @@ install(TARGETS qcamotor
 
 target_link_libraries(qcamotor
   qtpv
+  Qt5::Core
 )
 
 install(FILES qcamotor.h
