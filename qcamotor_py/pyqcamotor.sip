@@ -43,6 +43,13 @@ public:
     STOPPED=5
   };
 
+  enum HomeReference {
+    POSLS=1,
+    NEGLS=-1,
+    HOMLS=0,
+    NOHOM
+  };
+
   QCaMotor(QObject *parent /TransferThis/ =0);
   QCaMotor(const QString & pv, QObject *parent /TransferThis/ =0);
 
@@ -99,9 +106,8 @@ public:
   bool getUseEncoder() const;
   double getBacklash() const;
   SpmgMode getSpmgMode() const;
-  bool getPower() const;
-  bool getPowerConnection() const;
-  bool isWired() const;
+  HomeReference getHomeRef() const;
+  bool isHoming();
 
 public slots:
 
@@ -118,6 +124,7 @@ public slots:
   void goLimit(int direction, MotionExit ex=IMMIDIATELY);
   void goStep(int direction, MotionExit ex=IMMIDIATELY);
   void goHome(int direction, MotionExit ex=IMMIDIATELY);
+  void goHome(MotionExit ex=IMMIDIATELY);
   void goRelative(double dist, MotionExit ex=IMMIDIATELY);
   void jog(bool jg, int direction);
   void setStep(double step);
@@ -149,7 +156,6 @@ public slots:
   void setUseEncoder(bool use);
   void setBacklash(double dist);
   void setSpmgMode(SpmgMode mode);
-  void setPower(bool pwr);
   void printError(const QString & err) const;
 
 signals:
@@ -196,9 +202,8 @@ signals:
   void changedUseEncoder(bool status);
   void changedBacklash(double dist);
   void changedSpmgMode(QCaMotor::SpmgMode mode);
-  void changedPower(bool pwr);
-  void changedPowerConnection(bool status);
-  void changedWired(bool status);
+  void changedHomeRef(QCaMotor::HomeReference href);
+  void changedHoming(bool hom);
   void error(QString msg);
 
 };

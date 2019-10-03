@@ -381,8 +381,6 @@ void QCaMotorGUI::init() {
           SLOT(goStepM()));
   connect(mUi->goP, SIGNAL(clicked()),
           SLOT(goStepP()));
-  connect(mUi->power, SIGNAL(clicked(bool)),
-          mot, SLOT(setPower(bool)));
 
   connect(sUi->pv, SIGNAL(clicked()),
           SLOT(copyPV()));
@@ -395,9 +393,6 @@ void QCaMotorGUI::init() {
 
   connect(sUi->description, SIGNAL(editingFinished(QString)),
           mot, SLOT(setDescription(QString)));
-
-  connect(sUi->power, SIGNAL(clicked(bool)),
-          mot, SLOT(setPower(bool)));
   connect(sUi->precision, SIGNAL(valueEdited(int)),
           mot, SLOT(setPrecision(int)));
   connect(sUi->units, SIGNAL(textEdited(QString)),
@@ -559,6 +554,8 @@ void QCaMotorGUI::init() {
           SLOT(updateDirection(QCaMotor::Direction)));
   connect(mot, SIGNAL(changedSpmgMode(QCaMotor::SpmgMode)),
           SLOT(updateSpmgMode(QCaMotor::SpmgMode)));
+  connect(mot, SIGNAL(changedHomeRef(QCaMotor::HomeReference)),
+          SLOT(updateHomeRef(QCaMotor::HomeReference)));
 
   connect(mot, SIGNAL(changedHiLimitStatus(bool)),
           SLOT(updateGoButtonStyle()));
@@ -613,16 +610,9 @@ void QCaMotorGUI::init() {
           SLOT(updateMoving(bool)));
   connect(mot, SIGNAL(changedBacklash(double)),
           SLOT(updateBacklash(double)));
-  connect(mot, SIGNAL(changedPower(bool)),
-          SLOT(updatePower(bool)));
-  connect(mot, SIGNAL(changedWired(bool)),
-          SLOT(updateWired(bool)));
-
 
   setViewMode(COMFO);
   setupDialog->update();
-  updatePower(mot->getPower());
-  updateWired(mot->isWired());
   setStep();
 
 }
@@ -1182,41 +1172,20 @@ void QCaMotorGUI::updateMoving(bool mov){
 }
 
 
-void QCaMotorGUI::updatePower(bool pwr) {
+void QCaMotorGUI::updateHomeRef(QCaMotor::HomeReference hr) {
 
-  bool pwrC = mot->getPowerConnection();
+  QFont font;
 
-  sUi->power->setVisible(pwrC);
-  sUi->label_19->setVisible(pwrC);
-  sUi->label_23->setVisible(pwrC);
-  mUi->power->setVisible(pwrC);
+  font = sUi->goHomeP->font();
+  font.setBold( hr == QCaMotor::HOMLS || hr == QCaMotor::NEGLS);
+  sUi->goHomeP->setFont(font);
 
-  sUi->power->setChecked(pwr);
-  sUi->power->setText( pwr ? "ON" : "OFF" );
-  sUi->power->setStyleSheet
-      ( pwr ?
-         "background-color: rgb(0, 128, 0);   color: rgb(255, 255, 255);" :
-         "background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);" );
+  font = sUi->goHomeM->font();
+  font.setBold( hr == QCaMotor::HOMLS || hr == QCaMotor::POSLS);
+  sUi->goHomeP->setFont(font);
 
-  mUi->power->setChecked(pwr);
-  mUi->power->setStyleSheet
-      ( pwr ?
-         "background-color: rgb(0, 128, 0)" :
-         "background-color: rgb(0, 0, 0)" );
-
-  updateStopButtonStyle();
-  updateAllElements();
 }
 
-
-void QCaMotorGUI::updateWired(bool wr) {
-  if (wr)
-    sUi->message->setText("Cable connected.");
-  else
-    sUi->message->setText("Cable disconnected.");
-  updateStopButtonStyle();
-  updateAllElements();
-}
 
 void QCaMotorGUI::updateUnitsPerRev(double vRes) {
   sUi->unitsPerRev->setValue(vRes);
@@ -1469,13 +1438,6 @@ void QCaMotorGUI::updateStopButtonStyle() {
     sUi->stop->setText("STOP");
     mUi->stop->setToolTip("Stop motion");
     sUi->stop->setToolTip("Stop motion");
-  } else if ( ! mot->isWired() ) {
-    mUi->stop->setStyleSheet(wrdstyle);
-    sUi->stop->setStyleSheet(wrdstyle);
-    mUi->stop->setText("No cable");
-    sUi->stop->setText("No cable");
-    mUi->stop->setToolTip("");
-    sUi->stop->setToolTip("");
   } else {
     mUi->stop->setStyleSheet("");
     sUi->stop->setStyleSheet("");
@@ -1493,54 +1455,43 @@ void QCaMotorGUI::updateStopButtonStyle() {
 
 void QCaMotorGUI::updateAllElements(){
 
-  bool
-      pwr = mot->getPower(),
-      mv  = mot->isMoving(),
-      cn  = mot->isConnected(),
-      wr  = mot->isWired(),
-      std = cn && !mv;
+  const bool
+    mv  = mot->isMoving(),
+    cn  = mot->isConnected(),
+    std = cn && !mv;
 
-  rUi->goRelative             ->setEnabled(std && wr && pwr);
+  rUi->goRelative    ->setEnabled(std);
 
-  mUi->goM                    ->setEnabled(std && wr && pwr);
-  mUi->goP                    ->setEnabled(std && wr && pwr);
-  mUi->jogM                   ->setEnabled
-    (cn && pwr && wr && ( ! mv || mUi->jogM->isDown()) );
-  mUi->jogP                   ->setEnabled
-    (cn && pwr && wr && ( ! mv || mUi->jogP->isDown()) );
-  mUi->userPosition           ->setEnabled(std && wr && pwr);
-  mUi->step                   ->setEnabled(std);
-  mUi->stop                   ->setEnabled(cn && wr && pwr);
+  mUi->goM           ->setEnabled(std);
+  mUi->goP           ->setEnabled(std);
+  mUi->jogM          ->setEnabled(cn && ( ! mv || mUi->jogM->isDown()));
+  mUi->jogP          ->setEnabled(cn && ( ! mv || mUi->jogP->isDown()));
+  mUi->userPosition  ->setEnabled(std);
+  mUi->step          ->setEnabled(std);
+  mUi->stop          ->setEnabled(cn);
 
-  sUi->goLimitM               ->setEnabled(std && wr && pwr);
-  sUi->goLimitP               ->setEnabled(std && wr && pwr);
-  sUi->goHomeM               ->setEnabled(std && wr && pwr);
-  sUi->goHomeP               ->setEnabled(std && wr && pwr);
-  sUi->goM                    ->setEnabled(std && wr && pwr);
-  sUi->goP                    ->setEnabled(std && wr && pwr);
-  sUi->jogM                   ->setEnabled
-    (cn && pwr && wr && ( ! mv || sUi->jogM->isDown()) );
-  sUi->jogP                   ->setEnabled
-    (cn && pwr && wr && ( ! mv || sUi->jogP->isDown()) );
-  sUi->stop                   ->setEnabled(cn && wr && pwr);
-  sUi->spmgSetup              ->setEnabled(cn);
-  sUi->rawGoal                ->setEnabled(std && wr && pwr);
-  sUi->userGoal               ->setEnabled(std && wr && pwr);
-  sUi->dialGoal               ->setEnabled(std && wr && pwr);
-  sUi->userVarGoal            ->setEnabled(std && wr && pwr);
-  sUi->callRelative           ->setEnabled(std && wr && pwr);
+  sUi->goLimitM      ->setEnabled(std);
+  sUi->goLimitP      ->setEnabled(std);
+  sUi->goHomeM       ->setEnabled(std);
+  sUi->goHomeP       ->setEnabled(std);
+  sUi->goM           ->setEnabled(std);
+  sUi->goP           ->setEnabled(std);
+  sUi->jogM          ->setEnabled(cn && ( ! mv || sUi->jogM->isDown()) );
+  sUi->jogP          ->setEnabled(cn && ( ! mv || sUi->jogP->isDown()) );
+  sUi->stop          ->setEnabled(cn);
+  sUi->spmgSetup     ->setEnabled(cn);
+  sUi->rawGoal       ->setEnabled(std);
+  sUi->userGoal      ->setEnabled(std);
+  sUi->dialGoal      ->setEnabled(std);
+  sUi->userVarGoal   ->setEnabled(std);
+  sUi->callRelative  ->setEnabled(std);
 
-  sUi->loadConfig             ->setEnabled(std);
-
-  sUi->control                ->setEnabled(cn);
-  sUi->loadSave               ->setEnabled(cn);
-  sUi->backlashSetup          ->setEnabled(std);
-  sUi->configure              ->setEnabled(std);
-  sUi->epics                  ->setEnabled(std);
-  sUi->generalSetup           ->setEnabled(std);
-
-  sUi->power                  ->setEnabled(cn && !mv);
-  mUi->power                  ->setEnabled(cn && !mv);
-
+  sUi->control       ->setEnabled(cn);
+  sUi->loadSave      ->setEnabled(cn);
+  sUi->loadConfig    ->setEnabled(std);
+  sUi->backlashSetup ->setEnabled(std);
+  sUi->configure     ->setEnabled(std);
+  sUi->epics         ->setEnabled(std);
+  sUi->generalSetup  ->setEnabled(std);
 
 }

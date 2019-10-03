@@ -10,6 +10,7 @@
 // :HOME_FLAG_USER.SVAL - home reference limit
 // :ABORT_HOME
 // :HOMING - homing in progress
+
 // .MSTA - status
 //         ULONG 	The motor status as received from the hardware.  The MSTA bits are defined as follows:
 //         DIRECTION: last raw direction; (0:Negative, 1:Positive)
@@ -27,6 +28,7 @@
 //         COMM_ERR: Controller communication error.
 //         MINUS_LS: minus limit switch has been hit.
 //         HOMED: the motor has been homed.
+
 // :AMPFAULT
 // :AMPFAULTRESET.PROC
 // :ELOSS - encoder loss
@@ -76,6 +78,13 @@ public:
   enum Direction {
     POSITIVE=0,                 ///< 0:"Pos"
     NEGATIVE=1                  ///< 1:"Neg"
+  };
+
+  enum HomeReference {
+    POSLS=1,
+    NEGLS=-1,
+    HOMLS=0,
+    NOHOM
   };
 
   /// Tells when the functions which move the motor to return
@@ -203,9 +212,8 @@ private:
   double backlash;              ///< current value of the BDST field
   SpmgMode spmgMode;            ///< current value of the SPMG field
 
-  bool iAmPowered;              ///< true if the motor is powered ("pv + _ON_STATUS" record)
-  bool powerIsConnected;        ///< true if the record "pv + _ON_STATUS" is connected
-  bool iaAmWired;               ///< true if the motor is wired ("pv + _CONNECTED_STATUS" record)
+  HomeReference homeRef;        ///< derived from :HOME_FLAG_USER.SVAL
+  bool iAmHoming;               ///< :HOMING - homing in progress
 
   double lastMotion;            ///< last motion of the motor (in raw coordinates)
 
@@ -480,26 +488,17 @@ private slots:
   /// @param data new mode.
   void updateSuMode(const QVariant & data);
 
+  /// \brief Updates set mode (::homeRef)
+  /// Used to catch the signal valueUpdated(QVariant) signal
+  /// from the corresponding field (a member of ::motor).
+  /// @param data new reference.
+  void updateHomeRef(const QVariant & data);
 
-  /// \brief Updates power status (::iAmPowered)
+  /// \brief Updates homing in progress (::iAmHoming)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new status.
-  void updatePower(const QVariant & data);
-
-  /// \brief Updates power status visibility (::powerIsConnected)
-  /// Used to catch the signal valueUpdated(QVariant) signal
-  /// from the corresponding field (a member of ::motor).
-  /// @param data new status.
-  void updatePowerConnection(bool suc);
-
-  /// \brief Updates isWired status (::iAmWired)
-  /// Used to catch the signal valueUpdated(QVariant)
-  /// from the corresponding field (a member of ::motor).
-  /// @param data new status.
-  void updateWired(const QVariant & data = QVariant() );
-
-
+  void updateHoming(const QVariant & data);
 
   /// Used by ::setPv() through QTimer::singleShot()
   void preSetPv();
@@ -611,6 +610,15 @@ public slots:
   /// (waiting is Qt-aware).
   ///
   void goHome(int direction, MotionExit ex=IMMIDIATELY);
+
+  /// Moves the motor home.
+  ///
+  /// @param wait if false then sends the command and returns immediately,
+  /// if true then waits for the motion to complete and then returns
+  /// (waiting is Qt-aware).
+  ///
+  void goHome(MotionExit ex=IMMIDIATELY);
+
 
   /// Moves the motor relatively by the specified distance.
   ///
@@ -776,10 +784,6 @@ public slots:
   /// Sets SPMG mode (SPMG field).
   /// @param mode new mode (must be integer from the ::SpmgMode enumeration).
   inline void setSpmgMode(int mode) { setSpmgMode((SpmgMode) mode); }
-
-  /// Powers on/off the motor (_ON_CMD field).
-  /// @param pwr new status.
-  void setPower(bool pwr);
 
   /// Prints an error message to the stderr.
   /// @param err Error message.
@@ -989,19 +993,13 @@ public:
   /// @return ::spmgMode
   inline SpmgMode  getSpmgMode() const { return spmgMode; }
 
+  /// Returns current home reference
+  /// @return ::homeRef
+  inline HomeReference  getHomeRef() const { return homeRef; }
 
-  /// Returns current power status
-  /// @return ::iAmPowered
-  inline bool      getPower() const { return iAmPowered; }
-
-  /// Returns current power connection status
-  /// @return ::powerIsConnected
-  inline bool      getPowerConnection() const {return powerIsConnected; }
-
-  /// Returns current "is wired" status
-  /// @return ::iAmWired
-  inline bool      isWired() const {return iaAmWired; }
-
+  /// Returns current homin proggress
+  /// @return ::iAmHoming
+  inline bool isHoming() const { return iAmHoming; }
 
 
 signals:
@@ -1195,18 +1193,13 @@ signals:
   /// @param mode new mode
   void changedSpmgMode(QCaMotor::SpmgMode mode);
 
+  /// The signal is emitted whenever home reference is changed.
+  /// @param mode new reference
+  void changedHomeRef(QCaMotor::HomeReference href);
 
-  /// The signal is emitted whenever power status is changed.
-  /// @param pwr new status
-  void changedPower(bool pwr);
-
-  /// The signal is emitted whenever power connection status is changed.
-  /// @param status new status
-  void changedPowerConnection(bool status);
-
-  /// The signal is emitted whenever isWired status is changed.
-  /// @param status new status
-  void changedWired(bool status);
+  /// The signal is emitted whenever homing status changed.
+  /// @param mode new status
+  void changedHoming(bool hom);
 
 
   /// The signal is emitted on any error

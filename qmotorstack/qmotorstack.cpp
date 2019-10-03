@@ -66,7 +66,6 @@ void QMotorStack::initialize() {
   ui->table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
   ui->table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
   ui->table->horizontalHeader()->setSectionResizeMode(5, QHeaderView::ResizeToContents);
-  ui->table->horizontalHeader()->setSectionResizeMode(6, QHeaderView::ResizeToContents);
 
 #else
 
@@ -80,18 +79,14 @@ void QMotorStack::initialize() {
   ui->table->horizontalHeader()->setResizeMode(3, QHeaderView::Stretch);
   ui->table->horizontalHeader()->setResizeMode(4, QHeaderView::ResizeToContents);
   ui->table->horizontalHeader()->setResizeMode(5, QHeaderView::ResizeToContents);
-  ui->table->horizontalHeader()->setResizeMode(6, QHeaderView::ResizeToContents);
 
 #endif
 
   connect(ui->add, SIGNAL(clicked()), SLOT(addMotor()));
   connect(ui->viewModeAll, SIGNAL(currentIndexChanged(int)), SLOT(viewModeAll()));
   connect(ui->stopAll, SIGNAL(clicked()), SLOT(stopAll()));
-  connect(ui->onAll, SIGNAL(clicked()), SLOT(powerOnAll()));
-  connect(ui->offAll, SIGNAL(clicked()), SLOT(powerOffAll()));
   connect(ui->clear, SIGNAL(clicked()), SLOT(clear()));
-  connect(ui->table->verticalHeader(), SIGNAL(sectionDoubleClicked(int)),
-          SLOT(removeRow(int)));
+  connect(ui->table->verticalHeader(), SIGNAL(sectionDoubleClicked(int)),SLOT(removeRow(int)));
 
   if ( motorsFile.open(QIODevice::ReadWrite | QIODevice::Text) &&
        motorsFile.isReadable() )
@@ -101,8 +96,6 @@ void QMotorStack::initialize() {
   }
   if ( ! motorsFile.isWritable() )
     motorsFile.close();
-
-  updatePowerConnections();
 
 }
 
@@ -144,12 +137,7 @@ void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
   ui->table->setCellWidget(idx,3,motor->basicUI()->step);
   ui->table->setCellWidget(idx,4,motor->basicUI()->pButtons);
   ui->table->setCellWidget(idx,5,motor->basicUI()->stop);
-  ui->table->setCellWidget(idx,6,motor->basicUI()->powerW);
 
-  connect(motor->motor(), SIGNAL(changedPowerConnection(bool)),
-          SLOT(updatePowerConnections(bool)));
-  connect(motor->motor(), SIGNAL(changedPower(bool)),
-          SLOT(resetHeader()));
   connect(motor->motor(), SIGNAL(changedDescription(QString)),
           SLOT(resetHeader()));
   connect(motor->motor(), SIGNAL(changedPv()),
@@ -193,7 +181,6 @@ void QMotorStack::removeRow(int idx){
     ui->all->setEnabled(false);
 
   emit listChanged();
-  updatePowerConnections();
   updateMotorsFile();
 
 }
@@ -287,36 +274,12 @@ void QMotorStack::stopAll() {
     motor->motor()->stop();
 }
 
-void QMotorStack::powerOnAll(){
-  foreach(QCaMotorGUI * motor, motors)
-    motor->motor()->setPower(true);
-}
-
-void QMotorStack::powerOffAll(){
-  foreach(QCaMotorGUI * motor, motors)
-    motor->motor()->setPower(false);
-}
-
-void QMotorStack::updatePowerConnections(bool pwr) {
-
-  if (pwr) {
-    ui->table->setColumnHidden(6,false);
-    ui->powerW->setVisible(true);
-    return;
-  }
-
-  bool powerCon = false;
-  foreach(QCaMotorGUI * motor, motors)
-    powerCon |= motor->motor()->getPowerConnection();
-  ui->table->setColumnHidden(6, ! powerCon );
-  ui->powerW->setVisible(powerCon);
-
-}
-
 void QMotorStack::resetHeader() {
   // Here the delay of 100 msec is set to allow the setup button's text be
   // updated before resetting the header.
-  QTimer::singleShot(100, ui->table->horizontalHeader(), SLOT(reset()));
+  QTimer::singleShot(100, ui->table, SLOT(resizeColumnsToContents()));
+  //QTimer::singleShot(100, ui->table->horizontalHeader(), SLOT(resizeSections()));
+  //QTimer::singleShot(100, ui->table->horizontalHeader(), SLOT(reset()));
 }
 
 void QMotorStack::saveConfiguration(const QString & fileName) {

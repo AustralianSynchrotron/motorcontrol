@@ -36,9 +36,6 @@ private slots:
 
   void viewModeAll();
   void stopAll();
-  void powerOnAll();
-  void powerOffAll();
-  void updatePowerConnections(bool pwr=false);
 
 public:
 
@@ -76,21 +73,21 @@ public slots:
   /// @param motor existing motor.
   /// @param noFileSave Does not update the motorsFile if true.
   ///
-   QCaMotorGUI * addMotor(QCaMotor * motor, bool lock = false, bool noFileSave = false);
+  QCaMotorGUI * addMotor(QCaMotor * motor, bool lock = false, bool noFileSave = false);
 
-   /// Adds existing motors into the UI.
-   ///
-   /// @param motors existing motors.
-   /// @param noFileSave Does not update the motorsFile if true.
-   ///
-   void addMotor(const QList<QCaMotor*> & motorList, bool lock = false, bool noFileSave = false);
+  /// Adds existing motors into the UI.
+  ///
+  /// @param motors existing motors.
+  /// @param noFileSave Does not update the motorsFile if true.
+  ///
+  void addMotor(const QList<QCaMotor*> & motorList, bool lock = false, bool noFileSave = false);
 
-   /// Adds existing motors into the UI.
-   ///
-   /// @param motorList existing motors.
-   /// @param noFileSave Does not update the motorsFile if true.
-   ///
-   void addMotor(const QList<QCaMotorGUI*> & motorList, bool noFileSave = false);
+  /// Adds existing motors into the UI.
+  ///
+  /// @param motorList existing motors.
+  /// @param noFileSave Does not update the motorsFile if true.
+  ///
+  void addMotor(const QList<QCaMotorGUI*> & motorList, bool noFileSave = false);
 
 
   /// Removes the motor with the button from the UI.

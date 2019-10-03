@@ -1,4 +1,6 @@
 
+include_directories(../qcamotor)
+
 if (SIP_EXECUTABLE)
 
   set(SIP_INCLUDE_DIRS ${PYQT5_SIP_DIR})
@@ -15,10 +17,6 @@ else()
     sipAPIpyqcamotor.h
     sippyqcamotorcmodule.cpp
     sippyqcamotorQCaMotor.cpp
-  )
-
-  target_include_directories(pyqcamotor
-    PRIVATE ../qcamotor
   )
 
   install(TARGETS pyqcamotor

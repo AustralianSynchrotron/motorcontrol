@@ -329,10 +329,7 @@ private slots:
 
   void updateMoving(bool mov);
 
-  void updatePower(bool pwr);
-
-  void updateWired(bool wr);
-
+  void updateHomeRef(QCaMotor::HomeReference hr);
 
 };
 

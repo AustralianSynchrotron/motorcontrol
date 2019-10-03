@@ -48,13 +48,13 @@ QCaMotor::QCaMotor(QObject *parent) :
   useEncoder(false),
   useReadback(false),
   backlash(0),
-  iAmPowered(true),
-  powerIsConnected(false),
-  iaAmWired(true),
+  homeRef(NOHOM),
+  iAmHoming(false),
   lastMotion(0)
 {
   init();
 }
+
 
 QCaMotor::QCaMotor(const QString & _pv, QObject *parent) :
   QObject(parent),
@@ -93,9 +93,8 @@ QCaMotor::QCaMotor(const QString & _pv, QObject *parent) :
   useEncoder(false),
   useReadback(false),
   backlash(0),
-  iAmPowered(true),
-  powerIsConnected(false),
-  iaAmWired(true),
+  homeRef(NOHOM),
+  iAmHoming(false),
   lastMotion(0)
 {
   init();
@@ -156,6 +155,7 @@ void QCaMotor::init() {
   fields.insert(".JOGF", new QEpicsPv(this));
   fields.insert(".RLV",  new QEpicsPv(this));
   fields.insert(".STOP", new QEpicsPv(this));
+  fields.insert(":ABORT_HOME", new QEpicsPv(this));
 
   fields.insert(".HLS",  new QEpicsPv(this));
   connect(fields[".HLS"], SIGNAL(valueUpdated(QVariant)),
@@ -247,23 +247,15 @@ void QCaMotor::init() {
   fields.insert(".SPMG", new QEpicsPv(this));
   connect(fields[".SPMG"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateSpmgMode(QVariant)));
-  fields.insert("_ON_STATUS", new QEpicsPv(this));
-  connect(fields["_ON_STATUS"], SIGNAL(valueUpdated(QVariant)),
-          this, SLOT(updatePower(QVariant)));
-  fields.insert("_ON_CMD",    new QEpicsPv(this));
-  fields.insert("_CONNECTED_STATUS", new QEpicsPv(this));
-  connect(fields["_CONNECTED_STATUS"], SIGNAL(valueUpdated(QVariant)),
-          this, SLOT(updateWired(QVariant)));
-
+  fields.insert(":HOME_FLAG_USER.SVAL", new QEpicsPv(this));
+  connect(fields[":HOME_FLAG_USER.SVAL"], SIGNAL(valueUpdated(QVariant)),
+          this, SLOT(updateHomeRef(QVariant)));
+  fields.insert(":HOMING", new QEpicsPv(this));
+  connect(fields[":HOMING"], SIGNAL(valueUpdated(QVariant)),
+          this, SLOT(updateHoming(QVariant)));
 
   foreach ( QString key, fields.keys() )
-    if ( key == "_CONNECTED_STATUS" )
-      connect(fields[key], SIGNAL(connectionChanged(bool)),
-              this, SLOT(updateWired()));
-    else if ( key == "_ON_STATUS"  ||  key == "_ON_CMD")
-      connect(fields[key], SIGNAL(connectionChanged(bool)),
-              SLOT(updatePowerConnection(bool)));
-    else
+    if ( key.at(0) == '.' )
       connect(fields[key], SIGNAL(connectionChanged(bool)),
               SLOT(updateConnection(bool)));
 
@@ -358,21 +350,18 @@ void QCaMotor::loadConfiguration(const QString & fileName) {
 
 
 
-
 void QCaMotor::preSetPv(){
-
   QVariant rtype = QEpicsPv::get(pv+".RTYP");
-  if ( ! rtype.isValid() )
-    emit error("Can't connect to the \"" + pv + "\" PV.");
-  else if ( rtype.toString() != "motor")
-    emit error("Unexpected record type \"" + rtype.toString() + "\""
-               " of the \"" + pv + "\" PV.");
-
   foreach ( QString key, fields.keys() )
-    fields[key]->setPV(pv+key);
-
+    fields[key]->setPV();
+  if ( ! rtype.isValid() )
+    emit error("Can't connect to the " + pv + " PV.");
+  else if ( rtype.toString() != "motor")
+    emit error("Unexpected record type " + rtype.toString() + " of the " + pv + " PV.");
+  else
+    foreach ( QString key, fields.keys() )
+      fields[key]->setPV(pv+key);
   emit changedPv(pv);
-
 }
 
 
@@ -411,11 +400,8 @@ void QCaMotor::updateDouble(const QVariant & data,
 
 void QCaMotor::updateConnection(bool suc){
   if (suc)
-    foreach(QString key, fields.keys()) 
-      if ( suc &&
-           key != "_ON_STATUS" && key != "_ON_CMD" &&
-           key != "_CONNECTED_STATUS" ) // Nonstandard fields
-        suc &= fields[key]->isConnected(); 
+    foreach(QString key, fields.keys())
+      suc &= ( key.at(0) != '.' ) || fields[key]->isConnected();
   if (suc != iAmConnected) {
     emit changedConnected(iAmConnected = suc);
     // below want to set lastMotion to 0;
@@ -608,7 +594,7 @@ void QCaMotor::updateMoving(const QVariant & data) {
   else if ( newMov ) lastMotion = getRawPosition();
   else               lastMotion = getRawPosition() - lastMotion;
 
-  iAmMoving = newMov;
+  iAmMoving = newMov || isHoming();
   emit changedMoving(iAmMoving);
   if ( ! iAmMoving )
     emit stopped();
@@ -655,27 +641,23 @@ void QCaMotor::updateSpmgMode(const QVariant & data){
   emit changedSpmgMode( spmgMode = (SpmgMode) data.toInt() );
 }
 
+void QCaMotor::updateHomeRef(const QVariant & data){
+  const QString dataStr = data.toString();
+  HomeReference hr;
+  if      (dataStr.contains("Positive")) hr = POSLS;
+  else if (dataStr.contains("Negative")) hr = NEGLS;
+  else if (dataStr.contains("Home")    ) hr = HOMLS;
+  else                                   hr = NOHOM;
+  emit changedHomeRef(homeRef = hr);
+}
+
+void QCaMotor::updateHoming(const QVariant & data){
+  emit changedHoming( iAmHoming = data.toBool() );
+  updateMoving(fields[".DMOV"]->get());
+}
+
 void QCaMotor::updateSuMode(const QVariant & data){
   emit changedSuMode( suMode = (SuMode) data.toInt() );
-}
-
-void QCaMotor::updatePowerConnection(bool){
-  powerIsConnected =
-    fields["_ON_CMD"]->isConnected() && fields["_ON_STATUS"]->isConnected();
-  if (!powerIsConnected)
-    updatePower(true);
-  emit changedPowerConnection(powerIsConnected);
-}
-
-void QCaMotor::updatePower(const QVariant & data){
-  emit changedPower(iAmPowered = data.toBool());
-}
-
-
-void QCaMotor::updateWired(const QVariant & data) {
-  emit changedWired( iaAmWired =
-                    ! fields["_CONNECTED_STATUS"]->isConnected()  ||
-                    data.toBool() );
 }
 
 
@@ -868,6 +850,18 @@ void QCaMotor::goHome(int direction, MotionExit ex) {
   finilizeMotion(ex, store_mode);
 }
 
+void QCaMotor::goHome(MotionExit ex) {
+  switch (getHomeRef()) {
+    case NEGLS:
+    case HOMLS:
+      goHome(1, ex); break;
+    case POSLS:
+      goHome(0, ex); break;
+    default:
+      emit error("Auto homing cannot be complete due to unknown home reference.");
+  }
+}
+
 void QCaMotor::goRelative(double dist, MotionExit ex) {
   SuMode store_mode = prepareMotion(ex);
   setField(".RLV" , dist);
@@ -886,6 +880,8 @@ void QCaMotor::undoLastMotion(MotionExit ex) {
 }
 
 void QCaMotor::stop(MotionExit ex){
+  if (fields[":ABORT_HOME"]->isConnected())
+    setField(":ABORT_HOME", 1);
   setField(".STOP", 1, (bool) ex );
   if ( ex == STOPPED )
     wait_stop();
@@ -1010,10 +1006,6 @@ void QCaMotor::setSpmgMode(SpmgMode mode){
   setField(".SPMG", mode);
 }
 
-void QCaMotor::setPower(bool pwr){
-  if (powerIsConnected)
-    setField("_ON_CMD", pwr);
-}
 
 
 
