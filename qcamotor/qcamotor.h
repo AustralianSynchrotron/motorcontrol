@@ -9,7 +9,6 @@
 
 // :HOME_FLAG_USER.SVAL - home reference limit
 // :ABORT_HOME
-// :HOMING - homing in progress
 
 // .MSTA - status
 //         ULONG 	The motor status as received from the hardware.  The MSTA bits are defined as follows:
@@ -48,6 +47,7 @@
 /// This class stores all the EPICS motor record's fields, provides methods for manipulating,
 /// acquiring information and Qt's signals with the updates.
 ///
+
 class QCaMotor : public QObject {
 
   Q_OBJECT;
@@ -81,10 +81,10 @@ public:
   };
 
   enum HomeReference {
-    POSLS=1,
-    NEGLS=-1,
-    HOMLS=0,
-    NOHOM
+    NOHOM=0,
+    POSLS=-1,
+    NEGLS=1,
+    HOMLS=2
   };
 
   /// Tells when the functions which move the motor to return
@@ -211,11 +211,12 @@ private:
   bool useReadback;             ///< current value of the URIP field
   double backlash;              ///< current value of the BDST field
   SpmgMode spmgMode;            ///< current value of the SPMG field
+  bool iAmHoming;               ///< derived from HOMF and HOMR
 
   HomeReference homeRef;        ///< derived from :HOME_FLAG_USER.SVAL
-  bool iAmHoming;               ///< :HOMING - homing in progress
 
   double lastMotion;            ///< last motion of the motor (in raw coordinates)
+  double lastPreHom;            ///< last RRBV before the moter has homed
 
   // WARNING: BUG (in EPICS's motor)
   // Sometimes, very rarely, after the request to move the motor, the .DMOV field goes to 0 and immidiately 1,
@@ -494,11 +495,12 @@ private slots:
   /// @param data new reference.
   void updateHomeRef(const QVariant & data);
 
-  /// \brief Updates homing in progress (::iAmHoming)
+  /// \brief Updates homing status
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
-  /// @param data new status.
-  void updateHoming(const QVariant & data);
+  /// @param data new reference.
+  void updateHoming();
+
 
   /// Used by ::setPv() through QTimer::singleShot()
   void preSetPv();
@@ -591,7 +593,7 @@ public slots:
   /// if true then waits for the   /// WARNING: BUG (in EPICS's motor)motion to complete and then returns
   /// (waiting is Qt-aware).
   ///
-  void goLimit(int direction, MotionExit ex=IMMIDIATELY);
+  void goLimit(QCaMotor::Direction direction, MotionExit ex=IMMIDIATELY);
 
   /// Moves the motor by the one step (see ::setStep() and ::getStep() ).
   ///
@@ -600,7 +602,7 @@ public slots:
   /// if true then waits for the motion to complete and then returns
   /// (waiting is Qt-aware).
   ///
-  void goStep(int direction, MotionExit ex=IMMIDIATELY);
+  void goStep(QCaMotor::Direction direction, MotionExit ex=IMMIDIATELY);
 
   /// Moves the motor home.
   ///
@@ -609,7 +611,7 @@ public slots:
   /// if true then waits for the motion to complete and then returns
   /// (waiting is Qt-aware).
   ///
-  void goHome(int direction, MotionExit ex=IMMIDIATELY);
+  void goHome(QCaMotor::Direction direction, MotionExit ex=IMMIDIATELY);
 
   /// Moves the motor home.
   ///
@@ -618,6 +620,15 @@ public slots:
   /// (waiting is Qt-aware).
   ///
   void goHome(MotionExit ex=IMMIDIATELY);
+
+  /// Executes whole homing routine: if HomeRef is one of the limit then drives motor
+  /// into it and calls goHome.
+  ///
+  /// @param wait if false then sends the command and returns immediately,
+  /// if true then waits for the motion to complete and then returns
+  /// (waiting is Qt-aware).
+  ///
+  void executeHomeRoutine(bool synch=true);
 
 
   /// Moves the motor relatively by the specified distance.
@@ -634,7 +645,7 @@ public slots:
   /// @param jg starts jogging if true, stops otherwise.
   /// @param direction direction to move in (defined by the sign)
   ///
-  void jog(bool jg, int direction);
+  void jog(bool jg, QCaMotor::Direction direction);
 
   /// Sets the size of one step used in ::goStep() method.
   /// @param step new step.
@@ -657,25 +668,15 @@ public slots:
 
   /// Sets offset mode (FOFF field).
   /// @param mode new mode.
-  void setOffsetMode(OffMode mode);
-  inline void setOffsetMode(int mode) { setOffsetMode((OffMode) mode); }
+  void setOffsetMode(QCaMotor::OffMode mode);
 
   /// Sets direction (DIR field).
   /// @param direction new direction.
-  void setDirection(Direction direction);
-
-  /// Sets direction (DIR field).
-  /// @param direction new direction (must be the integer from the ::Direction enumeration).
-  inline void setDirection(int direction) { setDirection((Direction) direction); }
+  void setDirection(QCaMotor::Direction direction);
 
   /// Sets the Set/Use mode (SET field).
   /// @param mode new mode.
-  void setSuMode(SuMode mode);
-
-  /// Sets the Set/Use mode (SET field).
-  /// @param mode new mode (must be integer from the ::SuMode).
-  inline void setSuMode(int mode) { setSuMode((SuMode) mode); }
-
+  void setSuMode(QCaMotor::SuMode mode);
 
   /// Sets user high limit (HLM field).
   /// @param limit new limit.
@@ -780,10 +781,6 @@ public slots:
   /// Sets SPMG mode (SPMG field).
   /// @param mode new mode.
   void setSpmgMode(SpmgMode mode);
-
-  /// Sets SPMG mode (SPMG field).
-  /// @param mode new mode (must be integer from the ::SpmgMode enumeration).
-  inline void setSpmgMode(int mode) { setSpmgMode((SpmgMode) mode); }
 
   /// Prints an error message to the stderr.
   /// @param err Error message.
@@ -997,9 +994,10 @@ public:
   /// @return ::homeRef
   inline HomeReference  getHomeRef() const { return homeRef; }
 
-  /// Returns current homin proggress
+  /// Returns current homing statte
   /// @return ::iAmHoming
-  inline bool isHoming() const { return iAmHoming; }
+  inline bool isHoming() const { return iAmConnected; }
+
 
 
 signals:
@@ -1197,8 +1195,8 @@ signals:
   /// @param mode new reference
   void changedHomeRef(QCaMotor::HomeReference href);
 
-  /// The signal is emitted whenever homing status changed.
-  /// @param mode new status
+  /// The signal is emitted whenever home reference is changed.
+  /// @param mode new reference
   void changedHoming(bool hom);
 
 

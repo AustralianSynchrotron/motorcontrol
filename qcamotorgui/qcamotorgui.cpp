@@ -399,16 +399,18 @@ void QCaMotorGUI::init() {
           mot, SLOT(setUnits(QString)));
 
   connect(sUi->spmgGroup, SIGNAL(buttonClicked(int)),
-          mot, SLOT(setSpmgMode(int)));
+          SLOT(setSpmgMode(int)));
 
-  connect(sUi->goLimitM, SIGNAL(clicked()),
-          SLOT(goLimitM()));
-  connect(sUi->goLimitP, SIGNAL(clicked()),
-          SLOT(goLimitP()));
   connect(sUi->goHomeM, SIGNAL(clicked()),
           SLOT(goHomeM()));
   connect(sUi->goHomeP, SIGNAL(clicked()),
           SLOT(goHomeP()));
+  connect(sUi->goHome, SIGNAL(clicked()),
+          mot, SLOT(executeHomeRoutine()));
+  connect(sUi->goLimitM, SIGNAL(clicked()),
+          SLOT(goLimitM()));
+  connect(sUi->goLimitP, SIGNAL(clicked()),
+          SLOT(goLimitP()));
   connect(sUi->goM, SIGNAL(clicked()),
           SLOT(goStepM()));
   connect(sUi->goP, SIGNAL(clicked()),
@@ -462,11 +464,11 @@ void QCaMotorGUI::init() {
           mot, SLOT(setUseReadback(bool)));
 
   connect(sUi->offGroup, SIGNAL(buttonClicked(int)),
-          mot, SLOT(setOffsetMode(int)));
+          SLOT(setOffsetMode(int)));
   connect(sUi->dirGroup, SIGNAL(buttonClicked(int)),
-          mot, SLOT(setDirection(int)));
+          SLOT(setDirection(int)));
   connect(sUi->setGroup, SIGNAL(buttonClicked(int)),
-          mot, SLOT(setSuMode(int)));
+          SLOT(setSuMode(int)));
 
   connect(sUi->maximumSpeed, SIGNAL(valueEdited(double)),
           mot, SLOT(setMaximumSpeed(double)));
@@ -827,10 +829,10 @@ void QCaMotorGUI::setStep(const QString & _text){
   } else if (text == "relative") {
     relativeDialog->show();
   } else if (text == "limit -") {
-    mot->goLimit(-1);
+    mot->goLimit(QCaMotor::NEGATIVE);
     mUi->step->fixup();
   } else if (text == "limit +") {
-    mot->goLimit(1);
+    mot->goLimit(QCaMotor::POSITIVE);
     mUi->step->fixup();
   } else {
     if ( ok && val != mot->getStep() )
@@ -1177,12 +1179,12 @@ void QCaMotorGUI::updateHomeRef(QCaMotor::HomeReference hr) {
   QFont font;
 
   font = sUi->goHomeP->font();
-  font.setBold( hr == QCaMotor::HOMLS || hr == QCaMotor::NEGLS);
+  font.setUnderline( hr == QCaMotor::HOMLS || hr == QCaMotor::NEGLS);
   sUi->goHomeP->setFont(font);
 
   font = sUi->goHomeM->font();
-  font.setBold( hr == QCaMotor::HOMLS || hr == QCaMotor::POSLS);
-  sUi->goHomeP->setFont(font);
+  font.setUnderline( hr == QCaMotor::HOMLS || hr == QCaMotor::POSLS);
+  sUi->goHomeM->setFont(font);
 
 }
 

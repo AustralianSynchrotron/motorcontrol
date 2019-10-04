@@ -49,8 +49,8 @@ QCaMotor::QCaMotor(QObject *parent) :
   useReadback(false),
   backlash(0),
   homeRef(NOHOM),
-  iAmHoming(false),
-  lastMotion(0)
+  lastMotion(0),
+  lastPreHom(0)
 {
   init();
 }
@@ -94,8 +94,8 @@ QCaMotor::QCaMotor(const QString & _pv, QObject *parent) :
   useReadback(false),
   backlash(0),
   homeRef(NOHOM),
-  iAmHoming(false),
-  lastMotion(0)
+  lastMotion(0),
+  lastPreHom(0)
 {
   init();
   setPv(_pv);
@@ -146,16 +146,19 @@ void QCaMotor::init() {
   connect(fields[".RDBD"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateDeadBand(QVariant)));
 
-
   fields.insert(".TWR",  new QEpicsPv(this));
   fields.insert(".TWF",  new QEpicsPv(this));
-  fields.insert(".HOMR", new QEpicsPv(this));
-  fields.insert(".HOMF", new QEpicsPv(this));
   fields.insert(".JOGR", new QEpicsPv(this));
   fields.insert(".JOGF", new QEpicsPv(this));
   fields.insert(".RLV",  new QEpicsPv(this));
   fields.insert(".STOP", new QEpicsPv(this));
   fields.insert(":ABORT_HOME", new QEpicsPv(this));
+  fields.insert(".HOMR", new QEpicsPv(this));
+  connect(fields[".HOMR"], SIGNAL(valueUpdated(QVariant)),
+          this, SLOT(updateHoming()));
+  fields.insert(".HOMF", new QEpicsPv(this));
+  connect(fields[".HOMF"], SIGNAL(valueUpdated(QVariant)),
+          this, SLOT(updateHoming()));
 
   fields.insert(".HLS",  new QEpicsPv(this));
   connect(fields[".HLS"], SIGNAL(valueUpdated(QVariant)),
@@ -250,9 +253,6 @@ void QCaMotor::init() {
   fields.insert(":HOME_FLAG_USER.SVAL", new QEpicsPv(this));
   connect(fields[":HOME_FLAG_USER.SVAL"], SIGNAL(valueUpdated(QVariant)),
           this, SLOT(updateHomeRef(QVariant)));
-  fields.insert(":HOMING", new QEpicsPv(this));
-  connect(fields[":HOMING"], SIGNAL(valueUpdated(QVariant)),
-          this, SLOT(updateHoming(QVariant)));
 
   foreach ( QString key, fields.keys() )
     if ( key.at(0) == '.' )
@@ -443,6 +443,8 @@ void QCaMotor::updateRawPosition(const QVariant & data){
   // is qlonglong, not int and therefore negative numbers are treated incorrectly
   // f.e. -100 turns to 4294967196
   updateDouble(data.toInt(), rawPosition, "raw position", &QCaMotor::changedRawPosition);
+  if ( isHoming() && getRawPosition() != 0.0 )
+    lastPreHom = getRawPosition();
 }
 
 void QCaMotor::updateUserGoal(const QVariant & data){
@@ -594,7 +596,7 @@ void QCaMotor::updateMoving(const QVariant & data) {
   else if ( newMov ) lastMotion = getRawPosition();
   else               lastMotion = getRawPosition() - lastMotion;
 
-  iAmMoving = newMov || isHoming();
+  iAmMoving = newMov;
   emit changedMoving(iAmMoving);
   if ( ! iAmMoving )
     emit stopped();
@@ -651,15 +653,14 @@ void QCaMotor::updateHomeRef(const QVariant & data){
   emit changedHomeRef(homeRef = hr);
 }
 
-void QCaMotor::updateHoming(const QVariant & data){
-  emit changedHoming( iAmHoming = data.toBool() );
-  updateMoving(fields[".DMOV"]->get());
+void QCaMotor::updateHoming() {
+  emit changedHoming( iAmHoming =
+      fields[".HOMF"]->get().toBool() || fields[".HOMR"]->get().toBool() );
 }
 
 void QCaMotor::updateSuMode(const QVariant & data){
   emit changedSuMode( suMode = (SuMode) data.toInt() );
 }
-
 
 
 
@@ -831,22 +832,22 @@ void QCaMotor::goRawPosition(double pos, MotionExit ex) {
 
 }
 
-void QCaMotor::goLimit(int direction, MotionExit ex) {
-  double goal = (direction < 1) ?
-                getUserLoLimit() + 2 * qAbs(getBacklash()) :
-                getUserHiLimit() - 2 * qAbs(getBacklash()) ;
+void QCaMotor::goLimit(Direction direction, MotionExit ex) {
+  double goal = (direction == POSITIVE) ?
+                getUserHiLimit() - 2 * qAbs(getBacklash()) :
+                getUserLoLimit() + 2 * qAbs(getBacklash()) ;
   goUserPosition(goal, ex);
 }
 
-void QCaMotor::goStep(int direction, MotionExit ex) {
+void QCaMotor::goStep(Direction direction, MotionExit ex) {
   SuMode store_mode = prepareMotion(ex);
-  setField( ( direction > 0 ) ? ".TWF" : ".TWR", 1);
+  setField( ( direction == POSITIVE ) ? ".TWF" : ".TWR", 1);
   finilizeMotion(ex, store_mode);
 }
 
-void QCaMotor::goHome(int direction, MotionExit ex) {
+void QCaMotor::goHome(Direction direction, MotionExit ex) {
   SuMode store_mode = prepareMotion(ex);
-  setField( ( direction > 0 ) ? ".HOMF" : ".HOMR", 1);
+  setField( ( direction == POSITIVE ) ? ".HOMF" : ".HOMR", 1);
   finilizeMotion(ex, store_mode);
 }
 
@@ -854,12 +855,42 @@ void QCaMotor::goHome(MotionExit ex) {
   switch (getHomeRef()) {
     case NEGLS:
     case HOMLS:
-      goHome(1, ex); break;
+      goHome(POSITIVE, ex); break;
     case POSLS:
-      goHome(0, ex); break;
+      goHome(NEGATIVE, ex); break;
     default:
       emit error("Auto homing cannot be complete due to unknown home reference.");
   }
+}
+
+void QCaMotor::executeHomeRoutine(bool synch) {
+
+  if (!synch) {
+    QTimer::singleShot(0, this, SLOT(executeHomeRoutine()));
+    return;
+  }
+
+  if ( ! isConnected() || isMoving() )
+    return;
+  const HomeReference hr = getHomeRef();
+  if ( ! hr ) {
+    emit error("Homing routine cannot be complete due to unknown home reference.");
+    return;
+  }
+
+  const double orig = getRawPosition();
+
+  if (hr == POSLS)
+    goLimit(POSITIVE, STOPPED);
+  else if (hr == NEGLS)
+    goLimit(NEGATIVE, STOPPED);
+  goHome(STOPPED);
+
+  if (getRawPosition() != 0.0)
+    goRawPosition(orig - lastPreHom, STOPPED);
+  else
+    emit error("Homing routine has failed.");
+
 }
 
 void QCaMotor::goRelative(double dist, MotionExit ex) {
@@ -868,14 +899,14 @@ void QCaMotor::goRelative(double dist, MotionExit ex) {
   finilizeMotion(ex, store_mode);
 }
 
-void QCaMotor::jog(bool jg, int direction) {
+void QCaMotor::jog(bool jg, Direction direction) {
   SuMode store_mode = prepareMotion(IMMIDIATELY);
-  setField( ( direction > 0 ) ? ".JOGF" : ".JOGR", jg ? 1 : 0 );
+  setField( ( direction == POSITIVE ) ? ".JOGF" : ".JOGR", jg ? 1 : 0 );
   finilizeMotion(IMMIDIATELY, store_mode);
 }
 
 void QCaMotor::undoLastMotion(MotionExit ex) {
-  if ( getLastMotion() )
+  if ( getLastMotion() != 0.0 )
     goRawPosition( getRawPosition() - getLastMotion(), ex );
 }
 

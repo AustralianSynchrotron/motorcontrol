@@ -107,7 +107,7 @@ public:
   double getBacklash() const;
   SpmgMode getSpmgMode() const;
   HomeReference getHomeRef() const;
-  bool isHoming();
+  bool isHoming() const;
 
 public slots:
 
@@ -121,12 +121,13 @@ public slots:
   void goUserPosition(double pos, MotionExit ex=IMMIDIATELY);
   void goDialPosition(double pos, MotionExit ex=IMMIDIATELY);
   void goRawPosition(double pos, MotionExit ex=IMMIDIATELY);
-  void goLimit(int direction, MotionExit ex=IMMIDIATELY);
-  void goStep(int direction, MotionExit ex=IMMIDIATELY);
-  void goHome(int direction, MotionExit ex=IMMIDIATELY);
+  void goLimit(QCaMotor::Direction direction, MotionExit ex=IMMIDIATELY);
+  void goStep(QCaMotor::Direction direction, MotionExit ex=IMMIDIATELY);
+  void goHome(QCaMotor::Direction direction, MotionExit ex=IMMIDIATELY);
   void goHome(MotionExit ex=IMMIDIATELY);
+  void executeHomeRoutine(bool synch=true);
   void goRelative(double dist, MotionExit ex=IMMIDIATELY);
-  void jog(bool jg, int direction);
+  void jog(bool jg, QCaMotor::Direction direction);
   void setStep(double step);
   void setDeadBand(double rdbd);
   void undoLastMotion(MotionExit ex=IMMIDIATELY);

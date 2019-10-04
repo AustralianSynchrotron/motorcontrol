@@ -211,34 +211,34 @@ private slots:
   void recordCurrent();
 
   /// Catches the go-backward-by-step commands from GUIs.
-  inline void goStepM(){ recordCurrent(); mot->goStep(-1); }
+  inline void goStepM(){ recordCurrent(); mot->goStep(QCaMotor::NEGATIVE); }
 
   /// Catches the go-forward-by-step commands from GUIs.
-  inline void goStepP(){ recordCurrent(); mot->goStep(1);  }
+  inline void goStepP(){ recordCurrent(); mot->goStep(QCaMotor::POSITIVE);  }
 
   /// Catches the go-to-negative-limit commands from GUIs.
-  inline void goLimitM(){ recordCurrent(); mot->goLimit(-1); }
+  inline void goLimitM(){ recordCurrent(); mot->goLimit(QCaMotor::NEGATIVE); }
 
   /// Catches the go-to-positive-limit commands from GUIs.
-  inline void goLimitP(){ recordCurrent(); mot->goLimit(1);  }
+  inline void goLimitP(){ recordCurrent(); mot->goLimit(QCaMotor::POSITIVE);  }
 
   /// Catches the go-to-negative-home commands from GUIs.
-  inline void goHomeM(){ recordCurrent(); mot->goHome(-1); }
+  inline void goHomeM(){ recordCurrent(); mot->goHome(QCaMotor::NEGATIVE); }
 
   /// Catches the go-to-positive-home commands from GUIs.
-  inline void goHomeP(){ recordCurrent(); mot->goHome(1);  }
+  inline void goHomeP(){ recordCurrent(); mot->goHome(QCaMotor::POSITIVE);  }
 
   /// Catches the start-negative-jog commands from GUIs.
-  inline void jogMstart(){ recordCurrent(); mot->jog(true, -1); }
+  inline void jogMstart(){ recordCurrent(); mot->jog(true, QCaMotor::NEGATIVE); }
 
   /// Catches the stop-negative-jog commands from GUIs.
-  inline void jogMstop(){ mot->jog(false, -1); }
+  inline void jogMstop(){ mot->jog(false, QCaMotor::NEGATIVE); }
 
   /// Catches the start-positive-jog commands from GUIs.
-  inline void jogPstart(){ recordCurrent(); mot->jog(true, 1); }
+  inline void jogPstart(){ recordCurrent(); mot->jog(true, QCaMotor::POSITIVE); }
 
   /// Catches the stop-positive-jog commands from GUIs.
-  inline void jogPstop(){ mot->jog(false, 1); }
+  inline void jogPstop(){ mot->jog(false, QCaMotor::POSITIVE); }
 
   inline void goRelative(double dist) { recordCurrent(); mot->goRelative(dist);}
 
@@ -248,8 +248,10 @@ private slots:
 
   inline void goRawPosition(double pos) { recordCurrent(); mot->goRawPosition(pos);}
 
+  ///
   /// Catches Stop/Undo commands from GUIs.
   ///
+
   /// Stops the motion if the motor is moving or undos last motion if it does not.
   void pressStop();
 
@@ -264,6 +266,18 @@ private slots:
 
   /// Multiplies current step by 10.
   inline void stepM10() { mot->setStep( 10.0 * mot->getStep() ); }
+
+  ///
+  /// Translates into QCaMotor methods
+  ///
+
+  inline void setSpmgMode(int btn) {mot->setSpmgMode( (QCaMotor::SpmgMode) btn );}
+
+  inline void setOffsetMode(int btn) {mot->setOffsetMode( (QCaMotor::OffMode) btn );}
+
+  inline void setDirection(int btn) {mot->setDirection( (QCaMotor::Direction) btn );}
+
+  inline void setSuMode(int btn) {mot->setSuMode( (QCaMotor::SuMode) btn );}
 
 
   /// Updates the color of the drive buttons reflecting the limits status.
