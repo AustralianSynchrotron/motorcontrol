@@ -93,6 +93,4 @@ protected:
 
 
 
-
-
 #endif // QCAMOTORGUILOCAL_H

@@ -7,36 +7,6 @@
 #include <QCoreApplication>
 #include <qtpv.h>
 
-// :HOME_FLAG_USER.SVAL - home reference limit
-// :ABORT_HOME
-
-// .MSTA - status
-//         ULONG 	The motor status as received from the hardware.  The MSTA bits are defined as follows:
-//         DIRECTION: last raw direction; (0:Negative, 1:Positive)
-//         DONE: motion is complete.
-//         PLUS_LS: plus limit switch has been hit.
-//         HOMELS: state of the home limit switch.
-//         Unused
-//         POSITION: closed-loop position control is enabled.
-//         SLIP_STALL: Slip/Stall detected (eg. fatal following error)
-//         HOME: if at home position.
-//         PRESENT: encoder is present.
-//         PROBLEM: driver stopped polling, or hardware problem
-//         MOVING: non-zero velocity present.
-//         GAIN_SUPPORT: motor supports closed-loop position control.
-//         COMM_ERR: Controller communication error.
-//         MINUS_LS: minus limit switch has been hit.
-//         HOMED: the motor has been homed.
-
-// :AMPFAULT
-// :AMPFAULTRESET.PROC
-// :ELOSS - encoder loss
-// :ELOSSRC.A
-// :WRONGLIMIT - unexpected limit
-// :WRONGLIMITRESET.PROC
-// :UNINIT - uninitialized
-// :INIT.PROC
-// .UEIP - closed/open loop
 // :DRIVECURRENT (_RBV)
 // :HOLDPERCENTAGE (_RBV)
 
@@ -113,10 +83,10 @@ public:
   void wait_start();
 
   template <class Vclass> void waitUpdated (
-      const QString & field,
-      const Vclass expected,
-      Vclass (QCaMotor::* getMethod)() const,
-      int delay_msec=0 ) const;
+    const QString & field,
+    const Vclass expected,
+    Vclass (QCaMotor::* getMethod)() const,
+    int delay_msec=0 ) const;
 
   void waitUpdated ( const QString & field, int delay_msec=0 ) const;
 
@@ -133,17 +103,13 @@ private:
 
   void init();
 
-  QHash<QString, QEpicsPv*> fields; ///< All motor record's fields used in the class.
+  template <class num> void updateNum(
+    const QVariant & data,
+    num & parameter,
+    const QString & parameter_name,
+    void (QCaMotor::* changedNum)(num) );
 
-  /// Updates the parameter with new data and emits the signal.
-  ///
-  /// @param data New data
-  /// @param parameter Member to be updated
-  /// @param parameter_name Signal to be emitted on the update
-  ///
-  void updateDouble(const QVariant & data,
-                    double & parameter, const QString & parameter_name,
-                    void (QCaMotor::* changedDouble)(double) );
+  QHash<QString, QEpicsPv*> fields; ///< All motor record's fields used in the class.
 
   /// Writes new data to the field.
   ///
@@ -155,7 +121,6 @@ private:
   SuMode ensureSuMode(SuMode mode);
   SuMode prepareMotion(MotionExit ex);
   void finilizeMotion(MotionExit ex, SuMode restore_mode);
-
 
   // Here I've got a member for each field to avoid conversion
   // from QVariant (returned by the QEpicsPv::get() )
@@ -200,10 +165,10 @@ private:
   double revSpeed;              ///< current value of the S field
   double backlashSpeed;         ///< current value of the BVEL field
   double jogSpeed;              ///< current value of the JVEL field
-
   double acceleration;          ///< current value of the ACCL field
   double backlashAcceleration;  ///< current value of the BACC field
   double jogAcceleration;       ///< current value of the JAR field
+  int retry;                    ///< current value of the RTRY field
 
   bool iAmConnected;            ///< true if all fields in ::motor were connected.
   bool iAmMoving;               ///< current value of the DMOV field
@@ -211,9 +176,17 @@ private:
   bool useReadback;             ///< current value of the URIP field
   double backlash;              ///< current value of the BDST field
   SpmgMode spmgMode;            ///< current value of the SPMG field
+  ulong msta;                   ///< current value of the MSTA field
   bool iAmHoming;               ///< derived from HOMF and HOMR
-
+  bool iAmKilled;               ///< current value of the :KILLED
+  bool ampIsFaulty;             ///< current value of the :AMPFAULT
+  bool iAmInitialized;          ///< current value of the :UNINIT
+  bool wrongLimits;             ///< current value of the :WRONGLIMIT
+  bool eLoss;                   ///< current value of the :ELOSS
   HomeReference homeRef;        ///< derived from :HOME_FLAG_USER.SVAL
+
+  double driveCurrent;          ///< current value of the :DRIVECURRENT_RBV
+  double holdPerCent;           ///< current value of the :HOLDPERCENTAGE_RBV
 
   double lastMotion;            ///< last motion of the motor (in raw coordinates)
   double lastPreHom;            ///< last RRBV before the moter has homed
@@ -433,6 +406,9 @@ private slots:
   void updateJogAcceleration(const QVariant & data);
 
 
+  void updateMaxRetry(const QVariant & data);
+
+
   /// \brief Updates backlash (::backlash)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
@@ -489,6 +465,12 @@ private slots:
   /// @param data new mode.
   void updateSuMode(const QVariant & data);
 
+  /// \brief Updates MSTA (::msta)
+  /// Used to catch the signal valueUpdated(QVariant) signal
+  /// from the corresponding field (a member of ::motor).
+  /// @param data new msta.
+  void updateMSTA(const QVariant & data);
+
   /// \brief Updates set mode (::homeRef)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
@@ -499,8 +481,21 @@ private slots:
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   /// @param data new reference.
-  void updateHoming();
+  void updateHoming(const QVariant &);
 
+  void updateKilled(const QVariant & data);
+
+  void updateAmpFault(const QVariant & data);
+
+  void updateInitialized(const QVariant & data);
+
+  void updateWrongLimits(const QVariant & data);
+
+  void updateEncoderLoss(const QVariant & data);
+
+  void updateDriveCurrent(const QVariant & data);
+
+  void updateHoldPerCent(const QVariant & data);
 
   /// Used by ::setPv() through QTimer::singleShot()
   void preSetPv();
@@ -758,6 +753,8 @@ public slots:
   /// @param acc new acceleration.
   void setJogAcceleration(double acc);
 
+  void setMaxRetry(int rtr);
+
   /// Stops any motor motion.
   ///
   /// @param wait if false then sends the command and returns immediately,
@@ -765,6 +762,9 @@ public slots:
   /// (waiting is Qt-aware).
   ///
   void stop(MotionExit ex=IMMIDIATELY);
+
+  /// Kills motor.
+  void kill();
 
   /// Sets "use readback" property (URIP field).
   /// @param use new value.
@@ -782,10 +782,21 @@ public slots:
   /// @param mode new mode.
   void setSpmgMode(SpmgMode mode);
 
+  void resetAmpFault(bool synch=false);
+
+  void resetEncoderLoss(bool synch=false);
+
+  void resetWrongLimits(bool synch=false);
+
+  void initializeMortor(bool synch=false);
+
+  void setDriveCurrent(double curr);
+
+  void setHoldPerCent(double percent);
+
   /// Prints an error message to the stderr.
   /// @param err Error message.
   inline void printError(const QString & err) const { qDebug() << "ERROR in QCaMotor!" << err; }
-
 
 
 public:
@@ -965,6 +976,7 @@ public:
   /// @return jogAcceleration
   inline double    getJogAcceleration() const { return jogAcceleration; }
 
+  inline int       getMaxRetry() const { return retry; }
 
   /// Returns current connection status
   /// @return ::iAmConnected
@@ -990,14 +1002,33 @@ public:
   /// @return ::spmgMode
   inline SpmgMode  getSpmgMode() const { return spmgMode; }
 
+  inline bool isSplitStall() const {return msta & 0b0000000001000000;}
+
+  inline bool hasProblems() const {return msta & 0b0000001000000000;}
+
+  inline bool commError() const {return msta & 0b0001000000000000;}
+
+  inline bool isKilled() const {return iAmKilled;}
+
+  inline bool amplifierIsFaulty() const {return ampIsFaulty;}
+
+  inline bool isInitialized() const {return iAmInitialized;}
+
+  inline bool limitsAreWrong() const {return wrongLimits;}
+
+  inline bool encoderIsLost() const {return eLoss;}
+
+  inline double getDriveCurrent() const {return driveCurrent;}
+
+  inline double getHoldPerCent() const {return holdPerCent;}
+
   /// Returns current home reference
   /// @return ::homeRef
   inline HomeReference  getHomeRef() const { return homeRef; }
 
-  /// Returns current homing statte
-  /// @return ::iAmHoming
-  inline bool isHoming() const { return iAmConnected; }
+  inline bool isHoming() const {return iAmHoming;}
 
+  inline bool isPlugged() const {return ! ( getLoLimitStatus() and ! getHiLimitStatus() );}
 
 
 signals:
@@ -1162,6 +1193,8 @@ signals:
   /// @param acc new acceleration
   void changedJogAcceleration(double acc);
 
+  void changedMaxRetry(int rtr);
+
 
   /// The signal is emitted whenever connection status is changed.
   /// @param con new status
@@ -1191,6 +1224,28 @@ signals:
   /// @param mode new mode
   void changedSpmgMode(QCaMotor::SpmgMode mode);
 
+  /// The signal is emitted whenever slip/stall is changed.
+  /// @param slst new status
+  void changedSlipStall(bool slst);
+
+  /// The signal is emitted whenever problem bit of MSTA is changed.
+  /// @param probs new status
+  void changedProblems(bool probs);
+
+  /// The signal is emitted whenever communication error is detected.
+  /// @param commerr new mode
+  void changedCommErr(bool commerr);
+
+  void changedKilled(bool killed);
+
+  void changedAmplifierFault(bool ampFlt);
+
+  void changedInitialized(bool inited);
+
+  void changedWrongLimits(bool badLs);
+
+  void changedEncoderLoss(bool eloss);
+
   /// The signal is emitted whenever home reference is changed.
   /// @param mode new reference
   void changedHomeRef(QCaMotor::HomeReference href);
@@ -1198,6 +1253,12 @@ signals:
   /// The signal is emitted whenever home reference is changed.
   /// @param mode new reference
   void changedHoming(bool hom);
+
+  void changedDriveCurrent(double cnt);
+
+  void changedHoldPerCent(double percent);
+
+  void changedPlugged(bool plg);
 
 
   /// The signal is emitted on any error
@@ -1219,6 +1280,20 @@ template <class Vclass> void QCaMotor::waitUpdated(
   if ( ! fields.contains(field) )
     return;
   qtWait(fields[field], SIGNAL(valueUpdated(QVariant)), delay_msec);
+}
+
+
+template <class num> void QCaMotor::updateNum(
+  const QVariant & data,
+  num & parameter,
+  const QString & parameter_name,
+  void (QCaMotor::* changedNum)(num)
+  ) {
+  if (data.canConvert<num>())
+    emit (this->*changedNum)(parameter = data.value<num>());
+  else
+    emit error("Could not convert QVariant \"" + data.toString()
+                 + "\" to " + parameter_name + ".");
 }
 
 

@@ -303,6 +303,7 @@ private slots:
 
   void updateDialPosition(double ps);
 
+  void updateStep(double stp);
   void updateStep();
 
   void updateUserHiLimit(double hiL);
@@ -339,12 +340,29 @@ private slots:
 
   void updateSpmgMode(QCaMotor::SpmgMode mode);
 
-  void updateConnection(bool suc);
+  void updateConnected(bool suc);
 
   void updateMoving(bool mov);
 
+  void updateSlipStall(bool slst);
+
+  void updateProblems(bool probs);
+
+  void updateCommErr(bool commerr);
+
+  void updateAmplifierFault(bool ampFault);
+
+  void updateInitialized(bool inited);
+
+  void updateWrongLimits(bool wrong);
+
+  void updateEncoderLoss(bool eloss);
+
   void updateHomeRef(QCaMotor::HomeReference hr);
 
+  void updatePlugged(bool plg);
+
 };
+
 
 #endif // MOTORCONTROL_H

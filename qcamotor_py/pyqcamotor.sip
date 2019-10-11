@@ -14,39 +14,39 @@ class QCaMotor : public QObject {
 public:
 
   enum SpmgMode {
-    STOP=0,
-    PAUSE=1,
-    MOVE=2,
-    GO=3
+    STOP,
+    PAUSE,
+    MOVE,
+    GO
   };
 
   enum SuMode {
-    USE=0,
-    SET=1
+    USE,
+    SET
   };
 
   enum OffMode {
-    VARIABLE=0,
-    FROZEN=1
+    VARIABLE,
+    FROZEN
   };
 
   enum Direction {
-    POSITIVE=0,
-    NEGATIVE=1
+    POSITIVE,
+    NEGATIVE
   };
 
   enum MotionExit {
-    IMMIDIATELY=0,
-    CONFIRMATION=1,
-    STARTED=2,
-    ACCELERATED=3,
-    STOPPED=5
+    IMMIDIATELY,
+    CONFIRMATION,
+    STARTED,
+    ACCELERATED,
+    STOPPED
   };
 
   enum HomeReference {
-    POSLS=1,
-    NEGLS=-1,
-    HOMLS=0,
+    POSLS,
+    NEGLS,
+    HOMLS,
     NOHOM
   };
 
@@ -100,14 +100,26 @@ public:
   double getAcceleration() const;
   double getBacklashAcceleration() const;
   double getJogAcceleration() const;
+  int getMaxRetry() const;
   bool isConnected() const;
   bool isMoving() const;
   bool getUseReadback() const;
   bool getUseEncoder() const;
   double getBacklash() const;
   SpmgMode getSpmgMode() const;
+  bool isSplitStall() const;
+  bool hasProblems() const;
+  bool commError() const;
+  bool isKilled() const;
+  bool amplifierIsFaulty() const;
+  bool isInitialized() const;
+  bool limitsAreWrong() const;
+  bool encoderIsLost() const;
   HomeReference getHomeRef() const;
   bool isHoming() const;
+  bool isPlugged() const;
+  double getDriveCurrent() const;
+  double getHoldPerCent() const;
 
 public slots:
 
@@ -152,12 +164,21 @@ public slots:
   void setAcceleration(double acc);
   void setBacklashAcceleration(double acc);
   void setJogAcceleration(double acc);
+  void setMaxRetry(int rtr);
   void stop(MotionExit ex=IMMIDIATELY);
+  void kill();
   void setUseReadback(bool use);
   void setUseEncoder(bool use);
   void setBacklash(double dist);
   void setSpmgMode(SpmgMode mode);
   void printError(const QString & err) const;
+  void resetAmpFault(bool synch=false);
+  void resetEncoderLoss(bool synch=false);
+  void resetWrongLimits(bool synch=false);
+  void initializeMortor(bool synch=false);
+  void setDriveCurrent(double curr);
+  void setHoldPerCent(double percent);
+
 
 signals:
 
@@ -196,6 +217,7 @@ signals:
   void changedAcceleration(double acc);
   void changedBacklashAcceleration(double acc);
   void changedJogAcceleration(double acc);
+  void changedMaxRetry(int rtr);
   void changedConnected(bool con);
   void changedMoving(bool mov);
   void stopped();
@@ -203,8 +225,19 @@ signals:
   void changedUseEncoder(bool status);
   void changedBacklash(double dist);
   void changedSpmgMode(QCaMotor::SpmgMode mode);
+  void changedSlipStall(bool slst);
+  void changedProblems(bool probs);
+  void changedCommErr(bool commerr);
+  void changedKilled(bool killed);
+  void changedAmplifierFault(bool ampFlt);
+  void changedInitialized(bool inited);
+  void changedWrongLimits(bool badLs);
+  void changedEncoderLoss(bool eloss);
   void changedHomeRef(QCaMotor::HomeReference href);
   void changedHoming(bool hom);
+  void changedDriveCurrent(double cnt);
+  void changedHoldPerCent(double percent);
+  void changedPlugged(bool plg);
   void error(QString msg);
 
 };

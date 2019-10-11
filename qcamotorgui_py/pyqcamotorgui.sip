@@ -1,7 +1,6 @@
 %Module pyqcamotorgui
 
 %Import pyqcamotor.sip
-//%Import pyqtpvwidgets.sip
 %Import QtWidgets/QtWidgetsmod.sip
 
 
