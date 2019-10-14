@@ -391,9 +391,6 @@ p, li { white-space: pre-wrap; }
         <property name="toolTip">
          <string>Precsision</string>
         </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-        </property>
         <property name="keyboardTracking">
          <bool>false</bool>
         </property>
@@ -426,9 +423,6 @@ p, li { white-space: pre-wrap; }
         <property name="toolTip">
          <string>Description / name to be used in the main interface window</string>
         </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-        </property>
         <property name="text">
          <string/>
         </property>
@@ -436,9 +430,6 @@ p, li { white-space: pre-wrap; }
       </item>
       <item row="0" column="3">
        <widget class="QComboBox" name="loadConfig">
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-        </property>
         <item>
          <property name="text">
           <string>From file</string>
@@ -463,9 +454,6 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="toolTip">
          <string>Units</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
         </property>
        </widget>
       </item>
@@ -549,9 +537,6 @@ p, li { white-space: pre-wrap; }
         <property name="toolTip">
          <string>Stop the motor and forget the destination. The motor will not move while in this mode.</string>
         </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-        </property>
         <property name="text">
          <string>Stop</string>
         </property>
@@ -570,9 +555,6 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="toolTip">
          <string>Stops the motion, but does not reset the destination: you can continue going switching to &quot;Move&quot; or &quot;Go&quot; modes. The motor will not move while in this mode.</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
         </property>
         <property name="text">
          <string>Pause</string>
@@ -593,9 +575,6 @@ p, li { white-space: pre-wrap; }
         <property name="toolTip">
          <string>The motor will reset to &quot;Pause&quot; when a motion completes. This behavior supports users who want a motor to sit still until they say &quot;Move&quot;, no matter what changes occur in the drive fields.</string>
         </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-        </property>
         <property name="text">
          <string>Move</string>
         </property>
@@ -614,9 +593,6 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="toolTip">
          <string>Normal motion mode.</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
         </property>
         <property name="text">
          <string>Go</string>
@@ -1261,9 +1237,6 @@ p, li { white-space: pre-wrap; }
         <property name="toolTip">
          <string>Normal acceleration (seconds to speed)</string>
         </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-        </property>
         <property name="keyboardTracking">
          <bool>false</bool>
         </property>
@@ -1285,9 +1258,6 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="toolTip">
          <string>Normal speed</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
         </property>
         <property name="keyboardTracking">
          <bool>false</bool>
@@ -1335,9 +1305,6 @@ p, li { white-space: pre-wrap; }
        <widget class="QMDoubleSpinBox" name="unitsPerRevAndDir">
         <property name="toolTip">
          <string>Units per revolution</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
         </property>
         <property name="decimals">
          <number>7</number>
@@ -1701,9 +1668,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>Hi limit in dial coordinates</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="keyboardTracking">
             <bool>false</bool>
            </property>
@@ -1726,9 +1690,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>Set position in dial coordinates (does not move the motor)</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="keyboardTracking">
             <bool>false</bool>
            </property>
@@ -1750,9 +1711,6 @@ p, li { white-space: pre-wrap; }
            </property>
            <property name="toolTip">
             <string>Lo limit in dial coordinates</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
            </property>
            <property name="keyboardTracking">
             <bool>false</bool>
@@ -2009,9 +1967,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>Offset (difference between dial and user coordinates)</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="keyboardTracking">
             <bool>false</bool>
            </property>
@@ -2046,9 +2001,6 @@ p, li { white-space: pre-wrap; }
            </property>
            <property name="toolTip">
             <string>Frozen offset</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
            </property>
            <property name="text">
             <string>Frozen</string>
@@ -2095,9 +2047,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>Set motor resolution (travel distance per raw step)</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="keyboardTracking">
             <bool>false</bool>
            </property>
@@ -2143,9 +2092,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>Set encoder resolution</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="keyboardTracking">
             <bool>false</bool>
            </property>
@@ -2184,9 +2130,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>Use encoder if present</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="text">
             <string/>
            </property>
@@ -2210,9 +2153,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>Negative user direction</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="text">
             <string>Negative</string>
            </property>
@@ -2231,9 +2171,6 @@ p, li { white-space: pre-wrap; }
            </property>
            <property name="toolTip">
             <string>Positive user direction</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
            </property>
            <property name="text">
             <string>Positive</string>
@@ -2261,9 +2198,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>Variable offset</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="text">
             <string>Variable</string>
            </property>
@@ -2282,9 +2216,6 @@ p, li { white-space: pre-wrap; }
            </property>
            <property name="toolTip">
             <string>Set readback resolution</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
            </property>
            <property name="keyboardTracking">
             <bool>false</bool>
@@ -2337,9 +2268,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>Use &quot;readback location&quot; link if present</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="text">
             <string/>
            </property>
@@ -2349,9 +2277,6 @@ p, li { white-space: pre-wrap; }
           <widget class="QMDoubleSpinBox" name="unitsPerRev">
            <property name="toolTip">
             <string>Units per revolution</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
            </property>
            <property name="decimals">
             <number>7</number>
@@ -2375,9 +2300,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>go home in positive direction</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="text">
             <string>&gt;H</string>
            </property>
@@ -2397,9 +2319,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>Go home in negative direction</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="text">
             <string>H&lt;</string>
            </property>
@@ -2409,9 +2328,6 @@ p, li { white-space: pre-wrap; }
           <widget class="QPushButton" name="goHome">
            <property name="enabled">
             <bool>false</bool>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
            </property>
            <property name="text">
             <string>Find home</string>
@@ -2520,9 +2436,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>Backlash acceleration (seconds to speed)</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="keyboardTracking">
             <bool>false</bool>
            </property>
@@ -2597,9 +2510,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>Jog acceleration (seconds to speed)</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="keyboardTracking">
             <bool>false</bool>
            </property>
@@ -2641,9 +2551,6 @@ p, li { white-space: pre-wrap; }
            <property name="toolTip">
             <string>Maximum speed (no speed can be larger than this)</string>
            </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-           </property>
            <property name="keyboardTracking">
             <bool>false</bool>
            </property>
@@ -2668,9 +2575,6 @@ p, li { white-space: pre-wrap; }
            </property>
            <property name="toolTip">
             <string>Normal acceleration (seconds to speed)</string>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgba(255, 0, 0,64);</string>
            </property>
            <property name="keyboardTracking">
             <bool>false</bool>
@@ -2779,9 +2683,6 @@ p, li { white-space: pre-wrap; }
       </property>
       <item row="1" column="1">
        <widget class="QMDoubleSpinBox" name="driveCurrent">
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-        </property>
         <property name="suffix">
          <string>mA</string>
         </property>
@@ -2795,9 +2696,6 @@ p, li { white-space: pre-wrap; }
       </item>
       <item row="1" column="3">
        <widget class="QMDoubleSpinBox" name="holdPerCent">
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-        </property>
         <property name="suffix">
          <string>%</string>
         </property>
@@ -2823,9 +2721,6 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="toolTip">
          <string>Backlash distance</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
         </property>
         <property name="keyboardTracking">
          <bool>false</bool>
@@ -2865,11 +2760,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QMSpinBox" name="maxRetry">
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-        </property>
-       </widget>
+       <widget class="QMSpinBox" name="maxRetry"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_19">
@@ -2972,9 +2863,6 @@ p, li { white-space: pre-wrap; }
         <property name="toolTip">
          <string>Set position in user coordinates (does not move the motor)</string>
         </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-        </property>
         <property name="keyboardTracking">
          <bool>false</bool>
         </property>
@@ -2996,9 +2884,6 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="toolTip">
          <string>Set raw position (does not move the motor)</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
         </property>
         <property name="keyboardTracking">
          <bool>false</bool>
@@ -3025,9 +2910,6 @@ p, li { white-space: pre-wrap; }
         <property name="toolTip">
          <string>Hi limit in user coordinates</string>
         </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-        </property>
         <property name="keyboardTracking">
          <bool>false</bool>
         </property>
@@ -3050,9 +2932,6 @@ p, li { white-space: pre-wrap; }
         <property name="toolTip">
          <string>Lo limit in user coordinates</string>
         </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
-        </property>
         <property name="keyboardTracking">
          <bool>false</bool>
         </property>
@@ -3068,9 +2947,6 @@ p, li { white-space: pre-wrap; }
        <widget class="QMSpinBox" name="stepsPerRev">
         <property name="toolTip">
          <string>Steps per revolution</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgba(255, 0, 0,64);</string>
         </property>
         <property name="maximum">
          <number>2147483647</number>

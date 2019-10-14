@@ -272,11 +272,50 @@ void QCaMotorGUI::init() {
   rUi->setupUi(relativeDialog);
   pUi->setupUi(pvDialog);
 
-  foreach(QWidget * wdg, setupDialog->findChildren<QWidget*>() )
-    if (wdg->styleSheet().contains("background-color: rgba(255, 0, 0,64);")) {
-      wdg->setStyleSheet("");
-      protect(wdg);
-    }
+  foreach (QWidget * wdg, QList<QWidget*>()
+    << sUi->acceleration
+    << sUi->accelerationS
+    << sUi->backlash
+    << sUi->backlashAcceleration
+    << sUi->description
+    << sUi->dialPosition
+    << sUi->dirNeg
+    << sUi->dirPos
+    << sUi->driveCurrent
+    << sUi->encoderResolution
+    << sUi->goHome
+    << sUi->goHomeM
+    << sUi->goHomeP
+    << sUi->holdPerCent
+    << sUi->jogAcceleration
+    << sUi->limitHi
+    << sUi->limitHiDial
+    << sUi->limitLo
+    << sUi->limitLoDial
+    << sUi->loadConfig
+    << sUi->maximumSpeed
+    << sUi->maxRetry
+    << sUi->offset
+    << sUi->offsetFrz
+    << sUi->offsetVar
+    << sUi->precision
+    << sUi->rawPosition
+    << sUi->readbackResolution
+    << sUi->speedS
+    << sUi->spmG
+    << sUi->spMg
+    << sUi->sPmg
+    << sUi->Spmg
+    << sUi->stepsPerRev
+    << sUi->units
+    << sUi->unitsPerRev
+    << sUi->unitsPerRevAndDir
+    << sUi->unitsPerStep
+    << sUi->useEncoder
+    << sUi->useReadback
+    << sUi->userPosition
+  )
+    protect(wdg);
 
   pvDialog->setWindowTitle("Choose motor PV");
   setupDialog->setWindowTitle("MotorMx, setup");
