@@ -294,7 +294,7 @@ void QCaMotorGUI::init() {
     << sUi->limitLoDial
     << sUi->loadConfig
     << sUi->maximumSpeed
-    << sUi->maxRetry
+    << sUi->resolution
     << sUi->offset
     << sUi->offsetFrz
     << sUi->offsetVar
@@ -309,7 +309,6 @@ void QCaMotorGUI::init() {
     << sUi->stepsPerRev
     << sUi->units
     << sUi->unitsPerRev
-    << sUi->unitsPerRevAndDir
     << sUi->unitsPerStep
     << sUi->useEncoder
     << sUi->useReadback
@@ -496,8 +495,9 @@ void QCaMotorGUI::init() {
           mot, SLOT(setMotorResolution(double)));
   connect(sUi->unitsPerRev, SIGNAL(valueEdited(double)),
           mot, SLOT(setUnitsPerRev(double)));
-  connect(sUi->unitsPerRevAndDir, SIGNAL(valueEdited(double)),
-          SLOT(setUnitsPerRevAndDirection(double)));
+  connect(sUi->resolution, SIGNAL(valueEdited(double)),
+          SLOT(setResolutionAndDirection(double)));
+
 
   connect(sUi->useEncoder, SIGNAL(clicked(bool)),
           mot, SLOT(setUseEncoder(bool)));
@@ -525,8 +525,6 @@ void QCaMotorGUI::init() {
           mot, SLOT(setBacklashAcceleration(double)));
   connect(sUi->jogAcceleration, SIGNAL(valueEdited(double)),
           mot, SLOT(setJogAcceleration(double)));
-  connect(sUi->maxRetry, SIGNAL(valueEdited(int)),
-          mot, SLOT(setMaxRetry(int)));
   connect(sUi->accelerationS, SIGNAL(valueEdited(double)),
           SLOT(setAccelerationS(double)));
   connect(sUi->speedS, SIGNAL(valueEdited(double)),
@@ -617,7 +615,6 @@ void QCaMotorGUI::init() {
   ConnectMotUi(ReadbackResolution, sUi->readbackResolution, double);
   ConnectMotUi(EncoderResolution, sUi->encoderResolution, double);
   ConnectMotUi(StepsPerRev, sUi->stepsPerRev, int);
-  ConnectMot(UnitsPerRev, double);
   ConnectMot(MaximumSpeed, double);
   ConnectMot(NormalSpeed, double);
   ConnectMotUi(RevSpeed, sUi->revSpeed, double);
@@ -625,7 +622,6 @@ void QCaMotorGUI::init() {
   ConnectMot(BacklashSpeed, double);
   ConnectMot(Acceleration, double);
   ConnectMot(JogAcceleration, double);
-  ConnectMotUi(MaxRetry, sUi->maxRetry, int);
   ConnectMot(BacklashAcceleration, double);
   ConnectMot(Connected, bool);
   ConnectMot(Moving, bool);
@@ -641,6 +637,8 @@ void QCaMotorGUI::init() {
   connect(mot, SIGNAL(changedLoLimitStatus(bool)),
           SLOT(updateGoButtonStyle()));
 
+  connect(mot, SIGNAL(changedMotorResolution(double)), SLOT(updateResolutionAndDirection()));
+  connect(mot, SIGNAL(changedDirection(QCaMotor::Direction)), SLOT(updateResolutionAndDirection()));
 
   #undef ConnectMot
   #undef ConnectMotUi
@@ -877,8 +875,10 @@ void QCaMotorGUI::setStep(const QString & _text){
 }
 
 
-void QCaMotorGUI::setUnitsPerRevAndDirection(double res) {
-  mot->setUnitsPerRev(qAbs(res));
+void QCaMotorGUI::setResolutionAndDirection(double res) {
+  mot->setMotorResolution(qAbs(res));
+  mot->setReadbackResolution(qAbs(res));
+  mot->setEncoderResolution(qAbs(res));
   mot->setDirection( res < 0 ? QCaMotor::NEGATIVE : QCaMotor::POSITIVE );
 }
 
@@ -933,14 +933,15 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
   sUi->layHide->insertWidget(0,sUi->limitLo);
   sUi->layHide->insertWidget(0,sUi->callRelative);
   sUi->layHide->insertWidget(0,sUi->absLabel);
-  sUi->layHide->insertWidget(0,sUi->stepsPerRev);
-
+  sUi->layHide->insertWidget(0,sUi->offset);
+  sUi->layHide->insertWidget(0,sUi->driveCurrent);
+  sUi->layHide->insertWidget(0,sUi->backlash);
 
   switch (mode) {
 
   case SETPV:
 
-    // Does not do enything because returns above.
+    // Does not do anything because returns above.
 
     break;
 
@@ -952,11 +953,12 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(false);
     sUi->label_2->setVisible(false);
     sUi->label_20->setVisible(false);
-    sUi->loadSave->setVisible(false);
 
     sUi->generalSetup->setVisible(false);
-    sUi->line_5->setVisible(true);
     sUi->spmgSetup->setVisible(false);
+    sUi->goHome ->setVisible(false);
+    sUi->goHomeM->setVisible(false);
+    sUi->goHomeP->setVisible(false);
 
     sUi->label_3->setVisible(false);
     sUi->label_7->setVisible(false);
@@ -964,20 +966,12 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->placeControlUser->setVisible(false);
     sUi->placeControlRaw->setVisible(false);
     sUi->layControlRel->insertWidget(0, sUi->userVarGoal);
-    sUi->goHomeM->setVisible(false);
-    sUi->goHomeP->setVisible(false);
     sUi->stepD2->setVisible(false);
     sUi->stepD10->setVisible(false);
     sUi->stepM2->setVisible(false);
     sUi->stepM10->setVisible(false);
-    sUi->line_4->setVisible(false);
-
     sUi->configure->setVisible(false);
-    sUi->line_2->setVisible(false);
     sUi->epics->setVisible(false);
-    sUi->line_6->setVisible(false);
-    sUi->line_9->setVisible(false);
-    sUi->otherConfig->setVisible(false);
 
     break;
 
@@ -990,11 +984,12 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(false);
     sUi->label_2->setVisible(false);
     sUi->label_20->setVisible(false);
-    sUi->loadSave->setVisible(false);
 
     sUi->generalSetup->setVisible(false);
-    sUi->line_5->setVisible(true);
     sUi->spmgSetup->setVisible(false);
+    sUi->goHome ->setVisible(false);
+    sUi->goHomeM->setVisible(false);
+    sUi->goHomeP->setVisible(false);
 
     sUi->label_3->setVisible(false);
     sUi->label_7->setVisible(false);
@@ -1004,20 +999,12 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->layControlRaw->insertWidget(0, sUi->userVarGoal);
     sUi->placeControlRaw->setVisible(true);
     sUi->layControlRel->insertWidget(0, sUi->callRelative);
-    sUi->goHomeM->setVisible(false);
-    sUi->goHomeP->setVisible(false);
     sUi->stepD2->setVisible(true);
     sUi->stepD10->setVisible(true);
     sUi->stepM2->setVisible(true);
     sUi->stepM10->setVisible(true);
-    sUi->line_4->setVisible(false);
-
     sUi->configure->setVisible(false);
-    sUi->line_2->setVisible(false);
     sUi->epics->setVisible(false);
-    sUi->line_6->setVisible(false);
-    sUi->line_9->setVisible(false);
-    sUi->otherConfig->setVisible(false);
 
     break;
 
@@ -1032,11 +1019,12 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(true);
     sUi->label_2->setVisible(true);
     sUi->label_20->setVisible(true);
-    sUi->loadSave->setVisible(true);
 
     sUi->generalSetup->setVisible(true);
-    sUi->line_5->setVisible(true);
     sUi->spmgSetup->setVisible(false);
+    sUi->goHome ->setVisible(true);
+    sUi->goHomeM->setVisible(true);
+    sUi->goHomeP->setVisible(true);
 
     sUi->label_3->setVisible(true);
     sUi->label_7->setVisible(true);
@@ -1046,29 +1034,20 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->layControlRaw->insertWidget(0, sUi->rawGoal);
     sUi->placeControlRaw->setVisible(true);
     sUi->layControlRel->insertWidget(0, sUi->callRelative);
-    sUi->goHomeM->setVisible(true);
-    sUi->goHomeP->setVisible(true);
     sUi->stepD2->setVisible(true);
     sUi->stepD10->setVisible(true);
     sUi->stepM2->setVisible(true);
     sUi->stepM10->setVisible(true);
-    sUi->line_4->setVisible(true);
 
     sUi->layCfgUser->insertWidget(0, sUi->userPosition);
     sUi->layCfgRaw->insertWidget(0, sUi->rawPosition);
     sUi->layCfgLo->insertWidget(0, sUi->limitLo);
     sUi->layCfgHi->insertWidget(0, sUi->limitHi);
-    sUi->layCfgStepsPerRev->insertWidget(0, sUi->stepsPerRev);
-
+    sUi->layCfgOffset->insertWidget(0,sUi->offset);
+    sUi->layCfgBlash->insertWidget(0,sUi->backlash);
+    sUi->layCfgCurrent->insertWidget(0,sUi->driveCurrent);
     sUi->configure->setVisible(true);
-
-
-    sUi->line_2->setVisible(false);
-
     sUi->epics->setVisible(false);
-    sUi->line_6->setVisible(false);
-    sUi->line_9->setVisible(true);
-    sUi->otherConfig->setVisible(true);
 
     break;
 
@@ -1078,26 +1057,22 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->pv->setVisible(true);
     sUi->label_2->setVisible(true);
     sUi->label_20->setVisible(true);
-    sUi->loadSave->setVisible(true);
 
     sUi->generalSetup->setVisible(true);
-    sUi->line_5->setVisible(true);
     sUi->spmgSetup->setVisible(true);
+    sUi->goHome ->setVisible(true);
+    sUi->goHomeM->setVisible(true);
+    sUi->goHomeP->setVisible(true);
 
     sUi->label_3->setVisible(false);
     sUi->label_7->setVisible(false);
     sUi->label_21->setVisible(false);
     sUi->layControlRel->insertWidget(0, sUi->callRelative);
-    sUi->goHomeM->setVisible(true);
-    sUi->goHomeP->setVisible(true);
     sUi->stepD2->setVisible(true);
     sUi->stepD10->setVisible(true);
     sUi->stepM2->setVisible(true);
     sUi->stepM10->setVisible(true);
-    sUi->line_4->setVisible(true);
-
     sUi->configure->setVisible(false);
-    sUi->line_2->setVisible(false);
 
     sUi->layEpicsUserMove->insertWidget(0, sUi->userGoal);
     sUi->layEpicsRawMove->insertWidget(0, sUi->rawGoal);
@@ -1105,14 +1080,10 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->layEpicsRawSet->insertWidget(0, sUi->rawPosition);
     sUi->layEpicsHi->insertWidget(0, sUi->limitHi);
     sUi->layEpicsLo->insertWidget(0, sUi->limitLo);
-    sUi->layEpicsStepsPerRev->insertWidget(0, sUi->stepsPerRev);
+    sUi->layEpicsOffset->insertWidget(0,sUi->offset);
+    sUi->layEpicsBlash->insertWidget(0,sUi->backlash);
+    sUi->layEpicsCurrent->insertWidget(0,sUi->driveCurrent);
     sUi->epics->setVisible(true);
-
-    sUi->line_6->setVisible(true);
-
-    sUi->line_9->setVisible(true);
-    sUi->otherConfig->setVisible(true);
-
 
     break;
 
@@ -1229,11 +1200,9 @@ void QCaMotorGUI::updateHomeRef(QCaMotor::HomeReference hr) {
 }
 
 
-void QCaMotorGUI::updateUnitsPerRev(double vRes) {
-  sUi->unitsPerRev->setValue(vRes);
-  if ( mot->getDirection() == QCaMotor::NEGATIVE )
-    vRes *= -1.0;
-  sUi->unitsPerRevAndDir->setValue(vRes);
+void QCaMotorGUI::updateResolutionAndDirection() {
+  sUi->resolution->setValue( mot->getMotorResolution() *
+      (mot->getDirection() == QCaMotor::NEGATIVE ? -1.0 : 1.0) );
 }
 
 void QCaMotorGUI::updateUnits(const QString & egu){
@@ -1253,9 +1222,9 @@ void QCaMotorGUI::updateUnits(const QString & egu){
   sUi->backlash->setSuffix(egu);
   sUi->unitsPerStep->setSuffix(egu+"/step");
   sUi->unitsPerRev->setSuffix(egu+"/rev");
-  sUi->unitsPerRevAndDir->setSuffix(egu+"/rev");
   sUi->readbackResolution->setSuffix(egu+"/step");
   sUi->encoderResolution->setSuffix(egu+"/step");
+  sUi->resolution->setSuffix(egu+"/step");
   sUi->userGoal->setSuffix(egu);
   sUi->userVarGoal->setSuffix(egu);
   sUi->dialGoal->setSuffix(egu);
@@ -1284,9 +1253,9 @@ void QCaMotorGUI::updatePrecision(int prec){
   sUi->backlash->setDecimals(prec);
   sUi->unitsPerStep->setDecimals(qMax(prec,7));
   sUi->unitsPerRev->setDecimals(qMax(prec,7));
-  sUi->unitsPerRevAndDir->setDecimals(qMax(prec,7));
   sUi->readbackResolution->setDecimals(qMax(prec,7));
   sUi->encoderResolution->setDecimals(qMax(prec,7));
+  sUi->resolution->setDecimals(qMax(prec,7));
   sUi->userGoal->setDecimals(prec);
   sUi->userVarGoal->setDecimals(prec);
   sUi->offset->setDecimals(prec);
@@ -1452,7 +1421,6 @@ void QCaMotorGUI::updateOffsetMode(QCaMotor::OffMode mode) {
 }
 
 void QCaMotorGUI::updateDirection(QCaMotor::Direction dir) {
-  updateUnitsPerRev(mot->getUnitsPerRev()); // needed to address the bug described in QCaMotor::setResolution().
   sUi->dirGroup->button(dir)->setChecked(true);
 }
 
@@ -1579,9 +1547,7 @@ void QCaMotorGUI::updateAllElements(){
 
   sUi->states        ->setEnabled(cn);
   sUi->control       ->setEnabled(cn);
-  sUi->loadSave      ->setEnabled(cn);
   sUi->loadConfig    ->setEnabled(std);
-  sUi->otherConfig   ->setEnabled(std);
   sUi->configure     ->setEnabled(std);
   sUi->epics         ->setEnabled(std);
   sUi->generalSetup  ->setEnabled(std);

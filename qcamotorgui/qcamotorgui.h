@@ -199,14 +199,12 @@ private slots:
   void setSpeedS(double spd=0);
   void setAccelerationS(double acc=0);
 
-  /// \brief Sets the units-per-rev resolution and direction.
+  /// \brief Sets the resolution and direction.
   ///
-  /// Needed to address the bug described in QCaMotor::setResolution().
-  /// In fact it always sets the units-per-rev
   /// to the absolute value of ::res and the direction
   /// to the sign of ::res
   /// @param res new resolution.
-  void setUnitsPerRevAndDirection(double res);
+  void setResolutionAndDirection(double res);
 
   void recordCurrent();
 
@@ -314,8 +312,6 @@ private slots:
 
   void updateDialLoLimit(double loL);
 
-  void updateUnitsPerRev(double vRes);
-
   void updateMaximumSpeed(double maxSpeed);
 
   void updateNormalSpeed(double spd);
@@ -361,6 +357,8 @@ private slots:
   void updateHomeRef(QCaMotor::HomeReference hr);
 
   void updatePlugged(bool plg);
+
+  void updateResolutionAndDirection();
 
 };
 
