@@ -18,13 +18,12 @@ namespace Ui {
   class MotorControl;
   class MotorSetup;
   class GoRelative;
-  class PVtable;
 }
 
-class KnownPVTable;
-class FilterPVsProxyModel;
 
-
+QStringList selectMotors(bool onemotor=true,
+                         const QStringList & restrictTo = QStringList(), bool selectRestricted=false);
+QString selectMotor(const QStringList & restrictTo = QStringList());
 
 /// Graphical user interface for the motor.
 class QCaMotorGUI : public QWidget {
@@ -34,8 +33,6 @@ public:
 
   /// Base name of the files containing the list of the known motor PVs.
   static const QString pvListBaseName;
-
-  static const QString configsSearchBaseDir;
   static const QString configsExt;
 
   /// Enumeration with the view modes of the setup dialog.
@@ -57,36 +54,17 @@ private:
   Ui::MotorControl *mUi;        ///< GUI of the main widget.
   Ui::MotorSetup *sUi;          ///< "Setup" (advanced control) GUI.
   Ui::GoRelative *rUi;          ///< "Move relatively" GUI.
-  Ui::PVtable *pUi;             ///< "Choose PV" GUI.
 
   QDialog * setupDialog;        ///< "Setup" dialog.
-  QDialog * pvDialog;           ///< "Choose PV" dialog.
   QDialog * relativeDialog;     ///< "Move relatively" dialog.
 
-  QAction * pasteCfgAction;
-  QAction * pastePvAction;
-
-  static QMap<QString,QString> knownConfigs;
-  static KnownPVTable * knownPVs; ///< Table model for the table view in the "Choose PV".
-
-  static bool inited;
-
-  /// Constructs the ::knownPVs and ::knownConfigs.
-  ///
-  /// The function cannot be called before the application has inited
-  /// (needs Qt event loop running), and therefore
-  /// is called from within the constructor.
-  static void static_init();
-
   void init();
-
-
-  FilterPVsProxyModel *proxyModel; ///< Sort/filter proxy for the table view in the "Choose PV".
-
-  /// Lock status of the motor. If the motor is locked, then the PV cannot be changed.
   bool locked;
 
   ViewMode currentView;         ///< Current view mode of the "Setup" GUI.
+
+  QHash<QWidget*,bool> states;
+  void updateState(QWidget * wdg, bool good,  QString goodMsg=QString(), QString badMsg=QString() );
 
 
 
@@ -137,8 +115,6 @@ public slots:
 
   inline void showSetup(bool shown=true) { setupDialog->setVisible(shown); }
 
-  inline void showPvSetup(bool shown=true) { pvDialog->setVisible(shown); }
-
 
 private slots:
 
@@ -147,7 +123,10 @@ private slots:
   void onMotorDestruction();
 
   /// \brief Copies motor's PV into clipboard.
-  void copyPV();
+  void setPv();
+
+  /// \brief Copies motor's PV into clipboard.
+  void copyPv();
 
   /// \brief Copies motor's description into clipboard.
   void copyDescription();
@@ -164,18 +143,6 @@ private slots:
   void pastePv();
 
 
-  /// \brief Apply filter to the table view in the "Choose PV" GUI.
-  /// Used to catch the text changes from the search line in the GUI.
-  /// @param _text new filter.
-  void filterPV(const QString & _text="");
-
-  /// Sets new PV when it is activated in the table view from the "Choose PV" GUI.
-  /// @param index Index of the cell activated in the table view.
-  void choosePV(const QModelIndex & index);
-
-  /// Sets new PV when it is activated from the search field in the "Choose PV" GUI.
-  void pvFromSearch();
-
   /// Reacts on clicking the Setup button of the main GUI.
   void onSetupClicked();
 
@@ -185,7 +152,7 @@ private slots:
 
   void onSave() ;
 
-  void onLoad(const QString & text) ;
+  void onLoad();
 
   /// \brief Updates main GUIs when a new text in the ::step widget is activated/edited.
   ///
@@ -318,13 +285,9 @@ private slots:
 
   void updateBacklashSpeed(double spd);
 
-  void updateJogSpeed(double spd);
-
   void updateAcceleration(double acc);
 
   void updateBacklashAcceleration(double acc);
-
-  void updateJogAcceleration(double acc);
 
   void updateBacklash(double blsh);
 
@@ -356,7 +319,7 @@ private slots:
 
   void updateHomeRef(QCaMotor::HomeReference hr);
 
-  void updatePlugged(bool plg);
+  void updateStatus(bool sts);
 
   void updateResolutionAndDirection();
 

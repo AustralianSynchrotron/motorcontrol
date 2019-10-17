@@ -2,7 +2,6 @@
 add_library(qcamotorgui SHARED
   qcamotorgui.h
   qcamotorgui-additional.h
-  qcamotorgui-local.h
   qcamotorgui.cpp
   qcamotorgui-additional.cpp
   qcamotorgui.ui

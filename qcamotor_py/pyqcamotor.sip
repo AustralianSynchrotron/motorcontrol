@@ -59,10 +59,11 @@ public:
 
   void wait_start();
 
-  void saveConfiguration(const QString & fileName) const;
-  void loadConfiguration(const QString & fileName);
+  void saveConfiguration(const QString & fileName, bool params = false) const;
+  void loadConfiguration(const QString & fileName, bool params = false);
 
   const QString & getPv() const;
+  const QString & getOut() const;
   const QString & getDescription() const;
   int getPrecision() const;
   const QString & getUnits() const;
@@ -117,7 +118,7 @@ public:
   bool encoderIsLost() const;
   HomeReference getHomeRef() const;
   bool isHoming() const;
-  bool isPlugged() const;
+  bool getStatus() const;
   double getDriveCurrent() const;
   double getHoldPerCent() const;
 
@@ -183,6 +184,7 @@ public slots:
 signals:
 
   void changedPv(QString pvName=QString());
+  void changedOut(QString out);
   void changedDescription(QString desc);
   void changedPrecision(int prec);
   void changedUnits(QString units);
@@ -237,7 +239,7 @@ signals:
   void changedHoming(bool hom);
   void changedDriveCurrent(double cnt);
   void changedHoldPerCent(double percent);
-  void changedPlugged(bool plg);
+  void changedStatus(bool sts);
   void error(QString msg);
 
 };

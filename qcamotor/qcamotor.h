@@ -90,10 +90,10 @@ public:
 
   void waitUpdated ( const QString & field, int delay_msec=0 ) const;
 
-  void saveConfiguration(const QString & fileName) const;
-  void saveConfiguration(QTextStream & stream) const;
-  void loadConfiguration(const QString & fileName);
-  void loadConfiguration(QTextStream & stream);
+  void saveConfiguration(const QString & fileName, bool params = true) const;
+  void saveConfiguration(QTextStream & stream, bool params = true) const;
+  void loadConfiguration(const QString & fileName, bool restore = false);
+  void loadConfiguration(QTextStream & stream, bool restore = false);
 
 protected:
   bool eventFilter(QObject *obj, QEvent *event);
@@ -128,7 +128,7 @@ private:
 
   QString pv;                   ///< Motor's PV
 
-
+  QString out;                  ///< current value of the OUT field
   QString description;          ///< current value of the DESC field
   int precsision;               ///< current value of the PREC field
   QString units;                ///< current value of the EGU field
@@ -184,6 +184,7 @@ private:
   bool wrongLimits;             ///< current value of the :WRONGLIMIT
   bool eLoss;                   ///< current value of the :ELOSS
   HomeReference homeRef;        ///< derived from :HOME_FLAG_USER.SVAL
+  bool status;
 
   double driveCurrent;          ///< current value of the :DRIVECURRENT_RBV
   double holdPerCent;           ///< current value of the :HOLDPERCENTAGE_RBV
@@ -225,6 +226,8 @@ private slots:
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
   void updateConnection(bool suc);
+
+  void updateOut(const QVariant & data);
 
   /// \brief Updates description (::description)
   /// Used to catch the signal valueUpdated(QVariant) signal
@@ -496,6 +499,8 @@ private slots:
   void updateDriveCurrent(const QVariant & data);
 
   void updateHoldPerCent(const QVariant & data);
+
+  void updateStatus(const QVariant & data);
 
   /// Used by ::setPv() through QTimer::singleShot()
   void preSetPv();
@@ -825,6 +830,8 @@ public:
   /// @return ::pv
   inline const QString &  getPv() const { return pv; }
 
+  inline const QString &  getOut() const { return out; }
+
   /// Returns current description
   /// @return ::description
   inline const QString &  getDescription() const { return description; }
@@ -1028,7 +1035,7 @@ public:
 
   inline bool isHoming() const {return iAmHoming;}
 
-  inline bool isPlugged() const {return ! ( getLoLimitStatus() and ! getHiLimitStatus() );}
+  inline bool getStatus() const {return status;}
 
 
 signals:
@@ -1052,6 +1059,8 @@ signals:
   /// The signal is emitted whenever pv name is changed.
   /// @param pvName new pv name
   void changedPv(QString pvName=QString());
+
+  void changedOut(QString);
 
   /// The signal is emitted whenever description is changed.
   /// @param desc new description
@@ -1258,7 +1267,7 @@ signals:
 
   void changedHoldPerCent(double percent);
 
-  void changedPlugged(bool plg);
+  void changedStatus(bool sts);
 
 
   /// The signal is emitted on any error

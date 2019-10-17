@@ -9,6 +9,8 @@ add_executable(motormx
 
 target_include_directories(motormx
   PRIVATE ../qmotorstack
+  PRIVATE ../qcamotorgui
+  PRIVATE ../qcamotor
 )
 
 target_compile_options(motormx
@@ -19,6 +21,10 @@ target_link_libraries(motormx
   qmotorstack
   Qt5::Widgets
 )
+
+
+
+
 
 
 install(TARGETS motormx

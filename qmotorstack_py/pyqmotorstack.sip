@@ -19,6 +19,7 @@ public:
 
   bool isLocked();
   QList < QCaMotorGUI * > motorList() const;
+  QStringList nameList() const;
 
 public slots:
 

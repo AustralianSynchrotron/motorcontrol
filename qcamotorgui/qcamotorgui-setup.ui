@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>964</width>
-    <height>1883</height>
+    <width>1059</width>
+    <height>1590</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Motor setup</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -63,26 +63,19 @@
        <number>0</number>
       </property>
       <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>PV name</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="label_20">
+       <widget class="QLabel" name="label_14">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="text">
-         <string>View mode</string>
+         <string>Configuration:</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
+      <item row="0" column="5">
        <widget class="QComboBox" name="viewMode">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -139,24 +132,45 @@ p, li { white-space: pre-wrap; }
         </item>
        </widget>
       </item>
+      <item row="0" column="2">
+       <widget class="QToolButton" name="loadConfig">
+        <property name="text">
+         <string>Load</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
-       <widget class="QToolButton" name="pv">
+       <widget class="QToolButton" name="saveConfig">
+        <property name="text">
+         <string>Save</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QLabel" name="label_20">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="toolTip">
-         <string>Copy PV</string>
-        </property>
         <property name="text">
-         <string/>
-        </property>
-        <property name="autoRaise">
-         <bool>true</bool>
+         <string>View mode</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="3">
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
@@ -194,33 +208,7 @@ p, li { white-space: pre-wrap; }
       <property name="spacing">
        <number>1</number>
       </property>
-      <item row="2" column="2">
-       <widget class="QLabel" name="label_40">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Units</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QToolButton" name="saveConfig">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Save as</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="label">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -233,7 +221,26 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="4" column="0" colspan="4">
+      <item row="3" column="1">
+       <widget class="QMSpinBox" name="precision">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Precsision</string>
+        </property>
+        <property name="keyboardTracking">
+         <bool>false</bool>
+        </property>
+        <property name="maximum">
+         <number>9</number>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="4">
        <widget class="QWidget" name="states" native="true">
         <property name="enabled">
          <bool>false</bool>
@@ -254,47 +261,7 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>1</number>
          </property>
-         <item row="2" column="1">
-          <widget class="QPushButton" name="badLimit">
-           <property name="text">
-            <string>Bad Limit</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <widget class="QPushButton" name="initialized">
-           <property name="text">
-            <string>Initialized</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QLabel" name="comErr">
-           <property name="text">
-            <string>Comm error</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QPushButton" name="ampFault">
-           <property name="text">
-            <string>Amp fault</string>
-           </property>
-           <property name="flat">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="3">
+         <item row="1" column="3">
           <widget class="QPushButton" name="eloss">
            <property name="text">
             <string>Encoder loss</string>
@@ -304,7 +271,7 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
+         <item row="0" column="0">
           <widget class="QLabel" name="slst">
            <property name="text">
             <string>Slip / Stall</string>
@@ -314,44 +281,78 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="1" column="3">
-          <widget class="QLabel" name="plugged">
+         <item row="1" column="1">
+          <widget class="QPushButton" name="badLimit">
            <property name="text">
-            <string>Plugged</string>
+            <string>Bad Limit</string>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QLabel" name="status">
+           <property name="text">
+            <string>State OK</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
+         <item row="0" column="1">
           <widget class="QLabel" name="problems">
            <property name="text">
-            <string>Problems</string>
+            <string>Hardware</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="comErr">
+           <property name="text">
+            <string>Comm error</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QPushButton" name="ampFault">
+           <property name="text">
+            <string>Amp fault</string>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QPushButton" name="initialized">
+           <property name="text">
+            <string>Initialized</string>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
         </layout>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_39">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Precision</string>
+      <item row="4" column="0" colspan="4">
+       <widget class="Line" name="line_8">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QMSpinBox" name="precision">
+      <item row="3" column="3">
+       <widget class="QMLineEdit" name="units">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -359,18 +360,12 @@ p, li { white-space: pre-wrap; }
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Precsision</string>
-        </property>
-        <property name="keyboardTracking">
-         <bool>false</bool>
-        </property>
-        <property name="maximum">
-         <number>9</number>
+         <string>Units</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="label_52">
+      <item row="3" column="2">
+       <widget class="QLabel" name="label_40">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -378,11 +373,11 @@ p, li { white-space: pre-wrap; }
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Load</string>
+         <string>Units</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="3">
+      <item row="2" column="1" colspan="3">
        <widget class="QMLineEdit" name="description">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -398,39 +393,59 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
-       <widget class="QComboBox" name="loadConfig">
-        <item>
-         <property name="text">
-          <string>From file</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_14">
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_39">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
-         <string>Configuration</string>
+         <string>Precision</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
-       <widget class="QMLineEdit" name="units">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>PV name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QToolButton" name="pv">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Units</string>
+         <string>Copy PV</string>
+        </property>
+        <property name="text">
+         <string>pv</string>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="4">
-       <widget class="Line" name="line_8">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_29">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QVariantLabel" name="out">
+        <property name="text">
+         <string>card name</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
@@ -477,6 +492,288 @@ p, li { white-space: pre-wrap; }
       <property name="spacing">
        <number>1</number>
       </property>
+      <item row="5" column="3">
+       <widget class="QToolButton" name="jogP">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Press to jog, release to stop jogging</string>
+        </property>
+        <property name="text">
+         <string>&gt;&gt;</string>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="3">
+       <widget class="QToolButton" name="goHomeP">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>go home in positive direction</string>
+        </property>
+        <property name="text">
+         <string>&gt;H</string>
+        </property>
+        <property name="autoRaise">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QToolButton" name="goLimitM">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Go to negative limit (hard or soft - whatever is activated first)</string>
+        </property>
+        <property name="text">
+         <string>|&lt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1" colspan="2">
+       <widget class="QMDoubleSpinBox" name="step">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Step</string>
+        </property>
+        <property name="keyboardTracking">
+         <bool>false</bool>
+        </property>
+        <property name="minimum">
+         <double>-2147483647.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>2147483647.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="3">
+       <widget class="QToolButton" name="goLimitP">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Go to positive limit (hard or soft - whatever is activated first)</string>
+        </property>
+        <property name="text">
+         <string>&gt;|</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="3">
+       <widget class="QToolButton" name="goP">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Move to plus by step</string>
+        </property>
+        <property name="text">
+         <string>&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1" colspan="2">
+       <widget class="QPushButton" name="goHome">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Find home</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QToolButton" name="goHomeM">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Go home in negative direction</string>
+        </property>
+        <property name="text">
+         <string>H&lt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>User</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QLabel" name="label_7">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string>Raw</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="QLabel" name="label_21">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Move absolutely</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1" colspan="2">
+       <widget class="QWidget" name="placeControlRel" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QVBoxLayout" name="layControlRel">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinAndMaxSize</enum>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QToolButton" name="callRelative">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Move relatively</string>
+           </property>
+           <property name="text">
+            <string>Move relatively</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QToolButton" name="stepD2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Divide step by 2</string>
+        </property>
+        <property name="text">
+         <string>1/2</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QToolButton" name="goM">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Move to minus by the step</string>
+        </property>
+        <property name="text">
+         <string>&lt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="3">
+       <widget class="QToolButton" name="stepM10">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Multiply step by 10</string>
+        </property>
+        <property name="text">
+         <string>10</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0" colspan="4">
        <widget class="QWidget" name="spmgSetup" native="true">
         <property name="enabled">
@@ -602,8 +899,11 @@ p, li { white-space: pre-wrap; }
         </layout>
        </widget>
       </item>
-      <item row="9" column="0">
-       <widget class="QToolButton" name="goHomeM">
+      <item row="5" column="0">
+       <widget class="QToolButton" name="jogM">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -611,95 +911,13 @@ p, li { white-space: pre-wrap; }
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Go home in negative direction</string>
+         <string>Press to jog, release to stop jogging</string>
         </property>
         <property name="text">
-         <string>H&lt;</string>
+         <string>&lt;&lt;</string>
         </property>
-       </widget>
-      </item>
-      <item row="8" column="3">
-       <widget class="QToolButton" name="stepM10">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Multiply step by 10</string>
-        </property>
-        <property name="text">
-         <string>10</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1" colspan="2">
-       <widget class="QLabel" name="label_21">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Move absolutely</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" colspan="2">
-       <widget class="QWidget" name="placeControlUser" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <layout class="QVBoxLayout" name="layControlUser">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="sizeConstraint">
-          <enum>QLayout::SetMinAndMaxSize</enum>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-        </layout>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>User</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="3">
-       <widget class="QLabel" name="label_7">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="layoutDirection">
-         <enum>Qt::RightToLeft</enum>
-        </property>
-        <property name="text">
-         <string>Raw</string>
+        <property name="checkable">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -733,149 +951,10 @@ p, li { white-space: pre-wrap; }
         </layout>
        </widget>
       </item>
-      <item row="5" column="3">
-       <widget class="QToolButton" name="jogP">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Press to jog, release to stop jogging</string>
-        </property>
+      <item row="2" column="2">
+       <widget class="QLabel" name="absLabel">
         <property name="text">
-         <string>&gt;&gt;</string>
-        </property>
-        <property name="checkable">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
-       <widget class="QToolButton" name="goM">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Move to minus by the step</string>
-        </property>
-        <property name="text">
-         <string>&lt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1" colspan="2">
-       <widget class="QPushButton" name="goHome">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Find home</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="1">
-       <widget class="QToolButton" name="stepD2">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Divide step by 2</string>
-        </property>
-        <property name="text">
-         <string>1/2</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="2">
-       <widget class="QToolButton" name="stepM2">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Multiply step by 2</string>
-        </property>
-        <property name="text">
-         <string>2</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QToolButton" name="jogM">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Press to jog, release to stop jogging</string>
-        </property>
-        <property name="text">
-         <string>&lt;&lt;</string>
-        </property>
-        <property name="checkable">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1" colspan="2">
-       <widget class="QPushButton" name="stop">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Stop motion</string>
-        </property>
-        <property name="text">
-         <string>STOP</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1" colspan="2">
-       <widget class="QMDoubleSpinBox" name="step">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Step</string>
-        </property>
-        <property name="keyboardTracking">
-         <bool>false</bool>
-        </property>
-        <property name="minimum">
-         <double>-2147483647.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>2147483647.000000000000000</double>
+         <string>Move to:</string>
         </property>
        </widget>
       </item>
@@ -898,8 +977,24 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="7" column="3">
-       <widget class="QToolButton" name="goP">
+      <item row="8" column="2">
+       <widget class="QToolButton" name="stepM2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Multiply step by 2</string>
+        </property>
+        <property name="text">
+         <string>2</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" colspan="2">
+       <widget class="QPushButton" name="stop">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -910,60 +1005,22 @@ p, li { white-space: pre-wrap; }
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Move to plus by step</string>
+         <string>Stop motion</string>
         </property>
         <property name="text">
-         <string>&gt;</string>
+         <string>STOP</string>
         </property>
        </widget>
       </item>
-      <item row="9" column="3">
-       <widget class="QToolButton" name="goHomeP">
+      <item row="4" column="0" colspan="2">
+       <widget class="QWidget" name="placeControlUser" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="toolTip">
-         <string>go home in positive direction</string>
-        </property>
-        <property name="text">
-         <string>&gt;H</string>
-        </property>
-        <property name="autoRaise">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QToolButton" name="goLimitM">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Go to negative limit (hard or soft - whatever is activated first)</string>
-        </property>
-        <property name="text">
-         <string>|&lt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1" colspan="2">
-       <widget class="QWidget" name="placeControlRel" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <layout class="QVBoxLayout" name="layControlRel">
+        <layout class="QVBoxLayout" name="layControlUser">
          <property name="spacing">
           <number>0</number>
          </property>
@@ -982,42 +1039,7 @@ p, li { white-space: pre-wrap; }
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item>
-          <widget class="QToolButton" name="callRelative">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Move relatively</string>
-           </property>
-           <property name="text">
-            <string>Move relatively</string>
-           </property>
-          </widget>
-         </item>
         </layout>
-       </widget>
-      </item>
-      <item row="6" column="3">
-       <widget class="QToolButton" name="goLimitP">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Go to positive limit (hard or soft - whatever is activated first)</string>
-        </property>
-        <property name="text">
-         <string>&gt;|</string>
-        </property>
        </widget>
       </item>
       <item row="8" column="0">
@@ -1036,13 +1058,6 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="absLabel">
-        <property name="text">
-         <string>Move to:</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
@@ -1050,12 +1065,6 @@ p, li { white-space: pre-wrap; }
     <widget class="QWidget" name="configure" native="true">
      <property name="enabled">
       <bool>false</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
      </property>
      <layout class="QGridLayout" name="gridLayout_6">
       <property name="leftMargin">
@@ -1567,13 +1576,7 @@ p, li { white-space: pre-wrap; }
      <property name="enabled">
       <bool>false</bool>
      </property>
-     <property name="visible">
-      <bool>true</bool>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_8">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetMinAndMaxSize</enum>
-      </property>
+     <layout class="QGridLayout" name="gridLayout">
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -1586,115 +1589,40 @@ p, li { white-space: pre-wrap; }
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item row="2" column="5" colspan="2">
-       <widget class="QWidget" name="placeEpicsRawMove" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <layout class="QVBoxLayout" name="layEpicsRawMove">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QHistoryDSB" name="rawGoal">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Move absolute in &quot;Raw&quot; coordinates</string>
-           </property>
-           <property name="keyboardTracking">
-            <bool>false</bool>
-           </property>
-           <property name="decimals">
-            <number>0</number>
-           </property>
-           <property name="minimum">
-            <double>-2147483647.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>2147483647.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
+      <property name="spacing">
+       <number>1</number>
+      </property>
       <item row="14" column="0">
-       <widget class="QWidget" name="resolutionSetup" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <layout class="QGridLayout" name="resolutionSetup_lay">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <property name="spacing">
-          <number>1</number>
-         </property>
-         <item row="0" column="3" rowspan="6">
-          <widget class="Line" name="line_10">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+       <widget class="QLabel" name="label_48">
         <property name="text">
-         <string>Readback</string>
+         <string>Speed</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="2" colspan="3">
-       <widget class="QMDoubleSpinBox" name="dialPosition">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+      <item row="14" column="3">
+       <widget class="QMDoubleSpinBox" name="speed">
         <property name="toolTip">
-         <string>Set position in dial coordinates (does not move the motor)</string>
+         <string>Normal speed</string>
+        </property>
+        <property name="keyboardTracking">
+         <bool>false</bool>
+        </property>
+        <property name="maximum">
+         <double>2147483647.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="3">
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>Direction</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="4">
+       <widget class="QMDoubleSpinBox" name="limitHiDial">
+        <property name="toolTip">
+         <string>Hi limit in dial coordinates</string>
         </property>
         <property name="keyboardTracking">
          <bool>false</bool>
@@ -1707,46 +1635,35 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="10" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Encoder</string>
-        </property>
-       </widget>
+      <item row="8" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Readback</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="useReadback">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>Use &quot;readback location&quot; link if present</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="7" column="5">
-       <widget class="QRadioButton" name="offsetVar">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Variable offset</string>
-        </property>
-        <property name="text">
-         <string>Variabl</string>
-        </property>
-        <attribute name="buttonGroup">
-         <string notr="true">offGroup</string>
-        </attribute>
-       </widget>
-      </item>
-      <item row="5" column="1">
+      <item row="2" column="0">
        <widget class="QWidget" name="placeEpicsLo" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <layout class="QVBoxLayout" name="layEpicsLo">
          <property name="spacing">
           <number>0</number>
@@ -1765,12 +1682,6 @@ p, li { white-space: pre-wrap; }
          </property>
          <item>
           <widget class="QMDoubleSpinBox" name="limitLo">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
            <property name="toolTip">
             <string>Lo limit in user coordinates</string>
            </property>
@@ -1788,29 +1699,110 @@ p, li { white-space: pre-wrap; }
         </layout>
        </widget>
       </item>
-      <item row="20" column="4" colspan="3">
-       <widget class="QMDoubleSpinBox" name="backlashAcceleration">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="13" column="1">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Maximum</string>
         </property>
+       </widget>
+      </item>
+      <item row="14" column="1">
+       <widget class="QMDoubleSpinBox" name="maximumSpeed">
         <property name="toolTip">
-         <string>Backlash acceleration (seconds to speed)</string>
+         <string>Maximum speed (no speed can be larger than this)</string>
         </property>
         <property name="keyboardTracking">
          <bool>false</bool>
         </property>
-        <property name="suffix">
-         <string>s</string>
+        <property name="minimum">
+         <double>0.000000000000000</double>
         </property>
         <property name="maximum">
          <double>2147483647.000000000000000</double>
         </property>
+        <property name="value">
+         <double>0.000000000000000</double>
+        </property>
        </widget>
       </item>
-      <item row="11" column="5" colspan="2">
+      <item row="11" column="4">
+       <widget class="QMDoubleSpinBox" name="holdPerCent">
+        <property name="suffix">
+         <string>%</string>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="4">
+       <widget class="QWidget" name="placeEpicsBlash" native="true">
+        <layout class="QHBoxLayout" name="layEpicsBlash">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QMDoubleSpinBox" name="backlash">
+           <property name="toolTip">
+            <string>Backlash distance</string>
+           </property>
+           <property name="keyboardTracking">
+            <bool>false</bool>
+           </property>
+           <property name="minimum">
+            <double>-2147483647.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>2147483647.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="12" column="0" colspan="5">
+       <widget class="Line" name="line_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="2">
+       <widget class="QToolButton" name="equalizeAccelerations_2">
+        <property name="toolTip">
+         <string>Set all accelerations to displayed.</string>
+        </property>
+        <property name="text">
+         <string>=</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label_35">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
+        </property>
+        <property name="text">
+         <string>Move</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="4">
        <widget class="QWidget" name="placeEpicsCurrent" native="true">
         <layout class="QHBoxLayout" name="layEpicsCurrent">
          <property name="spacing">
@@ -1844,106 +1836,29 @@ p, li { white-space: pre-wrap; }
         </layout>
        </widget>
       </item>
-      <item row="8" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Motor</string>
-        </property>
-       </widget>
-      </item>
-      <item row="17" column="4" colspan="3">
-       <widget class="QLabel" name="label_50">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Acceleration</string>
-        </property>
-       </widget>
-      </item>
-      <item row="19" column="1" colspan="2">
-       <widget class="QMDoubleSpinBox" name="speed">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+      <item row="15" column="4">
+       <widget class="QMDoubleSpinBox" name="backlashAcceleration">
         <property name="toolTip">
-         <string>Normal speed</string>
+         <string>Backlash acceleration (seconds to speed)</string>
         </property>
         <property name="keyboardTracking">
          <bool>false</bool>
+        </property>
+        <property name="suffix">
+         <string>s</string>
         </property>
         <property name="maximum">
          <double>2147483647.000000000000000</double>
         </property>
        </widget>
       </item>
-      <item row="19" column="0">
-       <widget class="QLabel" name="label_51">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Normal</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2" colspan="3">
-       <widget class="QLabel" name="label_37">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Dial</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="4">
-       <widget class="QLabel" name="label_16">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Direction</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="1">
-       <widget class="QMDoubleSpinBox" name="unitsPerStep">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+      <item row="3" column="3">
+       <widget class="QMDoubleSpinBox" name="dialPosition">
         <property name="toolTip">
-         <string>Set motor resolution (travel distance per raw step)</string>
+         <string>Set position in dial coordinates (does not move the motor)</string>
         </property>
         <property name="keyboardTracking">
          <bool>false</bool>
-        </property>
-        <property name="decimals">
-         <number>7</number>
         </property>
         <property name="minimum">
          <double>-2147483647.000000000000000</double>
@@ -1953,14 +1868,122 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="4" column="5" colspan="2">
-       <widget class="QWidget" name="placeEpicsRawSet" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="8" column="4">
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QRadioButton" name="dirPos">
+          <property name="toolTip">
+           <string>Positive user direction</string>
+          </property>
+          <property name="text">
+           <string>Pos.</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">dirGroup</string>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="dirNeg">
+          <property name="toolTip">
+           <string>Negative user direction</string>
+          </property>
+          <property name="text">
+           <string>Neg.</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">dirGroup</string>
+          </attribute>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="1">
+       <widget class="QWidget" name="placeEpicsUserMove" native="true">
+        <layout class="QVBoxLayout" name="layEpicsUserMove">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QHistoryDSB" name="userGoal">
+           <property name="toolTip">
+            <string>Move absolutely</string>
+           </property>
+           <property name="keyboardTracking">
+            <bool>false</bool>
+           </property>
+           <property name="minimum">
+            <double>-2147483647.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>2147483647.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="9" column="3">
+       <widget class="QLabel" name="label_22">
+        <property name="text">
+         <string>Backlash</string>
         </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QWidget" name="placeEpicsRawMove" native="true">
+        <layout class="QVBoxLayout" name="layEpicsRawMove">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QHistoryDSB" name="rawGoal">
+           <property name="toolTip">
+            <string>Move absolute in &quot;Raw&quot; coordinates</string>
+           </property>
+           <property name="keyboardTracking">
+            <bool>false</bool>
+           </property>
+           <property name="decimals">
+            <number>0</number>
+           </property>
+           <property name="minimum">
+            <double>-2147483647.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>2147483647.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QWidget" name="placeEpicsRawSet" native="true">
         <layout class="QVBoxLayout" name="layEpicsRawSet">
          <property name="spacing">
           <number>0</number>
@@ -1979,12 +2002,6 @@ p, li { white-space: pre-wrap; }
          </property>
          <item>
           <widget class="QMDoubleSpinBox" name="rawPosition">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
            <property name="toolTip">
             <string>Set raw position (does not move the motor)</string>
            </property>
@@ -2005,68 +2022,45 @@ p, li { white-space: pre-wrap; }
         </layout>
        </widget>
       </item>
-      <item row="22" column="0">
-       <widget class="QLabel" name="label_11">
+      <item row="2" column="2">
+       <widget class="QLabel" name="label_4">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
+        </property>
         <property name="text">
-         <string>Revolve</string>
+         <string>user</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
-      <item row="17" column="1">
-       <widget class="QLabel" name="label_48">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+      <item row="10" column="0">
+       <widget class="QLabel" name="label_27">
         <property name="text">
-         <string>Speed</string>
+         <string>Units/Rev</string>
         </property>
        </widget>
       </item>
-      <item row="12" column="4">
-       <widget class="QLabel" name="label_23">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="3" column="1">
+       <widget class="QMDoubleSpinBox" name="dialGoal">
+        <property name="toolTip">
+         <string>Move absolute in &quot;Dial&quot; coordinates</string>
         </property>
-        <property name="text">
-         <string>Holding</string>
+        <property name="keyboardTracking">
+         <bool>false</bool>
         </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_32">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+        <property name="minimum">
+         <double>-2147483647.000000000000000</double>
         </property>
-        <property name="text">
-         <string>Lo Limit</string>
+        <property name="maximum">
+         <double>2147483647.000000000000000</double>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_35">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Move</string>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="5" colspan="2">
-       <widget class="QWidget" name="placeEpicsBlash" native="true">
-        <layout class="QHBoxLayout" name="layEpicsBlash">
+      <item row="2" column="3">
+       <widget class="QWidget" name="placeEpicsUserSet" native="true">
+        <layout class="QVBoxLayout" name="layEpicsUserSet">
          <property name="spacing">
           <number>0</number>
          </property>
@@ -2083,15 +2077,9 @@ p, li { white-space: pre-wrap; }
           <number>0</number>
          </property>
          <item>
-          <widget class="QMDoubleSpinBox" name="backlash">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
+          <widget class="QMDoubleSpinBox" name="userPosition">
            <property name="toolTip">
-            <string>Backlash distance</string>
+            <string>Set position in user coordinates (does not move the motor)</string>
            </property>
            <property name="keyboardTracking">
             <bool>false</bool>
@@ -2107,42 +2095,63 @@ p, li { white-space: pre-wrap; }
         </layout>
        </widget>
       </item>
-      <item row="10" column="2">
-       <widget class="QCheckBox" name="useEncoder">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Use encoder if present</string>
-        </property>
+      <item row="11" column="3">
+       <widget class="QLabel" name="label_23">
         <property name="text">
-         <string/>
+         <string>Holding</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="6">
-       <widget class="QRadioButton" name="offsetFrz">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+      <item row="3" column="0">
+       <widget class="QMDoubleSpinBox" name="limitLoDial">
         <property name="toolTip">
-         <string>Frozen offset</string>
+         <string>Lo limit in dial coordinates</string>
         </property>
-        <property name="text">
-         <string>Frozen</string>
+        <property name="keyboardTracking">
+         <bool>false</bool>
         </property>
-        <attribute name="buttonGroup">
-         <string notr="true">offGroup</string>
-        </attribute>
+        <property name="minimum">
+         <double>-2147483647.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>2147483647.000000000000000</double>
+        </property>
        </widget>
       </item>
-      <item row="8" column="5" colspan="2">
+      <item row="14" column="2">
+       <widget class="QToolButton" name="equalizeSpeeds_2">
+        <property name="toolTip">
+         <string>Set all speeds to displayed.</string>
+        </property>
+        <property name="text">
+         <string>=</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="3">
+       <widget class="QMDoubleSpinBox" name="acceleration">
+        <property name="toolTip">
+         <string>Normal acceleration (seconds to speed)</string>
+        </property>
+        <property name="keyboardTracking">
+         <bool>false</bool>
+        </property>
+        <property name="suffix">
+         <string>s</string>
+        </property>
+        <property name="maximum">
+         <double>2147483647.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="label_30">
+        <property name="text">
+         <string>Steps/Rev</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="4">
        <widget class="QWidget" name="placeEpicsOffset" native="true">
         <layout class="QHBoxLayout" name="layEpicsOffset">
          <property name="spacing">
@@ -2162,12 +2171,6 @@ p, li { white-space: pre-wrap; }
          </property>
          <item>
           <widget class="QMDoubleSpinBox" name="offset">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
            <property name="toolTip">
             <string>Offset (difference between dial and user coordinates)</string>
            </property>
@@ -2185,296 +2188,62 @@ p, li { white-space: pre-wrap; }
         </layout>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_12">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="7" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Motor</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_32">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
         </property>
         <property name="text">
-         <string>Hi limit</string>
+         <string>Lo Limit</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
-      <item row="7" column="2">
-       <widget class="QLabel" name="label_10">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="13" column="3">
+       <widget class="QLabel" name="label_51">
+        <property name="text">
+         <string>Normal</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLabel" name="label_8">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
         </property>
         <property name="text">
-         <string>Use</string>
+         <string>dial</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="7">
-       <widget class="Line" name="line_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="20" column="1" colspan="2">
-       <widget class="QMDoubleSpinBox" name="backlashSpeed">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Backlash speed</string>
-        </property>
-        <property name="keyboardTracking">
-         <bool>false</bool>
-        </property>
-        <property name="maximum">
-         <double>2147483647.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1">
-       <widget class="QMDoubleSpinBox" name="readbackResolution">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Set readback resolution</string>
-        </property>
-        <property name="keyboardTracking">
-         <bool>false</bool>
-        </property>
-        <property name="decimals">
-         <number>7</number>
-        </property>
-        <property name="minimum">
-         <double>-2147483647.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>2147483647.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="21" column="0">
-       <widget class="QLabel" name="label_49">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+      <item row="15" column="0">
+       <widget class="QLabel" name="label_50">
         <property name="text">
-         <string>Jog</string>
+         <string>Acceleration</string>
         </property>
        </widget>
       </item>
-      <item row="18" column="1" colspan="2">
-       <widget class="QMDoubleSpinBox" name="maximumSpeed">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Maximum speed (no speed can be larger than this)</string>
-        </property>
-        <property name="keyboardTracking">
-         <bool>false</bool>
-        </property>
-        <property name="minimum">
-         <double>0.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>2147483647.000000000000000</double>
-        </property>
-        <property name="value">
-         <double>0.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="0">
-       <widget class="QLabel" name="label_27">
+      <item row="6" column="1">
+       <widget class="QLabel" name="label_15">
         <property name="text">
-         <string>Units/Rev</string>
+         <string>Resolution</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="5" colspan="2">
-       <widget class="QLabel" name="label_31">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Raw</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2" colspan="3">
-       <widget class="QMDoubleSpinBox" name="limitHiDial">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Hi limit in dial coordinates</string>
-        </property>
-        <property name="keyboardTracking">
-         <bool>false</bool>
-        </property>
-        <property name="minimum">
-         <double>-2147483647.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>2147483647.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="4">
-       <widget class="QLabel" name="label_22">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Backlash</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="4" rowspan="2">
-       <widget class="QLabel" name="label_13">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Offset</string>
-        </property>
-       </widget>
-      </item>
-      <item row="12" column="1">
-       <widget class="QMSpinBox" name="stepsPerRev">
-        <property name="toolTip">
-         <string>Steps per revolution</string>
-        </property>
-        <property name="maximum">
-         <number>2147483647</number>
-        </property>
-       </widget>
-      </item>
-      <item row="19" column="4" colspan="3">
-       <widget class="QMDoubleSpinBox" name="acceleration">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Normal acceleration (seconds to speed)</string>
-        </property>
-        <property name="keyboardTracking">
-         <bool>false</bool>
-        </property>
-        <property name="suffix">
-         <string>s</string>
-        </property>
-        <property name="maximum">
-         <double>2147483647.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_33">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Set</string>
-        </property>
-       </widget>
-      </item>
-      <item row="12" column="0">
-       <widget class="QLabel" name="label_30">
-        <property name="text">
-         <string>Steps/Rev</string>
-        </property>
-       </widget>
-      </item>
-      <item row="21" column="4" colspan="3">
-       <widget class="QMDoubleSpinBox" name="jogAcceleration">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Jog acceleration (seconds to speed)</string>
-        </property>
-        <property name="keyboardTracking">
-         <bool>false</bool>
-        </property>
-        <property name="suffix">
-         <string>/s²</string>
-        </property>
-        <property name="maximum">
-         <double>2147483647.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="1">
-       <widget class="QMDoubleSpinBox" name="encoderResolution">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Set encoder resolution</string>
-        </property>
-        <property name="keyboardTracking">
-         <bool>false</bool>
-        </property>
-        <property name="decimals">
-         <number>7</number>
-        </property>
-        <property name="minimum">
-         <double>-2147483647.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>2147483647.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
+      <item row="2" column="4">
        <widget class="QWidget" name="placeEpicsHi" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <layout class="QVBoxLayout" name="layEpicsHi">
          <property name="spacing">
           <number>0</number>
@@ -2493,12 +2262,6 @@ p, li { white-space: pre-wrap; }
          </property>
          <item>
           <widget class="QMDoubleSpinBox" name="limitHi">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
            <property name="toolTip">
             <string>Hi limit in user coordinates</string>
            </property>
@@ -2516,16 +2279,100 @@ p, li { white-space: pre-wrap; }
         </layout>
        </widget>
       </item>
-      <item row="21" column="1" colspan="2">
-       <widget class="QMDoubleSpinBox" name="jogSpeed">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="9" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Encoder</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="useEncoder">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>Use encoder if present</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="4">
+       <widget class="QLabel" name="label_28">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
         </property>
+        <property name="text">
+         <string>Hi limit</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLabel" name="label_10">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
+        </property>
+        <property name="text">
+         <string>raw</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="3">
+       <widget class="QLabel" name="label_19">
+        <property name="text">
+         <string>Drive current</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="4">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QRadioButton" name="offsetVar">
+          <property name="toolTip">
+           <string>Variable offset</string>
+          </property>
+          <property name="text">
+           <string>Variabl</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">offGroup</string>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="offsetFrz">
+          <property name="toolTip">
+           <string>Frozen offset</string>
+          </property>
+          <property name="text">
+           <string>Frozen</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">offGroup</string>
+          </attribute>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="14" column="4">
+       <widget class="QMDoubleSpinBox" name="backlashSpeed">
         <property name="toolTip">
-         <string>Jog speed</string>
+         <string>Backlash speed</string>
         </property>
         <property name="keyboardTracking">
          <bool>false</bool>
@@ -2535,341 +2382,71 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="7" column="3" rowspan="6">
-       <widget class="Line" name="line_9">
-        <property name="lineWidth">
-         <number>1</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="22" column="1" colspan="2">
-       <widget class="QMDoubleSpinBox" name="revSpeed">
-        <property name="toolTip">
-         <string>Speed of the motor in terms of turns per second</string>
-        </property>
-        <property name="suffix">
-         <string>rev/s</string>
-        </property>
-        <property name="maximum">
-         <double>2147483647.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="2">
-       <widget class="QCheckBox" name="useReadback">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Use &quot;readback location&quot; link if present</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="2" colspan="3">
-       <widget class="QMDoubleSpinBox" name="limitLoDial">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Lo limit in dial coordinates</string>
-        </property>
-        <property name="keyboardTracking">
-         <bool>false</bool>
-        </property>
-        <property name="minimum">
-         <double>-2147483647.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>2147483647.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QWidget" name="placeEpicsUserSet" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <layout class="QVBoxLayout" name="layEpicsUserSet">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QMDoubleSpinBox" name="userPosition">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Set position in user coordinates (does not move the motor)</string>
-           </property>
-           <property name="keyboardTracking">
-            <bool>false</bool>
-           </property>
-           <property name="minimum">
-            <double>-2147483647.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>2147483647.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="20" column="0">
-       <widget class="QLabel" name="label_9">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Backlash</string>
-        </property>
-       </widget>
-      </item>
-      <item row="12" column="5" colspan="2">
-       <widget class="QMDoubleSpinBox" name="holdPerCent">
-        <property name="suffix">
-         <string>%</string>
-        </property>
-        <property name="decimals">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item row="23" column="0">
-       <widget class="QWidget" name="speedSetup" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="visible">
-         <bool>true</bool>
-        </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <property name="spacing">
-          <number>0</number>
-         </property>
-        </layout>
-       </widget>
-      </item>
-      <item row="6" column="0" colspan="7">
+      <item row="5" column="0" colspan="5">
        <widget class="Line" name="line">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="15" column="0" colspan="7">
+      <item row="1" column="3">
+       <widget class="QLabel" name="label_33">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
+        </property>
+        <property name="text">
+         <string>Set</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="3" rowspan="2">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Offset</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="4">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Backlash</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="5">
        <widget class="Line" name="line_6">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="visible">
-         <bool>true</bool>
-        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="9" column="6">
-       <widget class="QRadioButton" name="dirNeg">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+      <item row="11" column="1">
+       <widget class="QMSpinBox" name="stepsPerRev">
         <property name="toolTip">
-         <string>Negative user direction</string>
+         <string>Steps per revolution</string>
         </property>
-        <property name="text">
-         <string>Neg.</string>
+        <property name="maximum">
+         <number>2147483647</number>
         </property>
-        <attribute name="buttonGroup">
-         <string notr="true">dirGroup</string>
-        </attribute>
        </widget>
       </item>
-      <item row="9" column="5">
-       <widget class="QRadioButton" name="dirPos">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="10" column="1">
+       <widget class="QMDoubleSpinBox" name="unitsPerRev">
+        <property name="minimum">
+         <double>-2147483647.000000000000000</double>
         </property>
+        <property name="maximum">
+         <double>2147483647.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QMDoubleSpinBox" name="encoderResolution">
         <property name="toolTip">
-         <string>Positive user direction</string>
-        </property>
-        <property name="text">
-         <string>Pos.</string>
-        </property>
-        <attribute name="buttonGroup">
-         <string notr="true">dirGroup</string>
-        </attribute>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="label_36">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>User</string>
-        </property>
-       </widget>
-      </item>
-      <item row="18" column="0">
-       <widget class="QLabel" name="label_8">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Maximum</string>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="4">
-       <widget class="QLabel" name="label_19">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Drive current</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QLabel" name="label_15">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Resolution</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QWidget" name="placeEpicsUserMove" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <layout class="QVBoxLayout" name="layEpicsUserMove">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QHistoryDSB" name="userGoal">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>Move absolutely</string>
-           </property>
-           <property name="keyboardTracking">
-            <bool>false</bool>
-           </property>
-           <property name="minimum">
-            <double>-2147483647.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>2147483647.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="2" column="2" colspan="3">
-       <widget class="QMDoubleSpinBox" name="dialGoal">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Move absolute in &quot;Dial&quot; coordinates</string>
+         <string>Set encoder resolution</string>
         </property>
         <property name="keyboardTracking">
          <bool>false</bool>
@@ -2882,16 +2459,48 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="11" column="1">
-       <widget class="QMDoubleSpinBox" name="unitsPerRev">
-        <property name="decimals">
-         <number>7</number>
+      <item row="8" column="1">
+       <widget class="QMDoubleSpinBox" name="readbackResolution">
+        <property name="toolTip">
+         <string>Set readback resolution</string>
+        </property>
+        <property name="keyboardTracking">
+         <bool>false</bool>
         </property>
         <property name="minimum">
          <double>-2147483647.000000000000000</double>
         </property>
         <property name="maximum">
          <double>2147483647.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QMDoubleSpinBox" name="unitsPerStep">
+        <property name="toolTip">
+         <string>Set motor resolution (travel distance per raw step)</string>
+        </property>
+        <property name="keyboardTracking">
+         <bool>false</bool>
+        </property>
+        <property name="minimum">
+         <double>-2147483647.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>2147483647.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2" rowspan="6">
+       <widget class="Line" name="line_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
@@ -2901,7 +2510,7 @@ p, li { white-space: pre-wrap; }
    <item>
     <widget class="QWidget" name="hidden" native="true">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -2953,6 +2562,11 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>QMLineEdit</class>
    <extends>QLineEdit</extends>
+   <header location="global">qtpvwidgets.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QVariantLabel</class>
+   <extends>QLabel</extends>
    <header location="global">qtpvwidgets.h</header>
   </customwidget>
  </customwidgets>

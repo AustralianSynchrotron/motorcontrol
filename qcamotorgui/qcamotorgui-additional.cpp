@@ -1,5 +1,9 @@
 #include "qcamotorgui-additional.h"
+#include "ui_qcamotorgui-pv.h"
+#include <QSortFilterProxyModel>
+#include <QStandardPaths>
 #include <QHBoxLayout>
+#include <QDir>
 
 
 
@@ -142,6 +146,335 @@ void QHistoryDSB::execHistory() {
   emit valueEdited(his);
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class FilterPVsProxyModel : private QSortFilterProxyModel {
+private:
+  QStringList searchWords;
+  QStringList restrictTo;
+  QStringList hideMe;
+public:
+
+  FilterPVsProxyModel( KnownPVTable * pvTable , QObject * parent=0) :
+    QSortFilterProxyModel(parent) {
+    setSourceModel(pvTable);
+    setDynamicSortFilter(true);
+    setFilterKeyColumn(-1);
+    sort(0, Qt::AscendingOrder);
+  }
+  QAbstractItemModel * aModel() { return this; }
+
+  void setSearch(const QString & str = QString() ) {
+    searchWords = str.split(QRegExp("\\s+"));
+    searchWords.removeDuplicates();
+    searchWords.removeOne("");
+    invalidateFilter();
+  }
+
+  void setRestricted(const QStringList & lst = QStringList()) {
+    restrictTo = lst;
+    invalidateFilter();
+  }
+
+  void setHidden(const QStringList & lst = QStringList()) {
+    hideMe = lst;
+    invalidateFilter();
+  }
+
+
+protected:
+
+  bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const {
+
+    const int column_count = sourceModel()->columnCount(source_parent);
+    QString pv = sourceModel()->data(sourceModel()->index(source_row, 0, source_parent)).toString();
+    if ( ( ! restrictTo.isEmpty() && ! restrictTo.contains(pv) ) ||
+         ( ! hideMe.isEmpty() && hideMe.contains(pv) ) )
+      return false;
+    for (int column = 0; column < column_count; ++column) {
+      QModelIndex source_index = sourceModel()->index(source_row, column, source_parent);
+      QString key = sourceModel()->data(source_index).toString();
+      bool found = true;
+      foreach (QString word, searchWords) {
+        found &= (bool) key.contains(word, Qt::CaseInsensitive);
+        if (!found)
+          break;
+      }
+      if (found)
+        return true;
+    }
+    return false;
+
+  }
+
+};
+
+
+class KeyPressEater : public QObject {
+public:
+  KeyPressEater(QObject * parent) : QObject(parent) {}
+protected:
+  bool eventFilter(QObject *obj, QEvent *event)  {
+
+    if ( event->type() != QEvent::KeyPress &&
+      event->type() != QEvent::KeyRelease &&
+             event->type() != QEvent::ShortcutOverride )
+      return QObject::eventFilter(obj, event);
+
+    QLineEdit * search = parent()->findChild<QLineEdit*>("search");
+    QTableView * pvTable = parent()->findChild<QTableView*>("pvTable");
+
+    QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+    int key = keyEvent->key();
+    QString text = keyEvent->text();
+
+
+    if ( key == Qt::Key_Enter  ||
+         key == Qt::Key_Return ||
+         key == Qt::Key_Escape ||
+         key == Qt::Key_Tab )
+    {
+      return QObject::eventFilter(obj, event);
+    } else if ( pvTable->hasFocus() &&
+              ( ! text.isEmpty() ||
+                key == Qt::Key_Left ||
+                key == Qt::Key_Right  ) )
+    {
+      search->setFocus();
+      QString stext = search->text();
+      if (key== Qt::Key_Backspace)
+        search->setText( stext.remove( stext.length()-1, 1) );
+      else if ( ! text.isEmpty() ) {
+        search->setText( stext + text );
+      }
+    } else if ( search->hasFocus() &&
+                ( key == Qt::Key_Down ||
+                  key == Qt::Key_Up )  )
+    {
+      pvTable->setFocus();
+    }
+
+    return QObject::eventFilter(obj, event);
+
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const QString KnownPVTable::pvListBaseName = "listOfKnownMotorPVs.txt";
+
+
+
+KnownPVTable::KnownPVTable(QObject * parent)
+  : QAbstractTableModel(parent)
+{
+  QStringList listPvs;
+  foreach(QString pth, QStandardPaths::standardLocations(QStandardPaths::AppDataLocation) ) {
+    QDir dir(pth);
+    foreach(QString cfg, dir.entryList(QStringList() << pvListBaseName, QDir::Files) ) {
+      QFile file(dir.canonicalPath() + QDir::separator() + cfg);
+      if ( file.open(QIODevice::ReadOnly | QIODevice::Text) && file.isReadable() ) {
+        while (!file.atEnd()) {
+          QByteArray line = file.readLine().trimmed();
+          if ( ! line.isEmpty() && line.at(0) != '#' )
+            addPv(line);
+        }
+        file.close();
+      }
+    }
+  }
+}
+
+
+QModelIndex KnownPVTable::addPv(const QString& newPv) {
+  if (newPv.isEmpty())
+    return QModelIndex();
+  const QString name = newPv.trimmed() + ".DESC";
+  QEpicsPv * pv;
+  foreach(pv, knownPVs)
+    if (pv->pv() == name)
+      return indexOf(pv);
+  pv = new QEpicsPv(name, this) ;
+  connect(pv, SIGNAL(valueChanged(QVariant)), SLOT(updateData()));
+  beginResetModel();
+  knownPVs << pv;
+  endResetModel();
+  return indexOf(pv);
+}
+
+QList<QModelIndex> KnownPVTable::addPv(const QStringList & newPvs) {
+  QList<QModelIndex> idxs;
+  foreach(QString newPv, newPvs)
+    idxs << addPv(newPv);
+  return idxs;
+}
+
+QModelIndex KnownPVTable::indexOf(QEpicsPv* pv) const {
+  return knownPVs.contains(pv) ?
+         createIndex(knownPVs.indexOf(pv), 0) :
+         QModelIndex();
+}
+
+
+int KnownPVTable::rowCount(const QModelIndex &parent) const {
+  Q_UNUSED(parent);
+  return knownPVs.count();
+}
+
+int KnownPVTable::columnCount(const QModelIndex &parent) const {
+  Q_UNUSED(parent);
+  return 2;
+}
+
+
+QVariant KnownPVTable::data(const QModelIndex &index, int role) const {
+  if ( ! index.isValid() || index.row() >= knownPVs.count() || index.row() < 0)
+    return QVariant();
+  QString pv = knownPVs.at(index.row())->pv();
+  if (role == Qt::DisplayRole) {
+    switch (index.column()) {
+      case 0: return pv.remove(".DESC");
+      case 1: return knownPVs.at(index.row())->get();
+      default: return QVariant();
+    }
+  } else if (role == Qt::UserRole) {
+    return pv.remove(".DESC");
+  } else {
+    return QVariant();
+  }
+}
+
+
+QVariant KnownPVTable::headerData(int section, Qt::Orientation orientation, int role) const {
+  if (role != Qt::DisplayRole || orientation != Qt::Horizontal )
+    return QVariant();
+  switch (section) {
+    case 0: return QString("PV");
+    case 1: return QString("Description");
+    default: return QVariant();
+  }
+}
+
+
+void KnownPVTable::updateData() {
+  QModelIndex midx = indexOf( (QEpicsPv*) sender() );
+  if ( midx.isValid() )
+    emit (dataChanged(midx, midx));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+MotorSelection::MotorSelection(QWidget * parent)
+  : QDialog(parent),
+  ui(new Ui::MotorSelection),
+  knownPVs(new KnownPVTable(this)),
+  proxyModel(new FilterPVsProxyModel(knownPVs, this))
+{
+  ui->setupUi(this);
+  ui->pvTable->setModel(proxyModel->aModel());
+  ui->pvTable->resizeColumnsToContents();
+  installEventFilter(new KeyPressEater(this));
+  connect(ui->search,  SIGNAL(textChanged(QString)), SLOT(filterPV(QString)));
+  connect(ui->search,  SIGNAL(returnPressed()), SLOT(pvFromSearch()));
+  connect(ui->pvTable, SIGNAL(clicked(QModelIndex)), SLOT(clickPV(QModelIndex)));
+  connect(ui->pvTable, SIGNAL(doubleClicked(QModelIndex)), SLOT(doubleClickPV(QModelIndex)));
+  connect(ui->selectAll, SIGNAL(clicked()), ui->pvTable, SLOT(selectAll()));
+  connect(ui->selectNone, SIGNAL(clicked()), ui->pvTable, SLOT(clearSelection()));
+  connect(ui->selectInvert, SIGNAL(clicked()), SLOT(selectInvert()));
+  connect(ui->accept, SIGNAL(clicked()), SLOT(accept()));
+  connect(ui->cancel, SIGNAL(clicked()), SLOT(reject()));
+  setSingleSelection();
+}
+
+
+QStringList MotorSelection::selected() {
+  QStringList sel;
+  foreach(QModelIndex idx, ui->pvTable->selectionModel()->selectedRows())
+    sel << ui->pvTable->selectionModel()->model()->data(idx, Qt::DisplayRole).toString();
+  return sel;
+}
+
+void MotorSelection::setSingleSelection(bool sng) {
+  ui->buttons->setVisible(!sng);
+  ui->pvTable->setSelectionMode( sng
+      ? QAbstractItemView::SingleSelection : QAbstractItemView::MultiSelection);
+}
+
+bool MotorSelection::isSingleSelection() const {
+  return ui->pvTable->selectionMode() == QAbstractItemView::SingleSelection;
+}
+
+void MotorSelection::filterPV(const QString & _text){
+  proxyModel->setSearch(_text);
+}
+
+void MotorSelection::clickPV(const QModelIndex & index) {
+  if (isSingleSelection())
+    accept();
+}
+
+void MotorSelection::doubleClickPV(const QModelIndex & index) {
+  ui->pvTable->clearSelection();
+  ui->pvTable->selectRow(index.row());
+  accept();
+}
+
+void MotorSelection::pvFromSearch(){
+  QModelIndex idx = knownPVs->addPv(ui->search->text());
+  ui->pvTable->resizeColumnsToContents();
+  ui->pvTable->selectionModel()->select(idx, QItemSelectionModel::Select);
+  if (isSingleSelection())
+    accept();
+}
+
+void MotorSelection::selectInvert() {
+  QModelIndexList oldsl = ui->pvTable->selectionModel()->selectedIndexes();
+  ui->pvTable->selectAll();
+  foreach(QModelIndex idx, oldsl)
+    ui->pvTable->selectionModel()->select(idx, QItemSelectionModel::Deselect);
+}
+
+void MotorSelection::limitSelection(const QStringList& acceptedPvs, bool selectRestricted) {
+  knownPVs->addPv(acceptedPvs);
+  proxyModel->setRestricted(acceptedPvs);
+  if ( ! isSingleSelection() && ! acceptedPvs.isEmpty() && selectRestricted )
+    ui->pvTable->selectAll();
+}
+
 
 
 

@@ -3,8 +3,9 @@
 
 #include <QMainWindow>
 #include <QHash>
-#include <QPushButton>
+#include <QToolButton>
 #include <QFile>
+#include <QComboBox>
 
 #include "qmotorstack.h"
 
@@ -30,11 +31,23 @@ public:
 private:
   Ui::MainWindow *ui;           ///< UI.
   QMotorStack * ms;
+  QComboBox * presets;
+  QToolButton * saveBut;
+  QToolButton * loadBut;
+
+  void saveConfiguration(bool params, bool select);
+  void loadConfiguration(bool move, bool add, bool select);
 
 private slots:
 
   void onSave();
+  void onSelectiveSave();
+  void onConfigSave();
+  void onSelectiveConfigSave();
   void onLoad();
+  void onListLoad();
+  void onMoveLoad();
+  void onPresetChanged();
 
 };
 

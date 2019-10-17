@@ -15,8 +15,9 @@
 #include <QAction>
 #include <QMenu>
 #include <QPushButton>
-
+#include <QDialog>
 #include <math.h>
+#include <qtpv.h>
 
 
 
@@ -169,5 +170,59 @@ private slots:
   void execHistory();
 
 };
+
+
+
+namespace Ui {
+  class MotorSelection;
+}
+
+
+class FilterPVsProxyModel;
+
+
+class KnownPVTable : public QAbstractTableModel {
+  Q_OBJECT;
+private:
+  static const QString pvListBaseName;
+  QList <QEpicsPv*> knownPVs;   ///< List of the motors' description fields.
+  QModelIndex indexOf(QEpicsPv* pv) const;
+public:
+  KnownPVTable(QObject * parent);
+  int rowCount(const QModelIndex &parent = QModelIndex()) const;
+  int columnCount(const QModelIndex &parent = QModelIndex()) const;
+  QVariant data(const QModelIndex &index, int role) const;
+  QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+  QModelIndex addPv(const QString & newPv);
+  QList<QModelIndex> addPv(const QStringList & newPvs);
+private slots:
+  void updateData();            ///< Slot used to catch the data change.
+};
+
+
+
+class MotorSelection : public QDialog {
+  Q_OBJECT;
+public:
+  MotorSelection(QWidget * parent=0);
+  void limitSelection(const QStringList & acceptedPvs = QStringList(), bool selectRestricted=false);
+  void setSingleSelection(bool sng=true);
+  QStringList selected();
+private:
+  Ui::MotorSelection * ui;
+  KnownPVTable * knownPVs;
+  FilterPVsProxyModel *proxyModel;
+  bool isSingleSelection() const;
+private slots:
+  void filterPV(const QString & _text);
+  void clickPV(const QModelIndex & index);
+  void doubleClickPV(const QModelIndex & index);
+  void pvFromSearch();
+  void selectInvert();
+};
+
+
+
+
 
 #endif // QMSPINBOX_H

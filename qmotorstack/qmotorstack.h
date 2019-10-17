@@ -46,7 +46,9 @@ public:
   ~QMotorStack();
 
   bool isLocked();
+  inline int count() const { return motors.count(); }
   QList < QCaMotorGUI * > motorList() const;
+  QStringList nameList() const;
 
 public slots:
 

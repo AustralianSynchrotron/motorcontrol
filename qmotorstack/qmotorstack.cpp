@@ -157,7 +157,7 @@ void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
   if ( ui->viewModeAll->currentText() == "Show" ) {
     motor->showSetup();
     if ( motor->motor()->getPv().isEmpty() )
-      motor->showPvSetup();
+      motor->motor()->setPv(selectMotor());
   } else if ( ui->viewModeAll->currentText() != "Hide" ) {
       motor->setViewMode( ui->viewModeAll->currentIndex() - 1 );
   }
@@ -225,6 +225,13 @@ QList < QCaMotorGUI * > QMotorStack::motorList() const {
   return list;
 }
 
+QStringList QMotorStack::nameList() const {
+  QStringList ret;
+  foreach(QCaMotorGUI * mtr, motorList())
+    ret << mtr->motor()->getPv();
+  return ret;
+}
+
 
 void QMotorStack::updateMotorsFile() {
   if ( ! motorsFile.isOpen() )
@@ -257,13 +264,11 @@ void QMotorStack::viewModeAll() {
     foreach(QCaMotorGUI * motor, motors) {
       motor->showSetup();
       if ( motor->motor()->getPv().isEmpty() )
-        motor->showPvSetup();
+        motor->motor()->setPv(selectMotor());
     }
   else if ( ui->viewModeAll->currentText() == "Hide" )
-    foreach(QCaMotorGUI * motor, motors) {
+    foreach(QCaMotorGUI * motor, motors)
       motor->showSetup(false);
-      motor->showPvSetup(false);
-    }
   else
     foreach(QCaMotorGUI * motor, motors)
       motor->setViewMode( ui->viewModeAll->currentIndex() - 1 );

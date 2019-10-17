@@ -14,6 +14,7 @@ using namespace std;
 QCaMotor::QCaMotor(QObject *parent) :
     QObject(parent),
     pv(),
+    out(),
     description(),
     precsision(0),
     units(),
@@ -50,6 +51,7 @@ QCaMotor::QCaMotor(QObject *parent) :
     useReadback(false),
     backlash(0),
     homeRef(NOHOM),
+    status(false),
     driveCurrent(0),
     holdPerCent(0),
     lastMotion(0),
@@ -62,7 +64,7 @@ QCaMotor::QCaMotor(QObject *parent) :
 QCaMotor::QCaMotor(const QString & _pv, QObject *parent) :
     QObject(parent),
     pv(),
-    description(),
+    out(),
     precsision(0),
     units(),
     userPosition(0),
@@ -98,6 +100,7 @@ QCaMotor::QCaMotor(const QString & _pv, QObject *parent) :
     useReadback(false),
     backlash(0),
     homeRef(NOHOM),
+    status(false),
     driveCurrent(0),
     holdPerCent(0),
     lastMotion(0),
@@ -137,23 +140,24 @@ void QCaMotor::init() {
     fields.insert(FLD, new QEpicsPv(this)); \
     connect(fields[FLD], SIGNAL(valueUpdated(QVariant)), SLOT(update ## SLT(QVariant)));
 
+    insField(".OUT" , Out                  );
     insField(".DESC", Description          );
     insField(".PREC", Precision            );
-    insField(".EGU", Units                );
-    insField(".RBV", UserPosition         );
+    insField(".EGU" , Units                );
+    insField(".RBV" , UserPosition         );
     insField(".DRBV", DialPosition         );
     insField(".RRBV", RawPosition          );
-    insField(".VAL", UserGoal             );
+    insField(".VAL" , UserGoal             );
     insField(".DVAL", DialGoal             );
     insField(".RVAL", RawGoal              );
-    insField(".TWV", Step                 );
+    insField(".TWV" , Step                 );
     insField(".RDBD", DeadBand             );
     insField(".HOMR", Homing               );
     insField(".HOMF", Homing               );
-    insField(".HLS", HiLimitStatus        );
-    insField(".LLS", LoLimitStatus        );
-    insField(".HLM", UserHiLimit          );
-    insField(".LLM", UserLoLimit          );
+    insField(".HLS" , HiLimitStatus        );
+    insField(".LLS" , LoLimitStatus        );
+    insField(".HLM" , UserHiLimit          );
+    insField(".LLM" , UserLoLimit          );
     insField(".DHLM", DialHiLimit          );
     insField(".DLLM", DialLoLimit          );
     insField(".MRES", MotorResolution      );
@@ -163,24 +167,25 @@ void QCaMotor::init() {
     insField(".SREV", StepsPerRev          );
     insField(".VMAX", MaximumSpeed         );
     insField(".VELO", NormalSpeed          );
-    insField(".S", RevSpeed             );
+    insField(".S"   , RevSpeed             );
     insField(".BVEL", BacklashSpeed        );
     insField(".JVEL", JogSpeed             );
     insField(".ACCL", Acceleration         );
     insField(".BACC", BacklashAcceleration );
-    insField(".JAR", JogAcceleration      );
+    insField(".JAR" , JogAcceleration      );
     insField(".RTRY", MaxRetry             );
     insField(".BDST", Backlash             );
     insField(".DMOV", Moving               );
     insField(".UEIP", UseEncoder           );
     insField(".URIP", UseReadback          );
-    insField(".OFF", Offset               );
+    insField(".OFF" , Offset               );
     insField(".FOFF", OffsetMode           );
-    insField(".DIR", Direction            );
-    insField(".SET", SuMode               );
+    insField(".DIR" , Direction            );
+    insField(".SET" , SuMode               );
     insField(".SPMG", SpmgMode             );
     insField(".MSTA", MSTA                 );
     // non-standard fields
+    insField(":STATUS", Status      );
     insField(":KILLED", Killed      );
     insField(":AMPFAULT", AmpFault    );
     insField(":UNINIT", Initialized );
@@ -215,46 +220,57 @@ bool QCaMotor::eventFilter(QObject *obj, QEvent *event) {
 
 
 
-void QCaMotor::saveConfiguration(QTextStream & stream) const {
+void QCaMotor::saveConfiguration(QTextStream & stream, bool params) const {
 
-    if ( ! isConnected() )
-        printError("Warning: saving configuration of the disconnected motor." );
+  if ( ! isConnected() )
+    printError("Warning: saving configuration of the disconnected motor." );
 
-    stream
-            << "UREV " << getUnitsPerRev() << "\n"
-            << "SREV " << getStepsPerRev() << "\n"
-            << "MRES " << getMotorResolution() << "\n"
-            << "RRES " << getReadbackResolution() << "\n"
-            << "ERES " << getEncoderResolution() << "\n"
-            << "PREC " << getPrecision() << "\n"
-            << "EGU " << getUnits() << "\n"
-            << "DIR " << getDirection() << "\n"
-            << "DLLM " << getDialLoLimit() << "\n"
-            << "DHLM " << getDialHiLimit() << "\n"
-            << "VMAX " << getMaximumSpeed() << "\n"
-            << "VELO " << getNormalSpeed() << "\n"
-            << "ACCL " << getAcceleration() << "\n"
-            << "JVEL " << getJogSpeed() << "\n"
-            << "JAR " << getJogAcceleration() << "\n"
-            << "BVEL " << getBacklashSpeed() << "\n"
-            << "BACC " << getBacklashAcceleration() << "\n"
-            << "BDST " << getBacklash() << "\n";
+  stream << "# MOTORPV " << getPv() << "\n";
+  stream << "#         " << getDescription() << "\n";
+  stream << "caput " << getPv() << " " << getUserGoal() << "\n";
+  if (isConnected() && params)
+    foreach(QString fld, QStringList()
+      << ".OUT"
+      << ".DESC"
+      << ".PREC"
+      << ".EGU"
+      << ".MRES"
+      << ".RRES"
+      << ".ERES"
+      << ".UREV"
+      << ".SREV"
+      << ".DIR"
+      << ".OFF"
+      << ".LLM"
+      << ".HLM"
+      << ".VMAX"
+      << ".VELO"
+      << ".ACCL"
+      << ".JVEL"
+      << ".JAR"
+      << ".BVEL"
+      << ".BACC"
+      << ".BDST"
+      << ":HOLDPERCENTAGE"
+      << ":DRIVECURRENT"
+    ) stream << "echo caput " << getPv() << fld << " " << fields[fld]->get().toString() << "\n";
+
 
 }
 
 
 
-void QCaMotor::saveConfiguration(const QString & fileName) const {
+void QCaMotor::saveConfiguration(const QString & fileName, bool params) const {
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         printError("Cannot open file \"" + fileName + "\" for writing.");
         return;
     }
     QTextStream out(&file);
-    saveConfiguration(out);
+    saveConfiguration(out, params);
 }
 
-void QCaMotor::loadConfiguration(QTextStream & stream) {
+void QCaMotor::loadConfiguration(QTextStream & stream, bool restore) {
     if ( ! isConnected() ) {
         printError("Cannot load configuration of the motor because it is not connected.");
         return;
@@ -273,14 +289,14 @@ void QCaMotor::loadConfiguration(QTextStream & stream) {
 }
 
 
-void QCaMotor::loadConfiguration(const QString & fileName) {
+void QCaMotor::loadConfiguration(const QString & fileName, bool restore) {
     QFile file(fileName);
     if ( ! file.open(QIODevice::ReadOnly) ) {
         printError("Cannot open file \"" + fileName + "\" for reading.");
         return;
     }
     QTextStream in(&file);
-    loadConfiguration(in);
+    loadConfiguration(in, restore);
 }
 
 
@@ -333,6 +349,11 @@ void QCaMotor::updateConnection(bool suc) {
         lastMotion = 0;
     }
 }
+
+void QCaMotor::updateOut(const QVariant & data) {
+  emit changedOut(out = data.toString());
+}
+
 
 void QCaMotor::updateDescription(const QVariant & data) {
   emit changedDescription(description = data.toString());
@@ -391,12 +412,10 @@ void QCaMotor::updateDeadBand(const QVariant & data) {
 
 void QCaMotor::updateHiLimitStatus(const QVariant & data) {
     emit changedHiLimitStatus( hiLimitStatus = data.toBool() );
-    emit changedPlugged(isPlugged());
 }
 
 void QCaMotor::updateLoLimitStatus(const QVariant & data) {
     emit changedLoLimitStatus( loLimitStatus = data.toBool() );
-    emit changedPlugged(isPlugged());
 }
 
 void QCaMotor::updateUserHiLimit(const QVariant & data) {
@@ -589,6 +608,11 @@ void QCaMotor::updateWrongLimits(const QVariant & data) {
 void QCaMotor::updateEncoderLoss(const QVariant & data) {
     emit changedEncoderLoss( eLoss = data.toBool() );
 }
+
+void QCaMotor::updateStatus(const QVariant & data) {
+    emit changedStatus( status = data.toInt() < 2); // no problems
+}
+
 
 
 void QCaMotor::updateHomeRef(const QVariant & data) {

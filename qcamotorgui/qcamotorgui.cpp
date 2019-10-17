@@ -1,5 +1,5 @@
-#include "qcamotorgui-local.h"
-
+#include "qcamotorgui.h"
+#include "qcamotorgui-additional.h"
 #include "ui_qcamotorgui.h"
 #include "ui_qcamotorgui-setup.h"
 #include "ui_qcamotorgui-pv.h"
@@ -15,70 +15,35 @@
 #include <QMessageBox>
 
 
-
-QModelIndex KnownPVTable::indexOf(QEpicsPv* pv) const {
-  return knownPVs.contains(pv) ?
-        createIndex(knownPVs.indexOf(pv), 1) :
-        QModelIndex();
-}
+static const QString redStyle =
+  "background-color: rgb(128, 0, 0); color: rgb(255, 255, 255);";
+static const QString orgStyle =
+  "background-color: rgb(128, 64, 0); color: rgb(255, 255, 255);";
 
 
-KnownPVTable::KnownPVTable(const QStringList &list, QObject *parent)
-  : QAbstractTableModel(parent){
-  foreach(QString pvname, list) {
-    QEpicsPv * pv = new QEpicsPv(pvname+".DESC", this) ;
-    connect(pv, SIGNAL(valueChanged(QVariant)),
-            SLOT(updateData()));
-    knownPVs << pv;
+
+static MotorSelection * motSelection = 0;
+
+QStringList selectMotors(bool onemotor, const QStringList & restrictTo, bool selectRestricted) {
+  if (!motSelection)
+    motSelection = new MotorSelection();
+  if (!motSelection) {
+    qDebug() << "Failed to create motor selection dialog.";
+    return QStringList();
   }
-}
-
-int KnownPVTable::rowCount(const QModelIndex &parent) const {
-  Q_UNUSED(parent);
-  return knownPVs.size();
-}
-
-int KnownPVTable::columnCount(const QModelIndex &parent) const {
-  Q_UNUSED(parent);
-  return 2;
+  motSelection->setSingleSelection(onemotor);
+  motSelection->limitSelection();
+  motSelection->limitSelection(restrictTo, selectRestricted);
+  motSelection->open();
+  qtWait(motSelection, SIGNAL(finished(int)));
+  return ( motSelection->result() == QDialog::Accepted ) ?
+           motSelection->selected()  :  QStringList();
 }
 
 
-QVariant KnownPVTable::data(const QModelIndex &index, int role) const {
-  if ( ! index.isValid() ||
-       index.row() >= knownPVs.size() || index.row() < 0)
-    return QVariant();
-  QString pv = knownPVs.at(index.row())->pv();
-  if (role == Qt::DisplayRole) {
-    switch (index.column()) {
-    case 0: return pv.remove(".DESC");
-    case 1: return knownPVs.at(index.row())->get();
-    default: return QVariant();
-    }
-  } else if (role == Qt::UserRole) {
-    return pv.remove(".DESC");
-  } else {
-    return QVariant();
-  }
-
-}
-
-
-QVariant KnownPVTable::headerData(int section, Qt::Orientation orientation, int role) const {
-  if (role != Qt::DisplayRole || orientation != Qt::Horizontal )
-    return QVariant();
-  switch (section) {
-  case 0: return QString("PV");
-  case 1: return QString("Description");
-  default: return QVariant();
-  }
-}
-
-
-void KnownPVTable::updateData() {
-  QModelIndex midx = indexOf( (QEpicsPv*) sender() );
-  if ( midx.isValid() )
-    emit (dataChanged(midx, midx));
+QString selectMotor(const QStringList & restrictTo) {
+  QStringList lst = selectMotors(true, restrictTo);
+  return lst.count() == 1 ? lst.at(0) : QString() ;
 }
 
 
@@ -89,113 +54,7 @@ void KnownPVTable::updateData() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-class FilterPVsProxyModel : private QSortFilterProxyModel {
-private:
-  QStringList searchWords;
-public:
-  FilterPVsProxyModel( KnownPVTable * pvTable , QObject * parent=0) :
-    QSortFilterProxyModel(parent) {
-    setSourceModel(pvTable);
-    setDynamicSortFilter(true);
-    setFilterKeyColumn(-1);
-    sort(0, Qt::AscendingOrder);
-  }
-  QAbstractItemModel * aModel() { return this; }
-public slots:
-  void setSearch(const QString & str = QString() ) {
-    searchWords = str.split(QRegExp("\\s+"));
-    searchWords.removeDuplicates();
-    searchWords.removeOne("");
-    invalidateFilter();
-  }
-protected:
-
-  bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const {
-    int column_count = sourceModel()->columnCount(source_parent);
-    for (int column = 0; column < column_count; ++column) {
-      QModelIndex source_index = sourceModel()->index(source_row, column, source_parent);
-      QString key = sourceModel()->data(source_index).toString();
-      bool found = true;
-      foreach (QString word, searchWords) {
-        found &= (bool) key.contains(word, Qt::CaseInsensitive);
-        if (!found)
-          break;
-      }
-      if (found)
-        return true;
-    }
-    return false;
-  }
-
-};
-
-
-
-
-
-bool KeyPressEater::eventFilter(QObject *obj, QEvent *event) {
-
-  if ( event->type() != QEvent::KeyPress &&
-       event->type() != QEvent::KeyRelease &&
-       event->type() != QEvent::ShortcutOverride )
-    return QObject::eventFilter(obj, event);
-
-  QLineEdit * search = parent()->findChild<QLineEdit*>("search");
-  QTableView * pvTable = parent()->findChild<QTableView*>("pvTable");
-
-  QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-  int key = keyEvent->key();
-  QString text = keyEvent->text();
-
-
-  if ( key == Qt::Key_Enter ||
-       key == Qt::Key_Return ||
-       key == Qt::Key_Escape ||
-       key == Qt::Key_Tab )
-    return QObject::eventFilter(obj, event);
-  else if ( pvTable->hasFocus() &&
-            ( ! text.isEmpty() ||
-              key == Qt::Key_Left ||
-              key == Qt::Key_Right ) ) {
-    search->setFocus();
-    QString stext = search->text();
-    if (key== Qt::Key_Backspace)
-      search->setText( stext.remove( stext.length()-1, 1) );
-    else if ( ! text.isEmpty() ) {
-      search->setText( stext + text );
-    }
-  } else if ( search->hasFocus() &&
-              ( key == Qt::Key_Down ||
-                key == Qt::Key_Up ) )
-    pvTable->setFocus();
-
-  return QObject::eventFilter(obj, event);
-
-}
-
-
-
-
-
-
-
-
-bool QCaMotorGUI::inited=false;
-QMap<QString,QString> QCaMotorGUI::knownConfigs;
-KnownPVTable * QCaMotorGUI::knownPVs = 0;
-const QString QCaMotorGUI::configsSearchBaseDir="motormx";
-const QString QCaMotorGUI::configsExt="motorConfig";
+const QString QCaMotorGUI::configsExt="motor.sh";
 const QString QCaMotorGUI::pvListBaseName = "listOfKnownMotorPVs.txt";
 
 
@@ -205,11 +64,8 @@ QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   mUi(new Ui::MotorControl),
   sUi(new Ui::MotorSetup),
   rUi(new Ui::GoRelative),
-  pUi(new Ui::PVtable),
   setupDialog(new QDialog(parent)),
-  pvDialog(new QDialog(parent)),
-  relativeDialog(new QDialog(parent)),
-  proxyModel(0)
+  relativeDialog(new QDialog(parent))
 {
   init();
 }
@@ -220,11 +76,8 @@ QCaMotorGUI::QCaMotorGUI(const QString & pv, QWidget *parent) :
   mUi(new Ui::MotorControl),
   sUi(new Ui::MotorSetup),
   rUi(new Ui::GoRelative),
-  pUi(new Ui::PVtable),
   setupDialog(new QDialog(parent)),
-  pvDialog(new QDialog(parent)),
-  relativeDialog(new QDialog(parent)),
-  proxyModel(0)
+  relativeDialog(new QDialog(parent))
 {
   init();
 }
@@ -236,11 +89,8 @@ QCaMotorGUI::QCaMotorGUI(QCaMotor * _mot, QWidget *parent) :
   mUi(new Ui::MotorControl),
   sUi(new Ui::MotorSetup),
   rUi(new Ui::GoRelative),
-  pUi(new Ui::PVtable),
   setupDialog(new QDialog(parent)),
-  pvDialog(new QDialog(parent)),
-  relativeDialog(new QDialog(parent)),
-  proxyModel(0)
+  relativeDialog(new QDialog(parent))
 {
   mot->setParent(parent);
   connect(mot, SIGNAL(destroyed()), SLOT(onMotorDestruction()));
@@ -249,12 +99,9 @@ QCaMotorGUI::QCaMotorGUI(QCaMotor * _mot, QWidget *parent) :
 
 
 QCaMotorGUI::~QCaMotorGUI() {
-  delete pasteCfgAction;
   delete mUi;
   delete sUi;
   delete rUi;
-  delete pUi;
-  delete pvDialog;
   delete setupDialog;
   delete relativeDialog;
 }
@@ -263,20 +110,14 @@ QCaMotorGUI::~QCaMotorGUI() {
 
 void QCaMotorGUI::init() {
 
-  QCaMotorGUI::static_init();
-
   locked=false;
 
   mUi->setupUi(this);
   sUi->setupUi(setupDialog);
   rUi->setupUi(relativeDialog);
-  pUi->setupUi(pvDialog);
 
   foreach (QWidget * wdg, QList<QWidget*>()
-    << sUi->acceleration
-    << sUi->accelerationS
     << sUi->backlash
-    << sUi->backlashAcceleration
     << sUi->description
     << sUi->dialPosition
     << sUi->dirNeg
@@ -287,7 +128,6 @@ void QCaMotorGUI::init() {
     << sUi->goHomeM
     << sUi->goHomeP
     << sUi->holdPerCent
-    << sUi->jogAcceleration
     << sUi->limitHi
     << sUi->limitHiDial
     << sUi->limitLo
@@ -301,7 +141,6 @@ void QCaMotorGUI::init() {
     << sUi->precision
     << sUi->rawPosition
     << sUi->readbackResolution
-    << sUi->speedS
     << sUi->spmG
     << sUi->spMg
     << sUi->sPmg
@@ -316,16 +155,8 @@ void QCaMotorGUI::init() {
   )
     protect(wdg);
 
-  pvDialog->setWindowTitle("Choose motor PV");
   setupDialog->setWindowTitle("MotorMx, setup");
   relativeDialog->setWindowTitle("Move relatively");
-
-  proxyModel = new FilterPVsProxyModel(knownPVs, this);
-  pUi->pvTable->setModel(proxyModel->aModel());
-  pUi->pvTable->resizeColumnsToContents();
-
-  KeyPressEater * keater = new KeyPressEater(pvDialog);
-  pvDialog->installEventFilter(keater);
 
   sUi->hidden->hide();
   sUi->description->setText(mUi->setup->text());
@@ -341,234 +172,126 @@ void QCaMotorGUI::init() {
   sUi->dirGroup->setId(sUi->dirPos, QCaMotor::POSITIVE);
   sUi->dirGroup->setId(sUi->dirNeg, QCaMotor::NEGATIVE);
 
-  sUi->loadConfig->addItems(knownConfigs.keys());
-
   connect(motor(), SIGNAL(changedPv(QString)), SLOT(updateName()));
 
   //
   // Connect GUI Actions
   //
 
-  connect(pUi->search, SIGNAL(textChanged(QString)),
-          SLOT(filterPV(QString)));
-  connect(pUi->search, SIGNAL(returnPressed()),
-          SLOT(pvFromSearch()));
-  connect(pUi->pvTable, SIGNAL(activated(QModelIndex)),
-          SLOT(choosePV(QModelIndex)));
-
   connect(mUi->userPosition, SIGNAL(valueChanged(QString)),
           SIGNAL(ioPositionChanged(QString)));
   connect(mUi->setup, SIGNAL(clicked()),
           SLOT(onSetupClicked()) );
 
-
   QAction * action;
-
-  action = new QAction("Set PV", mUi->setup);
-  mUi->setup->addAction(action);
-  connect(action, SIGNAL(triggered()), pvDialog, SLOT(show()));
-
-  action = new QAction("Copy PV", mUi->setup);
-  mUi->setup->addAction(action);
-  connect(action, SIGNAL(triggered()), SLOT(copyPV()));
-
-  pastePvAction = new QAction("Paste PV", mUi->setup);
-  mUi->setup->addAction(pastePvAction);
-  connect(pastePvAction, SIGNAL(triggered()), SLOT(pastePv()));
-
-  action = new QAction("Copy description", mUi->setup);
-  mUi->setup->addAction(action);
-  connect(action, SIGNAL(triggered()), SLOT(copyDescription()));
-
-  action = new QAction("Copy position", mUi->setup);
-  mUi->setup->addAction(action);
-  connect(action, SIGNAL(triggered()), SLOT(copyPosition()));
-
-  action = new QAction("Copy configuration", mUi->setup);
-  mUi->setup->addAction(action);
-  connect(action, SIGNAL(triggered()), SLOT(copyConfiguration()));
-
-  pasteCfgAction = new QAction("Paste configuration", mUi->setup);
-  pasteCfgAction->setEnabled(false);
-  mUi->setup->addAction(pasteCfgAction);
-  connect(pasteCfgAction, SIGNAL(triggered()), SLOT(pasteConfiguration()));
-
+  #define setupNewAction(L, S) \
+          action= new QAction(L, mUi->setup); \
+          mUi->setup->addAction(action); \
+          connect(action, SIGNAL(triggered()), SLOT(S()));
+  setupNewAction("Set PV",              setPv);
+  setupNewAction("Copy PV",             copyPv);
+  setupNewAction("Paste PV",            pastePv);
+  setupNewAction("Copy description",    copyDescription);
+  setupNewAction("Copy position",       copyPosition);
+  setupNewAction("Copy configuration",  copyConfiguration);
+  setupNewAction("Paste configuration", pasteConfiguration);
+  mUi->setup->setContextMenuPolicy(Qt::ActionsContextMenu);
+  #undef setupNewAction
 
   mUi->step->setCompleter(0);
 
-  connect(rUi->goRelative, SIGNAL(valueEdited(double)),
-          SLOT(goRelative(double)));
+  connect(rUi->goRelative, SIGNAL(valueEdited(double)), SLOT(goRelative(double)));
 
-  connect(mUi->userPosition, SIGNAL(valueEdited(double)),
-          SLOT(goUserPosition(double)));
-  connect(mUi->step, SIGNAL(textEdited(QString)),
-          SLOT(setStep(QString)));
-  connect(mUi->step, SIGNAL(activated(QString)),
-          SLOT(setStep(QString)));
-  connect(mUi->step, SIGNAL(escaped()),
-          SLOT(updateStep()));
-  connect(mUi->stop, SIGNAL(clicked()),
-          SLOT(pressStop()));
-  connect(mUi->jogM, SIGNAL(pressed()),
-          SLOT(jogMstart()));
-  connect(mUi->jogM, SIGNAL(released()),
-          SLOT(jogMstop()));
-  connect(mUi->jogP, SIGNAL(pressed()),
-          SLOT(jogPstart()));
-  connect(mUi->jogP, SIGNAL(released()),
-          SLOT(jogPstop()));
-  connect(mUi->goM, SIGNAL(clicked()),
-          SLOT(goStepM()));
-  connect(mUi->goP, SIGNAL(clicked()),
-          SLOT(goStepP()));
+  connect(mUi->userPosition, SIGNAL(valueEdited(double)), SLOT(goUserPosition(double)));
+  connect(mUi->step, SIGNAL(textEdited(QString)), SLOT(setStep(QString)));
+  connect(mUi->step, SIGNAL(activated(QString)), SLOT(setStep(QString)));
+  connect(mUi->step, SIGNAL(escaped()), SLOT(updateStep()));
+  connect(mUi->stop, SIGNAL(clicked()), SLOT(pressStop()));
+  connect(mUi->jogM, SIGNAL(pressed()), SLOT(jogMstart()));
+  connect(mUi->jogM, SIGNAL(released()), SLOT(jogMstop()));
+  connect(mUi->jogP, SIGNAL(pressed()), SLOT(jogPstart()));
+  connect(mUi->jogP, SIGNAL(released()), SLOT(jogPstop()));
+  connect(mUi->goM, SIGNAL(clicked()), SLOT(goStepM()));
+  connect(mUi->goP, SIGNAL(clicked()), SLOT(goStepP()));
 
-  connect(sUi->pv, SIGNAL(clicked()),
-          SLOT(copyPV()));
-  connect(sUi->viewMode, SIGNAL(activated(int)),
-          SLOT(setViewMode(int)));
-  connect(sUi->loadConfig, SIGNAL(activated(QString)),
-          SLOT(onLoad(QString)));
-  connect(sUi->saveConfig, SIGNAL(clicked()),
-          SLOT(onSave()));
+  connect(sUi->pv, SIGNAL(clicked()), SLOT(copyPv()));
+  connect(sUi->viewMode, SIGNAL(activated(int)), SLOT(setViewMode(int)));
+  connect(sUi->loadConfig, SIGNAL(clicked()), SLOT(onLoad()));
+  connect(sUi->saveConfig, SIGNAL(clicked()),SLOT(onSave()));
 
-  connect(sUi->description, SIGNAL(editingFinished(QString)),
-          mot, SLOT(setDescription(QString)));
-  connect(sUi->precision, SIGNAL(valueEdited(int)),
-          mot, SLOT(setPrecision(int)));
-  connect(sUi->units, SIGNAL(textEdited(QString)),
-          mot, SLOT(setUnits(QString)));
+  connect(sUi->description, SIGNAL(editingFinished(QString)), mot, SLOT(setDescription(QString)));
+  connect(sUi->precision, SIGNAL(valueEdited(int)), mot, SLOT(setPrecision(int)));
+  connect(sUi->units, SIGNAL(textEdited(QString)), mot, SLOT(setUnits(QString)));
 
-  connect(sUi->spmgGroup, SIGNAL(buttonClicked(int)),
-          SLOT(setSpmgMode(int)));
+  connect(sUi->spmgGroup, SIGNAL(buttonClicked(int)), SLOT(setSpmgMode(int)));
 
-  connect(sUi->goHomeM, SIGNAL(clicked()),
-          SLOT(goHomeM()));
-  connect(sUi->goHomeP, SIGNAL(clicked()),
-          SLOT(goHomeP()));
-  connect(sUi->goHome, SIGNAL(clicked()),
-          mot, SLOT(executeHomeRoutine()));
-  connect(sUi->goLimitM, SIGNAL(clicked()),
-          SLOT(goLimitM()));
-  connect(sUi->goLimitP, SIGNAL(clicked()),
-          SLOT(goLimitP()));
-  connect(sUi->goM, SIGNAL(clicked()),
-          SLOT(goStepM()));
-  connect(sUi->goP, SIGNAL(clicked()),
-          SLOT(goStepP()));
-  connect(sUi->stepD10, SIGNAL(clicked()),
-          SLOT(stepD10()));
-  connect(sUi->stepD2, SIGNAL(clicked()),
-          SLOT(stepD2()));
-  connect(sUi->stepM2, SIGNAL(clicked()),
-          SLOT(stepM2()));
-  connect(sUi->stepM10, SIGNAL(clicked()),
-          SLOT(stepM10()));
-  connect(sUi->step, SIGNAL(valueEdited(double)),
-          mot, SLOT(setStep(double)));
-  connect(sUi->jogM, SIGNAL(pressed()),
-          SLOT(jogMstart()));
-  connect(sUi->jogM, SIGNAL(released()),
-          SLOT(jogMstop()));
-  connect(sUi->jogP, SIGNAL(pressed()),
-          SLOT(jogPstart()));
-  connect(sUi->jogP, SIGNAL(released()),
-          SLOT(jogPstop()));
-  connect(sUi->stop, SIGNAL(clicked()),
-          SLOT(pressStop()));
+  connect(sUi->goHomeM, SIGNAL(clicked()), SLOT(goHomeM()));
+  connect(sUi->goHomeP, SIGNAL(clicked()), SLOT(goHomeP()));
+  connect(sUi->goHome, SIGNAL(clicked()), mot, SLOT(executeHomeRoutine()));
+  connect(sUi->goLimitM, SIGNAL(clicked()), SLOT(goLimitM()));
+  connect(sUi->goLimitP, SIGNAL(clicked()), SLOT(goLimitP()));
+  connect(sUi->goM, SIGNAL(clicked()), SLOT(goStepM()));
+  connect(sUi->goP, SIGNAL(clicked()), SLOT(goStepP()));
+  connect(sUi->stepD10, SIGNAL(clicked()), SLOT(stepD10()));
+  connect(sUi->stepD2, SIGNAL(clicked()), SLOT(stepD2()));
+  connect(sUi->stepM2, SIGNAL(clicked()), SLOT(stepM2()));
+  connect(sUi->stepM10, SIGNAL(clicked()), SLOT(stepM10()));
+  connect(sUi->step, SIGNAL(valueEdited(double)), mot, SLOT(setStep(double)));
+  connect(sUi->jogM, SIGNAL(pressed()), SLOT(jogMstart()));
+  connect(sUi->jogM, SIGNAL(released()), SLOT(jogMstop()));
+  connect(sUi->jogP, SIGNAL(pressed()), SLOT(jogPstart()));
+  connect(sUi->jogP, SIGNAL(released()), SLOT(jogPstop()));
+  connect(sUi->stop, SIGNAL(clicked()), SLOT(pressStop()));
 
-  connect(sUi->dialPosition, SIGNAL(valueEdited(double)),
-          mot, SLOT(setDialPosition(double)));
-  connect(sUi->dialGoal, SIGNAL(valueEdited(double)),
-          SLOT(goDialPosition(double)));
-  connect(sUi->limitLoDial, SIGNAL(valueEdited(double)),
-          mot, SLOT(setDialLoLimit(double)));
-  connect(sUi->limitHiDial, SIGNAL(valueEdited(double)),
-          mot, SLOT(setDialHiLimit(double)));
+  connect(sUi->dialPosition, SIGNAL(valueEdited(double)), mot, SLOT(setDialPosition(double)));
+  connect(sUi->dialGoal, SIGNAL(valueEdited(double)), SLOT(goDialPosition(double)));
+  connect(sUi->limitLoDial, SIGNAL(valueEdited(double)), mot, SLOT(setDialLoLimit(double)));
+  connect(sUi->limitHiDial, SIGNAL(valueEdited(double)), mot, SLOT(setDialHiLimit(double)));
 
-  connect(sUi->readbackResolution, SIGNAL(valueEdited(double)),
-          mot, SLOT(setReadbackResolution(double)));
-  connect(sUi->encoderResolution, SIGNAL(valueEdited(double)),
-          mot, SLOT(setEncoderResolution(double)));
-  connect(sUi->stepsPerRev, SIGNAL(valueEdited(int)),
-          mot, SLOT(setStepsPerRev(int)));
-  connect(sUi->unitsPerStep, SIGNAL(valueEdited(double)),
-          mot, SLOT(setMotorResolution(double)));
-  connect(sUi->unitsPerRev, SIGNAL(valueEdited(double)),
-          mot, SLOT(setUnitsPerRev(double)));
-  connect(sUi->resolution, SIGNAL(valueEdited(double)),
-          SLOT(setResolutionAndDirection(double)));
+  connect(sUi->readbackResolution, SIGNAL(valueEdited(double)), mot, SLOT(setReadbackResolution(double)));
+  connect(sUi->encoderResolution, SIGNAL(valueEdited(double)), mot, SLOT(setEncoderResolution(double)));
+  connect(sUi->stepsPerRev, SIGNAL(valueEdited(int)), mot, SLOT(setStepsPerRev(int)));
+  connect(sUi->unitsPerStep, SIGNAL(valueEdited(double)), mot, SLOT(setMotorResolution(double)));
+  connect(sUi->unitsPerRev, SIGNAL(valueEdited(double)), mot, SLOT(setUnitsPerRev(double)));
+  connect(sUi->resolution, SIGNAL(valueEdited(double)), SLOT(setResolutionAndDirection(double)));
 
+  connect(sUi->useEncoder, SIGNAL(clicked(bool)), mot, SLOT(setUseEncoder(bool)));
+  connect(sUi->useReadback, SIGNAL(clicked(bool)), mot, SLOT(setUseReadback(bool)));
 
-  connect(sUi->useEncoder, SIGNAL(clicked(bool)),
-          mot, SLOT(setUseEncoder(bool)));
-  connect(sUi->useReadback, SIGNAL(clicked(bool)),
-          mot, SLOT(setUseReadback(bool)));
+  connect(sUi->offGroup, SIGNAL(buttonClicked(int)), SLOT(setOffsetMode(int)));
+  connect(sUi->dirGroup, SIGNAL(buttonClicked(int)), SLOT(setDirection(int)));
 
-  connect(sUi->offGroup, SIGNAL(buttonClicked(int)),
-          SLOT(setOffsetMode(int)));
-  connect(sUi->dirGroup, SIGNAL(buttonClicked(int)),
-          SLOT(setDirection(int)));
+  connect(sUi->maximumSpeed, SIGNAL(valueEdited(double)), mot, SLOT(setMaximumSpeed(double)));
+  connect(sUi->speed, SIGNAL(valueEdited(double)), mot, SLOT(setNormalSpeed(double)));
+  connect(sUi->backlashSpeed, SIGNAL(valueEdited(double)), mot, SLOT(setBacklashSpeed(double)));
+  connect(sUi->acceleration, SIGNAL(valueEdited(double)), mot, SLOT(setAcceleration(double)));
+  connect(sUi->backlashAcceleration, SIGNAL(valueEdited(double)), mot, SLOT(setBacklashAcceleration(double)));
+  connect(sUi->accelerationS, SIGNAL(valueEdited(double)), SLOT(setAccelerationS(double)));
+  connect(sUi->speedS, SIGNAL(valueEdited(double)), SLOT(setSpeedS(double)));
+  connect(sUi->equalizeSpeeds, SIGNAL(clicked()), SLOT(setSpeedS()));
+  connect(sUi->equalizeAccelerations, SIGNAL(clicked()), SLOT(setAccelerationS()));
+  connect(sUi->equalizeSpeeds_2, SIGNAL(clicked()), SLOT(setSpeedS()));
+  connect(sUi->equalizeAccelerations_2, SIGNAL(clicked()), SLOT(setAccelerationS()));
 
-  connect(sUi->maximumSpeed, SIGNAL(valueEdited(double)),
-          mot, SLOT(setMaximumSpeed(double)));
-  connect(sUi->speed, SIGNAL(valueEdited(double)),
-          mot, SLOT(setNormalSpeed(double)));
-  connect(sUi->revSpeed, SIGNAL(valueEdited(double)),
-          mot, SLOT(setRevSpeed(double)));
-  connect(sUi->backlashSpeed, SIGNAL(valueEdited(double)),
-          mot, SLOT(setBacklashSpeed(double)));
-  connect(sUi->jogSpeed, SIGNAL(valueEdited(double)),
-          mot, SLOT(setJogSpeed(double)));
-  connect(sUi->acceleration, SIGNAL(valueEdited(double)),
-          mot, SLOT(setAcceleration(double)));
-  connect(sUi->backlashAcceleration, SIGNAL(valueEdited(double)),
-          mot, SLOT(setBacklashAcceleration(double)));
-  connect(sUi->jogAcceleration, SIGNAL(valueEdited(double)),
-          mot, SLOT(setJogAcceleration(double)));
-  connect(sUi->accelerationS, SIGNAL(valueEdited(double)),
-          SLOT(setAccelerationS(double)));
-  connect(sUi->speedS, SIGNAL(valueEdited(double)),
-          SLOT(setSpeedS(double)));
-  connect(sUi->equalizeSpeeds, SIGNAL(clicked()),
-          SLOT(setSpeedS()));
-  connect(sUi->equalizeAccelerations, SIGNAL(clicked()),
-          SLOT(setAccelerationS()));
+  connect(sUi->backlash, SIGNAL(valueEdited(double)), mot, SLOT(setBacklash(double)));
 
-  connect(sUi->backlash, SIGNAL(valueEdited(double)),
-          mot, SLOT(setBacklash(double)));
+  connect(sUi->userPosition, SIGNAL(valueEdited(double)), mot, SLOT(setUserPosition(double)));
+  connect(sUi->rawPosition, SIGNAL(valueEdited(double)), mot, SLOT(setRawPosition(double)));
+  connect(sUi->userVarGoal, SIGNAL(valueEdited(double)), SLOT(goUserPosition(double)));
+  connect(sUi->userGoal, SIGNAL(valueEdited(double)), SLOT(goUserPosition(double)));
+  connect(sUi->rawGoal, SIGNAL(valueEdited(double)), SLOT(goRawPosition(double)));
+  connect(sUi->callRelative, SIGNAL(clicked()), relativeDialog, SLOT(show()) );
+  connect(sUi->offset, SIGNAL(valueEdited(double)), mot, SLOT(setOffset(double)));
+  connect(sUi->limitLo, SIGNAL(valueEdited(double)), mot, SLOT(setUserLoLimit(double)));
+  connect(sUi->limitHi, SIGNAL(valueEdited(double)), mot, SLOT(setUserHiLimit(double)));
 
-  connect(sUi->userPosition, SIGNAL(valueEdited(double)),
-          mot, SLOT(setUserPosition(double)));
-  connect(sUi->rawPosition, SIGNAL(valueEdited(double)),
-          mot, SLOT(setRawPosition(double)));
-  connect(sUi->userVarGoal, SIGNAL(valueEdited(double)),
-          SLOT(goUserPosition(double)));
-  connect(sUi->userGoal, SIGNAL(valueEdited(double)),
-          SLOT(goUserPosition(double)));
-  connect(sUi->rawGoal, SIGNAL(valueEdited(double)),
-          SLOT(goRawPosition(double)));
-  connect(sUi->callRelative, SIGNAL(clicked()),
-          relativeDialog, SLOT(show()) );
-  connect(sUi->offset, SIGNAL(valueEdited(double)),
-          mot, SLOT(setOffset(double)));
-  connect(sUi->limitLo, SIGNAL(valueEdited(double)),
-          mot, SLOT(setUserLoLimit(double)));
-  connect(sUi->limitHi, SIGNAL(valueEdited(double)),
-          mot, SLOT(setUserHiLimit(double)));
+  connect(sUi->ampFault, SIGNAL(clicked()), mot, SLOT(resetAmpFault()));
+  connect(sUi->eloss, SIGNAL(clicked()), mot, SLOT(resetEncoderLoss()));
+  connect(sUi->badLimit, SIGNAL(clicked()), mot, SLOT(resetWrongLimits()));
+  connect(sUi->initialized, SIGNAL(clicked()), mot, SLOT(initializeMortor()));
 
-  connect(sUi->ampFault, SIGNAL(clicked()),
-          mot, SLOT(resetAmpFault()));
-  connect(sUi->eloss, SIGNAL(clicked()),
-          mot, SLOT(resetEncoderLoss()));
-  connect(sUi->badLimit, SIGNAL(clicked()),
-          mot, SLOT(resetWrongLimits()));
-  connect(sUi->initialized, SIGNAL(clicked()),
-          mot, SLOT(initializeMortor()));
-
-  connect(sUi->driveCurrent, SIGNAL(valueEdited(double)),
-          mot, SLOT(setDriveCurrent(double)));
-  connect(sUi->holdPerCent, SIGNAL(valueEdited(double)),
-          mot, SLOT(setHoldPerCent(double)));
+  connect(sUi->driveCurrent, SIGNAL(valueEdited(double)), mot, SLOT(setDriveCurrent(double)));
+  connect(sUi->holdPerCent, SIGNAL(valueEdited(double)), mot, SLOT(setHoldPerCent(double)));
 
   //
   // Connect Motor Signals
@@ -582,14 +305,14 @@ void QCaMotorGUI::init() {
                          SIGNAL(changed ## SIG (TYPE) ), \
                          OBJ, SLOT(setValue(TYPE)));
 
-  ConnectMot(Pv, QString)
+  ConnectMot(Pv, QString);
+  ConnectMotUi(Out, sUi->out, QString);
   ConnectMot(Description, QString);
   ConnectMot(Precision, int)
   ConnectMot(Units, QString)
   ConnectMot(SlipStall, bool)
   ConnectMot(Problems, bool);
   ConnectMot(CommErr, bool);
-  ConnectMot(Plugged, bool);
   ConnectMot(AmplifierFault, bool);
   ConnectMot(Initialized, bool);
   ConnectMot(WrongLimits, bool);
@@ -617,14 +340,12 @@ void QCaMotorGUI::init() {
   ConnectMotUi(StepsPerRev, sUi->stepsPerRev, int);
   ConnectMot(MaximumSpeed, double);
   ConnectMot(NormalSpeed, double);
-  ConnectMotUi(RevSpeed, sUi->revSpeed, double);
-  ConnectMot(JogSpeed, double);
   ConnectMot(BacklashSpeed, double);
   ConnectMot(Acceleration, double);
-  ConnectMot(JogAcceleration, double);
   ConnectMot(BacklashAcceleration, double);
   ConnectMot(Connected, bool);
   ConnectMot(Moving, bool);
+  ConnectMot(Status, bool);
   ConnectMot(Backlash, double);
   ConnectMotUi(DriveCurrent, sUi->driveCurrent, double);
   ConnectMotUi(HoldPerCent, sUi->holdPerCent, double);
@@ -646,6 +367,7 @@ void QCaMotorGUI::init() {
   setViewMode(COMFO);
   setupDialog->update();
   setStep();
+  updatePv();
 
 }
 
@@ -656,8 +378,11 @@ void QCaMotorGUI::onMotorDestruction() {
 }
 
 
+void QCaMotorGUI::setPv() {
+  mot->setPv(selectMotor());
+}
 
-void QCaMotorGUI::copyPV() {
+void QCaMotorGUI::copyPv() {
   if ( ! mot->getPv().isEmpty() )
     QApplication::clipboard()->setText(
           mot->getPv());
@@ -702,32 +427,12 @@ void QCaMotorGUI::pastePv() {
 }
 
 
-void QCaMotorGUI::filterPV(const QString & _text){
-  proxyModel->setSearch(_text);
-//  proxyModel->setFilterRegExp( QRegExp(
-//      QString(".*%1.*").arg(_text), Qt::CaseInsensitive) );
-}
-
-void QCaMotorGUI::choosePV(const QModelIndex & index){
-  pvDialog->hide();
-  mot->setPv(index.data(Qt::UserRole).toString());
-}
-
-void QCaMotorGUI::pvFromSearch(){
-  pvDialog->hide();
-  mot->setPv(pUi->search->text());
-  pUi->search->clear();
-}
-
 void QCaMotorGUI::updatePv(const QString & newpv){
   sUi->pv->setText(newpv);
-  if (newpv.isEmpty()) {
-    updateDescription("SETUP");
-    mUi->setup->setContextMenuPolicy(Qt::NoContextMenu);
-  } else {
-    updateDescription(newpv);
-    mUi->setup->setContextMenuPolicy(Qt::ActionsContextMenu);
-  }
+  updateDescription( newpv.isEmpty() ? "SETUP" : newpv);
+  foreach(QAction* act, mUi->setup->findChildren<QAction*>())
+      if (!act->text().contains("Paste Pv"))
+        act->setEnabled(!newpv.isEmpty());
 }
 
 QPushButton * QCaMotorGUI::setupButton() {
@@ -753,97 +458,31 @@ void QCaMotorGUI::lock(bool lck){
   foreach ( QAction * action, mUi->setup->actions() )
     if ( action->text() == "Set PV" || action->text() == "Paste PV" )
       action->setDisabled(lck);
-  pvDialog->hide();
 }
 
-
-void QCaMotorGUI::static_init() {
-
-  if (inited)
-    return;
-  inited = true;
-
-  // Known PVs
-
-  // WARNING: PORTING ISSUE.
-  QStringList fileNames;
-  fileNames
-    << "/etc/" + pvListBaseName
-    << QString(getenv("HOME")) + "/." + configsSearchBaseDir + "/" + pvListBaseName;
-
-  QStringList readPVs;
-
-  foreach(QString fileName, fileNames) {
-    QFile file(fileName);
-    if ( file.open(QIODevice::ReadOnly | QIODevice::Text) && file.isReadable() ) {
-      while (!file.atEnd()) {
-        QByteArray line = file.readLine().trimmed();
-        //line.chop(1);
-        if ( ! line.isEmpty() && line.at(0) != '#' )
-          readPVs << line;
-      }
-      file.close();
-    }
-  }
-
-  readPVs.removeDuplicates();
-
-  knownPVs = new KnownPVTable(readPVs);
-
-
-  // Known stage configurations.
-
-  fileNames.clear();
-
-  // WARNING: PORTING ISSUE.
-  fileNames << "*."+configsExt;
-  QDir dir;
-  dir.setNameFilters(fileNames);
-  fileNames.clear();
-
-  dir.setPath( "/etc/"+configsSearchBaseDir );
-  fileNames << dir.entryList(QDir::Files).replaceInStrings(QRegExp("^"), dir.path()+"/");
-  dir.setPath( QString(getenv("HOME")) + "/." + configsSearchBaseDir );
-  fileNames << dir.entryList(QDir::Files).replaceInStrings(QRegExp("^"), dir.path()+"/");
-
-  foreach (const QString filename , fileNames) {
-    if ( filename.endsWith("."+configsExt) ) {
-      // WARNING: PORTING ISSUE.
-      QString entry = filename.section('/',-1);
-      entry.chop(configsExt.length()+1);
-      knownConfigs[ entry ] = filename;
-    }
-  }
-
-}
 
 
 
 void QCaMotorGUI::onSetupClicked() {
-  QDialog * dlg = mot->getPv().isEmpty() ? pvDialog : setupDialog;
-  dlg->show();
-  dlg->activateWindow();
-  dlg->raise();
+  if (mot->getPv().isEmpty()) {
+    setPv();
+  } else {
+    setupDialog->show();
+    setupDialog->activateWindow();
+    setupDialog->raise();
+  }
 }
 
-
-
-
 void QCaMotorGUI::onSave() {
-  // WARNING: PORTING ISSUE.
-  QString fileName = QFileDialog::getSaveFileName
-                     (0, "Save configuration",
-                      QDir::currentPath() + "/" + mot->getDescription() + "." + configsExt,
-                      "All files (*);;Motor configuration files (*." + configsExt + ")");
+  const QString fileName = QFileDialog::getSaveFileName(0, "Save configuration",
+                           QDir::currentPath() + "/" + mot->getDescription() + "." + configsExt,
+                           "Motor configuration files (*." + configsExt + ");;All files (*)");
   mot->saveConfiguration(fileName);
 }
 
-void QCaMotorGUI::onLoad(const QString & text) {
-  QString fileName =  ( text == sUi->loadConfig->itemText(0) ) ?
-        QFileDialog::getOpenFileName
-        (0, "Load configuration", "",
-         "Motor configuration files (*." + configsExt + ");;All files (*)") :
-        knownConfigs[text];
+void QCaMotorGUI::onLoad() {
+  const QString fileName = QFileDialog::getOpenFileName(0, "Load configuration", "",
+            "Motor configuration files (*." + configsExt + ");;All files (*)");
   mot->loadConfiguration(fileName);
 }
 
@@ -914,7 +553,7 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
 
   if ( mode == SETPV ) {
     if (!locked)
-      pvDialog->show();
+      setPv();
     sUi->viewMode->setCurrentIndex(currentView);
     return;
   }
@@ -1106,7 +745,6 @@ void QCaMotorGUI::pressStop(){
 
 
 void QCaMotorGUI::updateConnected(bool suc) {
-  pasteCfgAction->setEnabled(suc);
   updateStopButtonStyle();
   updateAllElements();
   if ( suc &&
@@ -1230,8 +868,6 @@ void QCaMotorGUI::updateUnits(const QString & egu){
   sUi->dialGoal->setSuffix(egu);
   sUi->offset->setSuffix(egu);
   sUi->backlashSpeed->setSuffix(egu+"/s");
-  sUi->jogSpeed->setSuffix(egu+"/s");
-  sUi->jogAcceleration->setSuffix(egu+"/s"+QChar(0x00B2));
 }
 
 void QCaMotorGUI::updatePrecision(int prec){
@@ -1262,14 +898,10 @@ void QCaMotorGUI::updatePrecision(int prec){
   sUi->dialGoal->setDecimals(prec);
   sUi->backlashSpeed->setDecimals(prec);
   sUi->backlashAcceleration->setDecimals(prec);
-  sUi->jogSpeed->setDecimals(prec);
-  sUi->jogAcceleration->setDecimals(prec);
-
 }
 
 void QCaMotorGUI::updateMaximumSpeed(double maxSpeed) {
   sUi->speed->setMaximum(maxSpeed);
-  sUi->jogSpeed->setMaximum(maxSpeed);
   sUi->backlashSpeed->setMaximum(maxSpeed);
   sUi->maximumSpeed->setValue(maxSpeed);
   updateSpeeds();
@@ -1286,10 +918,6 @@ void QCaMotorGUI::updateBacklashSpeed(double spd) {
   updateSpeeds();
 }
 
-void QCaMotorGUI::updateJogSpeed(double spd) {
-  sUi->jogSpeed->setValue(spd);
-  updateSpeeds();
-}
 
 void QCaMotorGUI::updateAcceleration(double acc) {
   sUi->acceleration->setValue(acc);
@@ -1302,10 +930,6 @@ void QCaMotorGUI::updateBacklashAcceleration(double acc) {
   updateAccelerations();
 }
 
-void QCaMotorGUI::updateJogAcceleration(double acc) {
-  sUi->jogAcceleration->setValue(acc);
-  updateAccelerations();
-}
 
 void QCaMotorGUI::updateBacklash(double blsh) {
   sUi->backlash->setValue(blsh);
@@ -1352,59 +976,72 @@ void QCaMotorGUI::updateDialLoLimit(double loL){
 
 
 
-template<class Qw> void updateStatus(Qw * wdg, bool good,
-                         QString goodMsg=QString(), QString badMsg=QString() ) {
-  if ( ! dynamic_cast<QWidget*>(wdg) )
+void QCaMotorGUI::updateState(QWidget * wdg, bool good, QString goodMsg, QString badMsg) {
+  if (!wdg)
     return;
-  const QString  badstyle("background-color: rgba(255,0,0,0);");
-  wdg->setStyleSheet( good ? "" : badstyle);
+  wdg->setStyleSheet( good ? "" : redStyle);
   wdg->setEnabled(!good);
-  if ( dynamic_cast<QAbstractButton*>(wdg) )
+  if ( dynamic_cast<QAbstractButton*>(wdg) ) {
     protect(wdg, !good);
+    if ( good && ! goodMsg.isEmpty() )
+      dynamic_cast<QAbstractButton*>(wdg)->setText(goodMsg);
+    if ( ! good && ! badMsg.isEmpty() )
+      dynamic_cast<QAbstractButton*>(wdg)->setText(badMsg);
+  }
   if ( dynamic_cast<QPushButton*>(wdg) )
     dynamic_cast<QPushButton*>(wdg)->setFlat(good);
   if ( dynamic_cast<QToolButton*>(wdg) )
     dynamic_cast<QToolButton*>(wdg)->setAutoRaise(!good);
-  if ( good && ! goodMsg.isEmpty() )
-    wdg->setText(goodMsg);
-  if ( ! good && ! badMsg.isEmpty() )
-    wdg->setText(badMsg);
+  if ( dynamic_cast<QLabel*>(wdg) ) {
+    if ( good && ! goodMsg.isEmpty() )
+      dynamic_cast<QLabel*>(wdg)->setText(goodMsg);
+    if ( ! good && ! badMsg.isEmpty() )
+      dynamic_cast<QLabel*>(wdg)->setText(badMsg);
+  }
+
+  states[wdg] = good;
+  bool fine = true;
+  foreach(bool state, states)
+    fine &= state;
+  sUi->viewMode->setStyleSheet( fine ? "" : redStyle);
+  mUi->setup->setStyleSheet( fine ? "" : redStyle);
+
 }
 
 
 void QCaMotorGUI::updateSlipStall(bool slst) {
-  updateStatus(sUi->slst, !slst);
+  updateState(sUi->slst, !slst);
 }
 
 void QCaMotorGUI::updateProblems(bool probs) {
-  updateStatus(sUi->problems, !probs, "Hardware OK", "HW Problem");
+  updateState(sUi->problems, !probs, "Hardware OK", "HW Problem");
 }
 
 void QCaMotorGUI::updateCommErr(bool commerr) {
-  updateStatus(sUi->comErr, !commerr, "Controller OK", "Comm Err");
+  updateState(sUi->comErr, !commerr, "Controller OK", "Comm Err");
 }
 
-void QCaMotorGUI::updatePlugged(bool plg) {
-  sUi->plugged->setText(plg ? "Plugged" : "UnPlugged");
-  updateStatus(sUi->plugged, plg);
+void QCaMotorGUI::updateStatus(bool sts) {
+  updateState(sUi->status, sts, "Status OK", "Status Err");
 }
 
 void QCaMotorGUI::updateAmplifierFault(bool ampFlt) {
-  updateStatus(sUi->ampFault, !ampFlt, "Amp OK", "Amp Fault");
+  updateState(sUi->ampFault, !ampFlt, "Amp OK", "Amp Fault");
 }
 
 void QCaMotorGUI::updateInitialized(bool inited) {
   sUi->initialized->setText(inited ? "Initialized" : "UnInitialized");
-  updateStatus(sUi->initialized, inited);
+  updateState(sUi->initialized, inited);
 }
 
 void QCaMotorGUI::updateWrongLimits(bool badLs) {
-  updateStatus(sUi->badLimit, !badLs, "Limits OK", "Wrong LS's");
+  updateState(sUi->badLimit, !badLs, "Limits OK", "Wrong LS's");
 }
 
 void QCaMotorGUI::updateEncoderLoss(bool eloss) {
-  updateStatus(sUi->eloss, !eloss, "Encoder OK", "Enc Loss");
+  updateState(sUi->eloss, !eloss, "Encoder OK", "Enc Loss");
 }
+
 
 void QCaMotorGUI::updateSuMode(QCaMotor::SuMode mode) {
   // needed to revert to the original values in the GUI.
@@ -1447,14 +1084,12 @@ void QCaMotorGUI::updateAccelerations() {
 void QCaMotorGUI::updateGoButtonStyle(){
 
   QString style;
-  const QString hardStyle = "background-color: rgb(128, 0, 0); color: rgb(255, 255, 255);";
-  const QString softStyle = "background-color: rgb(128, 64, 0); color: rgb(255, 255, 255);";
 
   if (mot->getLoLimitStatus())
-    style = hardStyle;
+    style = redStyle;
   else if ( mot->getUserPosition() <= mot->getUserLoLimit() ||
             mot->getDialPosition() <= mot->getDialLoLimit() )
-    style = softStyle;
+    style = orgStyle;
   else
     style = "";
   mUi->goM->setStyleSheet(style);
@@ -1465,10 +1100,10 @@ void QCaMotorGUI::updateGoButtonStyle(){
   sUi->jogM->setStyleSheet(style);
 
   if (mot->getHiLimitStatus())
-    style = hardStyle;
+    style = redStyle;
   else if ( mot->getUserPosition() >= mot->getUserHiLimit() ||
             mot->getDialPosition() >= mot->getDialHiLimit() )
-    style = softStyle;
+    style = orgStyle;
   else
     style = "";
   mUi->goP->setStyleSheet(style);
@@ -1483,16 +1118,14 @@ void QCaMotorGUI::updateGoButtonStyle(){
 
 void QCaMotorGUI::updateStopButtonStyle() {
 
-  const QString  movstyle("background-color: rgb(128, 0, 0); color: rgb(255, 255, 255);");
-
   if ( ! mot->isConnected() ) {
     mUi->stop->setStyleSheet("");
     sUi->stop->setStyleSheet("");
     mUi->stop->setText("No link");
     sUi->stop->setText("No link");
   } else if (mot->isMoving()) {
-    mUi->stop->setStyleSheet(movstyle);
-    sUi->stop->setStyleSheet(movstyle);
+    mUi->stop->setStyleSheet(redStyle);
+    sUi->stop->setStyleSheet(redStyle);
     mUi->stop->setText("STOP");
     sUi->stop->setText("STOP");
     mUi->stop->setToolTip("Stop motion");
