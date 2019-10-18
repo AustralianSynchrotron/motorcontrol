@@ -222,8 +222,10 @@ bool QCaMotor::eventFilter(QObject *obj, QEvent *event) {
 
 void QCaMotor::saveConfiguration(QTextStream & stream, bool params) const {
 
-  if ( ! isConnected() )
-    printError("Warning: saving configuration of the disconnected motor." );
+  if ( ! isConnected() ) {
+    printError("Warning: not saving configuration of the disconnected motor." );
+    return;
+  }
 
   stream << "# MOTORPV " << getPv() << "\n";
   stream << "#         " << getDescription() << "\n";

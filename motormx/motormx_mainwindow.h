@@ -5,6 +5,7 @@
 #include <QHash>
 #include <QToolButton>
 #include <QFile>
+#include <QDir>
 #include <QComboBox>
 
 #include "qmotorstack.h"
@@ -34,6 +35,7 @@ private:
   QComboBox * presets;
   QToolButton * saveBut;
   QToolButton * loadBut;
+  QDir configDir;
 
   void saveConfiguration(bool params, bool select);
   void loadConfiguration(bool move, bool add, bool select);
@@ -47,6 +49,8 @@ private slots:
   void onLoad();
   void onListLoad();
   void onMoveLoad();
+  void onDirectoryLoad(QString dirName = QString());
+  void onDirectoryLoad(const QStringList & pths);
   void onPresetChanged();
 
 };

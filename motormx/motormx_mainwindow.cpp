@@ -19,18 +19,17 @@
 
 static const QString motsExt = "motors.sh";
 
-
 MainWindow::MainWindow(QWidget *parent)  :
   QMainWindow(parent),
   ui(new Ui::MainWindow),
   presets(new QComboBox(this)),
   saveBut(new QToolButton(this)),
-  loadBut(new QToolButton(this))
+  loadBut(new QToolButton(this)),
+  configDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation))
 {
 
   //QEpicsPv::setDebugLevel(1);
 
-  QDir configDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
   if ( ! configDir.exists() )
     configDir.mkpath(configDir.path());
   ms = new QMotorStack( configDir.canonicalPath() +  "/listOfMotorsInUI.txt", this);
@@ -59,22 +58,15 @@ MainWindow::MainWindow(QWidget *parent)  :
   menu = new QMenu(loadBut);
   menu->addAction("Add motors to the list", this, SLOT(onListLoad()));
   menu->addAction("Restore and add motors", this, SLOT(onMoveLoad()));
+  menu->addAction("Add presets from directory", this, SLOT(onDirectoryLoad()));
   loadBut->setMenu(menu);
 
   ui->statusBar->addPermanentWidget(loadBut);
 
-  const QFont roItemFont(QFont().family(),-1,-1,true);
-  presets->setDuplicatesEnabled(true);
+  presets->setInsertPolicy(QComboBox::NoInsert);
+  presets->setEditable(true);
   presets->addItem("to / from file");
-  foreach(QString pth, QStandardPaths::standardLocations(QStandardPaths::AppDataLocation) ) {
-    QDir dir(pth);
-    foreach(QFileInfo cfg, dir.entryInfoList(QStringList() << "*." + motsExt, QDir::Files) ) {
-      presets->addItem(cfg.baseName(), cfg.canonicalFilePath());
-      presets->setItemData(presets->count()-1, cfg.canonicalFilePath(), Qt::ToolTipRole);
-      if (!cfg.isWritable())
-        presets->setItemData(presets->count()-1, roItemFont, Qt::FontRole);
-    }
-  }
+  onDirectoryLoad(QStandardPaths::standardLocations(QStandardPaths::AppDataLocation));
   connect(presets, SIGNAL(currentIndexChanged(int)), SLOT(onPresetChanged()));
   ui->statusBar->addPermanentWidget(presets);
 
@@ -94,12 +86,20 @@ void MainWindow::saveConfiguration(bool params, bool select){
         motorList.removeAll(motor);
   }
 
-  const QVariant & curData = presets->currentData();
-  const QString fileName  =  curData.isValid()  ?  curData.toString()
-    :  QFileDialog::getSaveFileName(0, "Save configuration", QString(),
-                                    "(*."+motsExt+");;All files (*)");
+  const QString curText = presets->currentText();
+  if (curText != presets->itemText(presets->currentIndex())) {
+    const int txtIdx = presets->findText(curText);
+    presets->setCurrentIndex(txtIdx > 0  ?  txtIdx : 0);
+  }
+  const QVariant curData = presets->currentData();
+  const QString fileName  =
+    curData.isValid()  ?  curData.toString()
+    : curText != presets->itemText(presets->currentIndex())
+      ?  configDir.canonicalPath() + "/" + curText + "." + motsExt
+      :  QFileDialog::getSaveFileName(0, "Save configuration", QString(), "(*."+motsExt+");;All files (*)");
   if (fileName.isEmpty() || ! ms->count() )
     return;
+  QDir::setCurrent(QFileInfo(fileName).canonicalPath());
   QFile file(fileName);
   if ( ! file.open(QFile::WriteOnly | QFile::Truncate) ) {
     QMessageBox::warning(this, "Can't save", "Failed to open requested file: " + fileName);
@@ -149,12 +149,13 @@ void MainWindow::loadConfiguration(bool move, bool add, bool select) {
     return;
 
   QStringList motorList;
-  const QRegularExpression repv("^# MOTORPV (\\w+)$");
+  const QRegularExpression repv("^\\# MOTORPV (.*)$");
   foreach( QString fileName, fileNames ) {
     QFile file(fileName);
     if ( ! file.open(QFile::ReadOnly) ) {
       QMessageBox::warning(this, "Can't open", "Failed to open requested file: " + fileName);
     } else {
+      QDir::setCurrent(QFileInfo(fileName).canonicalPath());
       QTextStream fileStream(&file);
       QString fline;
       while (fileStream.readLineInto(&fline)) {
@@ -163,6 +164,9 @@ void MainWindow::loadConfiguration(bool move, bool add, bool select) {
           motorList << match.captured(1);
       }
       file.close();
+      const QFileInfo cfg(file);
+      presets->addItem(cfg.baseName(), cfg.canonicalFilePath());
+      presets->setItemData(presets->count()-1, cfg.canonicalFilePath(), Qt::ToolTipRole);
     }
   }
 
@@ -175,7 +179,7 @@ void MainWindow::loadConfiguration(bool move, bool add, bool select) {
       ms->addMotor(pvn);
 
   if (move) {
-    const QRegularExpression rego("^caput (\\w+) \\d+$");
+    const QRegularExpression rego("^caput (.+) [\\.0-9]+$");
     QTemporaryFile ofile;
     QTextStream oStream(&ofile);
     if (!ofile.open()) {
@@ -189,7 +193,7 @@ void MainWindow::loadConfiguration(bool move, bool add, bool select) {
           QTextStream iStream(&ifile);
           QString fline;
           while (iStream.readLineInto(&fline)) {
-            QRegularExpressionMatch match = repv.match(fline);
+            QRegularExpressionMatch match = rego.match(fline);
             if ( match.hasMatch() &&
                  ( ! select  ||  motorList.contains(match.captured(1)) ) )
               oStream << fline;
@@ -218,7 +222,30 @@ void MainWindow::onMoveLoad() {
   loadConfiguration(true, false, true);
 }
 
+void MainWindow::onDirectoryLoad(const QStringList & pths) {
+  foreach(QString pth, pths)
+    if (!pth.isEmpty())
+      onDirectoryLoad(pth);
+}
 
+void MainWindow::onDirectoryLoad(QString dirName) {
+
+  if (dirName.isEmpty())
+      dirName = QFileDialog::getExistingDirectory(0, "Load presets from the directory", QString());
+  if (dirName.isEmpty())
+    return;
+
+  const QFont roItemFont(QFont().family(),-1,-1,true);
+  QDir dir(dirName);
+  QDir::setCurrent(dir.canonicalPath());
+  foreach(QFileInfo cfg, dir.entryInfoList(QStringList() << "*." + motsExt, QDir::Files) ) {
+    presets->addItem(cfg.baseName(), cfg.canonicalFilePath());
+    presets->setItemData(presets->count()-1, cfg.canonicalFilePath(), Qt::ToolTipRole);
+    if (!cfg.isWritable())
+      presets->setItemData(presets->count()-1, roItemFont, Qt::FontRole);
+  }
+
+}
 
 
 

@@ -61,7 +61,7 @@ public slots:
   /// @param lock Locks the new motor if true.
   /// @param noFileSave Does not update the motorsFile if true.
   ///
-  QCaMotorGUI * addMotor(const QString & presetpv = "", bool lock = false, bool noFileSave = false);
+  QCaMotorGUI * addMotor(const QString & presetpv, bool lock = false, bool noFileSave = false);
 
   /// Adds existing motor into the UI.
   ///
@@ -91,6 +91,9 @@ public slots:
   ///
   void addMotor(const QList<QCaMotorGUI*> & motorList, bool noFileSave = false);
 
+  void addMotor();
+
+
 
   /// Removes the motor with the button from the UI.
   /// @param button button assigned to the motor.
@@ -108,7 +111,7 @@ private slots:
 
   // To address a bug (is it a bug?) in Qt which does not resizes the
   // column widths when the context of the column elements is changed.
-  void resetHeader();
+  // void resetHeader();
 
 signals:
 

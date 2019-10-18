@@ -3,6 +3,7 @@
 #include "qmotorstack.h"
 #include <QSettings>
 #include <QFileDialog>
+#include <QMessageBox>
 
 QMotorStack::QMotorStack(const QString & _motorsFile, QWidget *parent) :
     QWidget(parent),
@@ -111,6 +112,11 @@ void QMotorStack::addMotor(const QList<QCaMotorGUI*> & motorList, bool noFileSav
     addMotor(mot, noFileSave);
 }
 
+void QMotorStack::addMotor() {
+  QStringList motorPvList = selectMotors(false);
+  foreach(QString pv, motorPvList)
+    addMotor(pv);
+}
 
 QCaMotorGUI * QMotorStack::addMotor(const QString & presetpv, bool lock, bool noFileSave){
   QCaMotorGUI * motor = new QCaMotorGUI;
@@ -139,9 +145,9 @@ void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
   ui->table->setCellWidget(idx,5,motor->basicUI()->stop);
 
   connect(motor->motor(), SIGNAL(changedDescription(QString)),
-          SLOT(resetHeader()));
+          ui->table, SLOT(resizeColumnsToContents()));
   connect(motor->motor(), SIGNAL(changedPv()),
-          SLOT(resetHeader()));
+          ui->table, SLOT(resizeColumnsToContents()));
   connect(motor->motor(), SIGNAL(changedPv()),
           SLOT(updateMotorsFile()));
 
@@ -279,13 +285,13 @@ void QMotorStack::stopAll() {
     motor->motor()->stop();
 }
 
-void QMotorStack::resetHeader() {
+//void QMotorStack::resetHeader() {
   // Here the delay of 100 msec is set to allow the setup button's text be
   // updated before resetting the header.
-  QTimer::singleShot(100, ui->table, SLOT(resizeColumnsToContents()));
+  //QTimer::singleShot(100, ui->table, SLOT(resizeColumnsToContents()));
   //QTimer::singleShot(100, ui->table->horizontalHeader(), SLOT(resizeSections()));
   //QTimer::singleShot(100, ui->table->horizontalHeader(), SLOT(reset()));
-}
+//}
 
 void QMotorStack::saveConfiguration(const QString & fileName) {
   QSettings sett(fileName, QSettings::IniFormat);

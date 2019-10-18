@@ -323,6 +323,8 @@ private slots:
 
   void updateResolutionAndDirection();
 
+  void correctResFieldsWidth();
+
 };
 
 

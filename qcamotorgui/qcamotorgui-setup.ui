@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1059</width>
-    <height>1590</height>
+    <height>1588</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -47,9 +47,6 @@
       </sizepolicy>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetMinAndMaxSize</enum>
-      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -62,20 +59,23 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_14">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Configuration:</string>
-        </property>
-       </widget>
-      </item>
+      <property name="spacing">
+       <number>1</number>
+      </property>
       <item row="0" column="5">
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="7">
        <widget class="QComboBox" name="viewMode">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -132,21 +132,7 @@ p, li { white-space: pre-wrap; }
         </item>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QToolButton" name="loadConfig">
-        <property name="text">
-         <string>Load</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QToolButton" name="saveConfig">
-        <property name="text">
-         <string>Save</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
+      <item row="0" column="6">
        <widget class="QLabel" name="label_20">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -159,18 +145,56 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="0" column="4">
+       <widget class="QWidget" name="saveload" native="true">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+        <layout class="QHBoxLayout" name="horizontalLayout_9">
+         <property name="spacing">
+          <number>1</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_14">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Configuration:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="saveConfig">
+           <property name="text">
+            <string>Save</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="loadConfig">
+           <property name="text">
+            <string>Load</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -429,13 +453,6 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="autoRaise">
          <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="label_29">
-        <property name="text">
-         <string/>
         </property>
        </widget>
       </item>
@@ -958,25 +975,6 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
-       <widget class="QHistoryDSB" name="userVarGoal">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Move absolutely</string>
-        </property>
-        <property name="minimum">
-         <double>-2147483647.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>2147483647.000000000000000</double>
-        </property>
-       </widget>
-      </item>
       <item row="8" column="2">
        <widget class="QToolButton" name="stepM2">
         <property name="sizePolicy">
@@ -1055,6 +1053,25 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="text">
          <string>1/10</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QHistoryDSB" name="userVarGoal">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Move absolutely</string>
+        </property>
+        <property name="minimum">
+         <double>-2147483647.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>2147483647.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -1527,7 +1544,7 @@ p, li { white-space: pre-wrap; }
            <string>If unchecked, also changes the maximum speed </string>
           </property>
           <property name="text">
-           <string>Lock maximum</string>
+           <string>Lock max</string>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -1708,6 +1725,12 @@ p, li { white-space: pre-wrap; }
       </item>
       <item row="14" column="1">
        <widget class="QMDoubleSpinBox" name="maximumSpeed">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="toolTip">
          <string>Maximum speed (no speed can be larger than this)</string>
         </property>
@@ -1755,6 +1778,12 @@ p, li { white-space: pre-wrap; }
          </property>
          <item>
           <widget class="QMDoubleSpinBox" name="backlash">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="toolTip">
             <string>Backlash distance</string>
            </property>
@@ -2425,6 +2454,12 @@ p, li { white-space: pre-wrap; }
       </item>
       <item row="11" column="1">
        <widget class="QMSpinBox" name="stepsPerRev">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="toolTip">
          <string>Steps per revolution</string>
         </property>
@@ -2435,6 +2470,12 @@ p, li { white-space: pre-wrap; }
       </item>
       <item row="10" column="1">
        <widget class="QMDoubleSpinBox" name="unitsPerRev">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimum">
          <double>-2147483647.000000000000000</double>
         </property>
@@ -2445,6 +2486,12 @@ p, li { white-space: pre-wrap; }
       </item>
       <item row="9" column="1">
        <widget class="QMDoubleSpinBox" name="encoderResolution">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="toolTip">
          <string>Set encoder resolution</string>
         </property>
@@ -2461,6 +2508,12 @@ p, li { white-space: pre-wrap; }
       </item>
       <item row="8" column="1">
        <widget class="QMDoubleSpinBox" name="readbackResolution">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="toolTip">
          <string>Set readback resolution</string>
         </property>
@@ -2477,6 +2530,12 @@ p, li { white-space: pre-wrap; }
       </item>
       <item row="7" column="1">
        <widget class="QMDoubleSpinBox" name="unitsPerStep">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="toolTip">
          <string>Set motor resolution (travel distance per raw step)</string>
         </property>
@@ -2573,8 +2632,8 @@ p, li { white-space: pre-wrap; }
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="dirGroup"/>
-  <buttongroup name="offGroup"/>
   <buttongroup name="spmgGroup"/>
+  <buttongroup name="offGroup"/>
+  <buttongroup name="dirGroup"/>
  </buttongroups>
 </ui>

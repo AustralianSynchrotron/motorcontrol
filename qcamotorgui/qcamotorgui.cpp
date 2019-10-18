@@ -589,6 +589,7 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     if (mot->isConnected())
       mot->setSpmgMode(QCaMotor::GO);
 
+    sUi->saveload->setVisible(false);
     sUi->pv->setVisible(false);
     sUi->label_2->setVisible(false);
     sUi->label_20->setVisible(false);
@@ -620,6 +621,7 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     if (mot->isConnected())
       mot->setSpmgMode(QCaMotor::GO);
 
+    sUi->saveload->setVisible(false);
     sUi->pv->setVisible(false);
     sUi->label_2->setVisible(false);
     sUi->label_20->setVisible(false);
@@ -655,6 +657,7 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
       mot->setSpmgMode(QCaMotor::GO);
     }
 
+    sUi->saveload->setVisible(true);
     sUi->pv->setVisible(true);
     sUi->label_2->setVisible(true);
     sUi->label_20->setVisible(true);
@@ -693,6 +696,7 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
 
   case EPICS:
 
+    sUi->saveload->setVisible(true);
     sUi->pv->setVisible(true);
     sUi->label_2->setVisible(true);
     sUi->label_20->setVisible(true);
@@ -862,7 +866,7 @@ void QCaMotorGUI::updateUnits(const QString & egu){
   sUi->unitsPerRev->setSuffix(egu+"/rev");
   sUi->readbackResolution->setSuffix(egu+"/step");
   sUi->encoderResolution->setSuffix(egu+"/step");
-  sUi->resolution->setSuffix(egu+"/step");
+  //sUi->resolution->setSuffix(egu+"/step");
   sUi->userGoal->setSuffix(egu);
   sUi->userVarGoal->setSuffix(egu);
   sUi->dialGoal->setSuffix(egu);
@@ -1178,6 +1182,7 @@ void QCaMotorGUI::updateAllElements(){
   sUi->userVarGoal   ->setEnabled(std);
   sUi->callRelative  ->setEnabled(std);
 
+  sUi->saveload      ->setEnabled(cn);
   sUi->states        ->setEnabled(cn);
   sUi->control       ->setEnabled(cn);
   sUi->loadConfig    ->setEnabled(std);
@@ -1186,3 +1191,8 @@ void QCaMotorGUI::updateAllElements(){
   sUi->generalSetup  ->setEnabled(std);
 
 }
+
+void QCaMotorGUI::correctResFieldsWidth() {
+
+}
+
