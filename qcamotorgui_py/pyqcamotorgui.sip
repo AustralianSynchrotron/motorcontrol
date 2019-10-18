@@ -14,7 +14,6 @@ class QCaMotorGUI : public QWidget {
 public:
 
   const QString pvListBaseName;
-  const QString configsSearchBaseDir;
   const QString configsExt;
 
   enum ViewMode {
@@ -35,7 +34,6 @@ public:
 
   void setViewMode(ViewMode mode);
   void showSetup(bool shown=true);
-  void showPvSetup(bool shown=true);
 
 signals:
   void ioPositionChanged(QString);
