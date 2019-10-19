@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)  :
 
   ui->setupUi(this);
   setCentralWidget(ms);
+  ms->setFocus();
 
   QLabel * conf = new QLabel("Presets:");
   ui->statusBar->addPermanentWidget(conf);
@@ -60,14 +61,16 @@ MainWindow::MainWindow(QWidget *parent)  :
   menu->addAction("Restore and add motors", this, SLOT(onMoveLoad()));
   menu->addAction("Add presets from directory", this, SLOT(onDirectoryLoad()));
   loadBut->setMenu(menu);
-
   ui->statusBar->addPermanentWidget(loadBut);
 
   presets->setInsertPolicy(QComboBox::NoInsert);
   presets->setEditable(true);
-  presets->addItem("to / from file");
-  onDirectoryLoad(QStandardPaths::standardLocations(QStandardPaths::AppDataLocation));
-  connect(presets, SIGNAL(currentIndexChanged(int)), SLOT(onPresetChanged()));
+  presets->addItem("to / from file", "to / from file");
+  onDirectoryLoad(QStringList() << QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)
+                                << QStandardPaths::standardLocations(QStandardPaths::AppConfigLocation)
+                                << QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation));
+  connect(presets, SIGNAL(currentTextChanged(QString)), SLOT(onPresetChanged()));
+  presets->installEventFilter(this);
   ui->statusBar->addPermanentWidget(presets);
 
 }
@@ -82,6 +85,18 @@ bool MainWindow::event(QEvent *ev) {
     setFixedWidth(sizeHint().width());
   return QMainWindow::event(ev);
 }
+
+
+bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
+  if (obj == presets) {
+    if ( event->type() == QEvent::FocusIn  &&  ! presets->currentIndex())
+      presets->clearEditText();
+    if ( event->type() == QEvent::FocusOut  &&  presets->currentText().trimmed().isEmpty())
+      presets->setCurrentIndex(0);
+  }
+  return QMainWindow::eventFilter(obj,event);
+}
+
 
 
 
@@ -259,8 +274,19 @@ void MainWindow::onDirectoryLoad(QString dirName) {
 
 
 void MainWindow::onPresetChanged() {
+
   presets->setToolTip(presets->currentData(Qt::ToolTipRole).toString());
-  if (presets->currentData(Qt::FontRole).isValid())
-    saveBut->setEnabled( ! presets->currentData(Qt::FontRole).value<QFont>().italic() );
+  const QString ctxt = presets->currentText();
+
+  int fidx = presets->findText(ctxt);
+  if ( fidx >=0 ) {
+    if (fidx != presets->currentIndex())
+      presets->setCurrentIndex(fidx);
+  }
+
+  loadBut->setEnabled( ctxt == presets->itemText(presets->currentIndex()) ) ;
+  QVariant cfnt = presets->currentData(Qt::FontRole);
+  saveBut->setEnabled( ! cfnt.isValid() || ! cfnt.value<QFont>().italic() );
+
 }
 

@@ -19,7 +19,6 @@ if(NOT QEPICSPV_INC)
 endif()
 include_directories(${QEPICSPV_INC})
 
-
 add_subdirectory(qcamotor)
 add_subdirectory(qcamotorgui)
 add_subdirectory(qmotorstack)
