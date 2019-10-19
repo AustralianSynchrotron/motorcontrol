@@ -201,6 +201,18 @@ private slots:
 
 
 
+
+// here to create and poplulate new instance of the MotorSelection on start
+class MotorSelectionAutoPopulator : public QObject {
+  Q_OBJECT;
+public:
+  MotorSelectionAutoPopulator();
+public slots:
+  void updateMe();
+};
+
+
+
 class MotorSelection : public QDialog {
   Q_OBJECT;
 public:

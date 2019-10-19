@@ -22,29 +22,6 @@ static const QString orgStyle =
 
 
 
-static MotorSelection * motSelection = 0;
-
-QStringList selectMotors(bool onemotor, const QStringList & restrictTo, bool selectRestricted) {
-  if (!motSelection)
-    motSelection = new MotorSelection();
-  if (!motSelection) {
-    qDebug() << "Failed to create motor selection dialog.";
-    return QStringList();
-  }
-  motSelection->setSingleSelection(onemotor);
-  motSelection->limitSelection();
-  motSelection->limitSelection(restrictTo, selectRestricted);
-  motSelection->open();
-  qtWait(motSelection, SIGNAL(finished(int)));
-  return ( motSelection->result() == QDialog::Accepted ) ?
-           motSelection->selected()  :  QStringList();
-}
-
-
-QString selectMotor(const QStringList & restrictTo) {
-  QStringList lst = selectMotors(true, restrictTo);
-  return lst.count() == 1 ? lst.at(0) : QString() ;
-}
 
 
 

@@ -1,3 +1,4 @@
+#include "qcamotorgui.h"
 #include "qcamotorgui-additional.h"
 #include "ui_qcamotorgui-pv.h"
 #include <QSortFilterProxyModel>
@@ -399,6 +400,12 @@ void KnownPVTable::updateData() {
 
 
 
+
+
+
+
+
+
 MotorSelection::MotorSelection(QWidget * parent)
   : QDialog(parent),
   ui(new Ui::MotorSelection),
@@ -476,6 +483,44 @@ void MotorSelection::limitSelection(const QStringList& acceptedPvs, bool selectR
     ui->pvTable->selectAll();
 }
 
+
+
+
+static MotorSelection * motSelection = 0;
+// All this crap below is just too make this static selection ready ASAP.
+static MotorSelectionAutoPopulator * tobj = new MotorSelectionAutoPopulator();
+MotorSelectionAutoPopulator::MotorSelectionAutoPopulator(){
+  QTimer::singleShot(0,this,SLOT(updateMe()));
+}
+void MotorSelectionAutoPopulator::updateMe() {
+  if (motSelection)
+    return;
+  motSelection = new MotorSelection();
+  deleteLater();
+}
+
+
+QStringList selectMotors(bool onemotor, const QStringList & restrictTo, bool selectRestricted) {
+  if (!motSelection)
+    motSelection = new MotorSelection(); // should never happen
+  if (!motSelection) {
+    qDebug() << "Failed to create motor selection dialog.";
+    return QStringList();
+  }
+  motSelection->setSingleSelection(onemotor);
+  motSelection->limitSelection();
+  motSelection->limitSelection(restrictTo, selectRestricted);
+  motSelection->open();
+  qtWait(motSelection, SIGNAL(finished(int)));
+  return ( motSelection->result() == QDialog::Accepted ) ?
+           motSelection->selected()  :  QStringList();
+}
+
+
+QString selectMotor(const QStringList & restrictTo) {
+  QStringList lst = selectMotors(true, restrictTo);
+  return lst.count() == 1 ? lst.at(0) : QString() ;
+}
 
 
 
