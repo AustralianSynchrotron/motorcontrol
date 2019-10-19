@@ -31,8 +31,6 @@ class QCaMotorGUI : public QWidget {
 
 public:
 
-  /// Base name of the files containing the list of the known motor PVs.
-  static const QString pvListBaseName;
   static const QString configsExt;
 
   /// Enumeration with the view modes of the setup dialog.

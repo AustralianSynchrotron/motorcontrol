@@ -107,11 +107,8 @@ public slots:
 
   void loadConfiguration(const QString & fileName);
 
-private slots:
-
-  // To address a bug (is it a bug?) in Qt which does not resizes the
-  // column widths when the context of the column elements is changed.
-  // void resetHeader();
+protected:
+  bool eventFilter(QObject *obj, QEvent *event) override;
 
 signals:
 

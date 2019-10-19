@@ -76,6 +76,15 @@ MainWindow::~MainWindow() {
   delete ui;
 }
 
+
+bool MainWindow::event(QEvent *ev) {
+  if(ev->type() == QEvent::LayoutRequest)
+    setFixedWidth(sizeHint().width());
+  return QMainWindow::event(ev);
+}
+
+
+
 void MainWindow::saveConfiguration(bool params, bool select){
 
   QList<QCaMotorGUI*> motorList(ms->motorList());

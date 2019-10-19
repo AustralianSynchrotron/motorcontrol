@@ -293,8 +293,10 @@ KnownPVTable::KnownPVTable(QObject * parent)
   : QAbstractTableModel(parent)
 {
   QStringList listPvs;
-  foreach(QString pth, QStandardPaths::standardLocations(QStandardPaths::AppDataLocation) ) {
+  foreach(QString pth, QStringList() << QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)
+                                     << QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation) ) {
     QDir dir(pth);
+    qDebug() << pth;
     foreach(QString cfg, dir.entryList(QStringList() << pvListBaseName, QDir::Files) ) {
       QFile file(dir.canonicalPath() + QDir::separator() + cfg);
       if ( file.open(QIODevice::ReadOnly | QIODevice::Text) && file.isReadable() ) {

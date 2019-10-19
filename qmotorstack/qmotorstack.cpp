@@ -4,19 +4,20 @@
 #include <QSettings>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QScrollBar>
 
 QMotorStack::QMotorStack(const QString & _motorsFile, QWidget *parent) :
-    QWidget(parent),
-    motorsFile(_motorsFile),
-    ui(new Ui::MotorStack)
+QWidget(parent),
+motorsFile(_motorsFile),
+ui(new Ui::MotorStack)
 {
   initialize();
 }
 
 QMotorStack::QMotorStack(const QStringList & _motorsList, const QString & _motorsFile, QWidget *parent) :
-  QWidget(parent),
-  motorsFile(_motorsFile),
-  ui(new Ui::MotorStack)
+QWidget(parent),
+motorsFile(_motorsFile),
+ui(new Ui::MotorStack)
 {
   initialize();
   foreach (QString mPV, _motorsList)
@@ -24,9 +25,9 @@ QMotorStack::QMotorStack(const QStringList & _motorsList, const QString & _motor
 }
 
 QMotorStack::QMotorStack(const QStringList & _motorsList, QWidget *parent) :
-  QWidget(parent),
-  motorsFile(),
-  ui(new Ui::MotorStack)
+QWidget(parent),
+motorsFile(),
+ui(new Ui::MotorStack)
 {
   initialize();
   foreach (QString mPV, _motorsList)
@@ -35,9 +36,9 @@ QMotorStack::QMotorStack(const QStringList & _motorsList, QWidget *parent) :
 
 
 QMotorStack::QMotorStack(QWidget *parent) :
-    QWidget(parent),
-    motorsFile(),
-    ui(new Ui::MotorStack)
+QWidget(parent),
+motorsFile(),
+ui(new Ui::MotorStack)
 {
   initialize();
 }
@@ -54,50 +55,40 @@ void QMotorStack::initialize() {
 
   ui->setupUi(this);
 
-
-#if QT_VERSION >= 0x050000
-
   ui->table->verticalHeader()->setSectionsMovable(true);
   ui->table->verticalHeader()->setSectionsClickable(true);
   ui->table->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-
-  ui->table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-  ui->table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-  ui->table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-  ui->table->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
-  ui->table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
-  ui->table->horizontalHeader()->setSectionResizeMode(5, QHeaderView::ResizeToContents);
-
-#else
-
-  ui->table->verticalHeader()->setMovable(true);
-  ui->table->verticalHeader()->setClickable(true);
-  ui->table->verticalHeader()->setResizeMode(QHeaderView::Fixed);
-
-  ui->table->horizontalHeader()->setResizeMode(0, QHeaderView::ResizeToContents);
-  ui->table->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-  ui->table->horizontalHeader()->setResizeMode(2, QHeaderView::ResizeToContents);
-  ui->table->horizontalHeader()->setResizeMode(3, QHeaderView::Stretch);
-  ui->table->horizontalHeader()->setResizeMode(4, QHeaderView::ResizeToContents);
-  ui->table->horizontalHeader()->setResizeMode(5, QHeaderView::ResizeToContents);
-
-#endif
+  ui->table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
   connect(ui->add, SIGNAL(clicked()), SLOT(addMotor()));
   connect(ui->viewModeAll, SIGNAL(currentIndexChanged(int)), SLOT(viewModeAll()));
   connect(ui->stopAll, SIGNAL(clicked()), SLOT(stopAll()));
   connect(ui->clear, SIGNAL(clicked()), SLOT(clear()));
   connect(ui->table->verticalHeader(), SIGNAL(sectionDoubleClicked(int)),SLOT(removeRow(int)));
+  ui->table->verticalScrollBar()->installEventFilter(this);
 
   if ( motorsFile.open(QIODevice::ReadWrite | QIODevice::Text) &&
-       motorsFile.isReadable() )
+    motorsFile.isReadable() )
     while ( !motorsFile.atEnd() ) {
       QByteArray line = motorsFile.readLine();
       addMotor(line.trimmed(), false, true);
-  }
-  if ( ! motorsFile.isWritable() )
-    motorsFile.close();
+    }
+    if ( ! motorsFile.isWritable() )
+      motorsFile.close();
 
+}
+
+bool QMotorStack::eventFilter(QObject* obj, QEvent* event) {
+  if (    event->type() == QEvent::Paint
+      ||  event->type() == QEvent::Show
+      ||  event->type() == QEvent::Hide) {
+    ui->table->resizeColumnsToContents();
+    QScrollBar * sbar = ui->table->verticalScrollBar();
+    setFixedWidth(  ui->table->verticalHeader()->size().width()
+                  + ui->table->horizontalHeader()->length()
+                  + ( sbar->isVisible() ? sbar->width() : 0 ) );
+  }
+  return QObject::eventFilter(obj, event);
 }
 
 
@@ -118,7 +109,7 @@ void QMotorStack::addMotor() {
     addMotor(pv);
 }
 
-QCaMotorGUI * QMotorStack::addMotor(const QString & presetpv, bool lock, bool noFileSave){
+QCaMotorGUI * QMotorStack::addMotor(const QString & presetpv, bool lock, bool noFileSave) {
   QCaMotorGUI * motor = new QCaMotorGUI;
   motor->motor()->setPv(presetpv);
   motor->lock(lock);
@@ -126,12 +117,14 @@ QCaMotorGUI * QMotorStack::addMotor(const QString & presetpv, bool lock, bool no
   return motor;
 }
 
-QCaMotorGUI * QMotorStack::addMotor(QCaMotor *motor, bool lock, bool noFileSave){
+QCaMotorGUI * QMotorStack::addMotor(QCaMotor *motor, bool lock, bool noFileSave) {
   QCaMotorGUI * motorUi = new QCaMotorGUI(motor);
   motorUi->lock(lock);
   addMotor(motorUi, noFileSave);
   return motorUi;
 }
+
+
 
 void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
 
@@ -144,12 +137,11 @@ void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
   ui->table->setCellWidget(idx,4,motor->basicUI()->pButtons);
   ui->table->setCellWidget(idx,5,motor->basicUI()->stop);
 
-  connect(motor->motor(), SIGNAL(changedDescription(QString)),
-          ui->table, SLOT(resizeColumnsToContents()));
-  connect(motor->motor(), SIGNAL(changedPv()),
-          ui->table, SLOT(resizeColumnsToContents()));
-  connect(motor->motor(), SIGNAL(changedPv()),
-          SLOT(updateMotorsFile()));
+  motor->basicUI()->setup->installEventFilter(this);
+  //motor->basicUI()->userPosition->installEventFilter(this);
+  //motor->basicUI()->step->installEventFilter(this);
+
+  connect(motor->motor(), SIGNAL(changedPv()), SLOT(updateMotorsFile()));
 
   motors[motor->basicUI()->setup] = motor;
 
@@ -165,7 +157,7 @@ void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
     if ( motor->motor()->getPv().isEmpty() )
       motor->motor()->setPv(selectMotor());
   } else if ( ui->viewModeAll->currentText() != "Hide" ) {
-      motor->setViewMode( ui->viewModeAll->currentIndex() - 1 );
+    motor->setViewMode( ui->viewModeAll->currentIndex() - 1 );
   }
 
   emit listChanged();
@@ -174,7 +166,7 @@ void QMotorStack::addMotor(QCaMotorGUI * motor, bool noFileSave) {
 
 }
 
-void QMotorStack::removeRow(int idx){
+void QMotorStack::removeRow(int idx) {
 
   if (idx<0)
     return;
@@ -191,7 +183,7 @@ void QMotorStack::removeRow(int idx){
 
 }
 
-void QMotorStack::removeMotor(QCaMotorGUI * motor){
+void QMotorStack::removeMotor(QCaMotorGUI * motor) {
 
   if (!motor)
     return;
@@ -205,13 +197,13 @@ void QMotorStack::removeMotor(QCaMotorGUI * motor){
     else
       idx++;
 
-  if (idx < rowCount )
-    removeRow(idx);
+    if (idx < rowCount )
+      removeRow(idx);
 
 }
 
 
-void QMotorStack::clear(){
+void QMotorStack::clear() {
   for (int crow = ui->table->rowCount() - 1 ;  crow >= 0 ; --crow )
     removeRow(crow);
 }
@@ -245,11 +237,7 @@ void QMotorStack::updateMotorsFile() {
   motorsFile.reset();
   motorsFile.resize(0);
   foreach (QCaMotorGUI * motor, motorList() )
-    #if QT_VERSION >= 0x050000
     motorsFile.write( ( motor->motor()->getPv() + "\n" ).toLatin1());
-    #else
-    motorsFile.write( ( motor->motor()->getPv() + "\n" ).toAscii());
-    #endif
   motorsFile.flush();
 }
 
@@ -272,26 +260,18 @@ void QMotorStack::viewModeAll() {
       if ( motor->motor()->getPv().isEmpty() )
         motor->motor()->setPv(selectMotor());
     }
-  else if ( ui->viewModeAll->currentText() == "Hide" )
-    foreach(QCaMotorGUI * motor, motors)
-      motor->showSetup(false);
-  else
-    foreach(QCaMotorGUI * motor, motors)
-      motor->setViewMode( ui->viewModeAll->currentIndex() - 1 );
+    else if ( ui->viewModeAll->currentText() == "Hide" )
+      foreach(QCaMotorGUI * motor, motors)
+        motor->showSetup(false);
+      else
+        foreach(QCaMotorGUI * motor, motors)
+          motor->setViewMode( ui->viewModeAll->currentIndex() - 1 );
 }
 
 void QMotorStack::stopAll() {
   foreach(QCaMotorGUI * motor, motors)
     motor->motor()->stop();
 }
-
-//void QMotorStack::resetHeader() {
-  // Here the delay of 100 msec is set to allow the setup button's text be
-  // updated before resetting the header.
-  //QTimer::singleShot(100, ui->table, SLOT(resizeColumnsToContents()));
-  //QTimer::singleShot(100, ui->table->horizontalHeader(), SLOT(resizeSections()));
-  //QTimer::singleShot(100, ui->table->horizontalHeader(), SLOT(reset()));
-//}
 
 void QMotorStack::saveConfiguration(const QString & fileName) {
   QSettings sett(fileName, QSettings::IniFormat);

@@ -55,8 +55,6 @@ QString selectMotor(const QStringList & restrictTo) {
 
 
 const QString QCaMotorGUI::configsExt="motor.sh";
-const QString QCaMotorGUI::pvListBaseName = "listOfKnownMotorPVs.txt";
-
 
 QCaMotorGUI::QCaMotorGUI(QWidget *parent) :
   QWidget(parent),

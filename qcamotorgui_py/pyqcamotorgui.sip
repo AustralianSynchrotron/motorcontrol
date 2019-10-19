@@ -13,7 +13,6 @@ class QCaMotorGUI : public QWidget {
 
 public:
 
-  const QString pvListBaseName;
   const QString configsExt;
 
   enum ViewMode {

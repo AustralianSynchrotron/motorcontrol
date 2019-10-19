@@ -28,5 +28,5 @@ install(FILES qcamotorgui.h
 )
 
 install(FILES listOfKnownMotorPVs.txt
-    DESTINATION /etc
+    DESTINATION share
 )
