@@ -136,6 +136,9 @@ void MainWindow::saveConfiguration(bool params, bool select){
     fileStream << "\n";
   }
 
+  file.close();
+  file.setPermissions(QFile::ExeOwner | QFileDevice::ExeUser | QFileDevice::ExeGroup);
+
   const QFileInfo cfg(fileName);
   if ( ! curData.isValid() and cfg.exists() ) {
     presets->addItem(cfg.baseName(), cfg.canonicalFilePath());
