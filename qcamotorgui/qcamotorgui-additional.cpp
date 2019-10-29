@@ -296,7 +296,8 @@ KnownPVTable::KnownPVTable(QObject * parent)
   QStringList listPvs;
   foreach(QString pth, QStringList() << QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)
                                      << QStandardPaths::standardLocations(QStandardPaths::AppConfigLocation)
-                                     << QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation) ) {
+                                     << QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation)
+                                     << QStandardPaths::standardLocations(QStandardPaths::GenericConfigLocation) ) {
     QDir dir(pth);
     foreach(QString cfg, dir.entryList(QStringList() << pvListBaseName, QDir::Files) ) {
       QFile file(dir.canonicalPath() + QDir::separator() + cfg);
