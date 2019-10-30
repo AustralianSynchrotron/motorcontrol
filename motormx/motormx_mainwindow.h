@@ -37,6 +37,7 @@ private:
   QToolButton * loadBut;
   QDir configDir;
 
+  QString fileSL();
   void saveConfiguration(bool params, bool select);
   void loadConfiguration(bool move, bool add, bool select);
   bool event(QEvent *ev) override;

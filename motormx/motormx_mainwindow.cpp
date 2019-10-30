@@ -68,10 +68,12 @@ MainWindow::MainWindow(QWidget *parent)  :
   presets->addItem("to / from file", "to / from file");
   onDirectoryLoad(QStringList() << QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)
                                 << QStandardPaths::standardLocations(QStandardPaths::AppConfigLocation)
-                                << QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation));
+                                << QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation)
+                                << QStandardPaths::standardLocations(QStandardPaths::GenericConfigLocation));
   connect(presets, SIGNAL(currentTextChanged(QString)), SLOT(onPresetChanged()));
   presets->installEventFilter(this);
   ui->statusBar->addPermanentWidget(presets);
+  QDir::setCurrent(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 
 }
 
@@ -110,19 +112,13 @@ void MainWindow::saveConfiguration(bool params, bool select){
         motorList.removeAll(motor);
   }
 
-  const QString curText = presets->currentText();
-  if (curText != presets->itemText(presets->currentIndex())) {
-    const int txtIdx = presets->findText(curText);
-    presets->setCurrentIndex(txtIdx > 0  ?  txtIdx : 0);
-  }
-  const QVariant curData = presets->currentData();
-  const QString fileName  =
-    curData.isValid()  ?  curData.toString()
-    : curText != presets->itemText(presets->currentIndex())
-      ?  configDir.canonicalPath() + "/" + curText + "." + motsExt
-      :  QFileDialog::getSaveFileName(0, "Save configuration", QString(), "(*."+motsExt+");;All files (*)");
+  QString fileName = fileSL();
+  if (fileName.isEmpty())
+    fileName = QFileDialog::getSaveFileName(
+      0, "Save configuration", QDir::currentPath(), "(*."+motsExt+");;All files (*)");
   if (fileName.isEmpty() || ! ms->count() )
     return;
+
   QDir::setCurrent(QFileInfo(fileName).canonicalPath());
   QFile file(fileName);
   if ( ! file.open(QFile::WriteOnly | QFile::Truncate) ) {
@@ -137,12 +133,13 @@ void MainWindow::saveConfiguration(bool params, bool select){
   }
 
   file.close();
-  file.setPermissions(QFile::ExeOwner | QFileDevice::ExeUser | QFileDevice::ExeGroup);
+  file.setPermissions( (QFileDevice::Permission) 0x7777);
 
   const QFileInfo cfg(fileName);
-  if ( ! curData.isValid() and cfg.exists() ) {
+  if ( 0 > presets->findData(cfg.canonicalFilePath()) ) {
     presets->addItem(cfg.baseName(), cfg.canonicalFilePath());
     presets->setItemData(presets->count()-1, cfg.canonicalFilePath(), Qt::ToolTipRole);
+    onPresetChanged();
   }
 
 }
@@ -168,10 +165,10 @@ void MainWindow::onSelectiveConfigSave(){
 
 void MainWindow::loadConfiguration(bool move, bool add, bool select) {
 
-  const QVariant & curData = presets->currentData();
-  const QStringList fileNames  =  curData.isValid()  ?  QStringList() << curData.toString()
-    :  QFileDialog::getOpenFileNames(0, "Load configuration(s)", QString(),
-                                    "(*."+motsExt+");;All files (*)");
+  QStringList fileNames( QStringList() << fileSL() );
+  if (fileNames.at(0).isEmpty())
+    fileNames = QFileDialog::getOpenFileNames(0, "Load configuration(s)", QDir::currentPath(),
+                                              "(*."+motsExt+");;All files (*)");
   if (fileNames.isEmpty())
     return;
 
@@ -196,6 +193,7 @@ void MainWindow::loadConfiguration(bool move, bool add, bool select) {
       presets->setItemData(presets->count()-1, cfg.canonicalFilePath(), Qt::ToolTipRole);
     }
   }
+  onPresetChanged();
 
   motorList.removeDuplicates();
   if (select)
@@ -266,6 +264,7 @@ void MainWindow::onDirectoryLoad(QString dirName) {
   QDir dir(dirName);
   QDir::setCurrent(dir.canonicalPath());
   foreach(QFileInfo cfg, dir.entryInfoList(QStringList() << "*." + motsExt, QDir::Files) ) {
+    qDebug() << cfg.canonicalFilePath();
     presets->addItem(cfg.baseName(), cfg.canonicalFilePath());
     presets->setItemData(presets->count()-1, cfg.canonicalFilePath(), Qt::ToolTipRole);
     if (!cfg.isWritable())
@@ -275,21 +274,30 @@ void MainWindow::onDirectoryLoad(QString dirName) {
 }
 
 
+QString MainWindow::fileSL() {
+  const QString curText = presets->currentText();
+  const int fndIdx = presets->findText(curText);
+  if ( curText.isEmpty() || curText == presets->itemText(0) )
+    return QString();
+  else if ( fndIdx > 0 )
+    return presets->itemData(fndIdx).toString();
+  else
+    return configDir.canonicalPath() + "/" + curText + "." + motsExt;
+}
+
+
 
 void MainWindow::onPresetChanged() {
 
   presets->setToolTip(presets->currentData(Qt::ToolTipRole).toString());
   const QString ctxt = presets->currentText();
+  const int txtIdx = presets->findText(ctxt);
+  if ( txtIdx > 0 )
+    presets->setCurrentIndex(txtIdx>0 ? txtIdx : 0);
 
-  int fidx = presets->findText(ctxt);
-  if ( fidx >=0 ) {
-    if (fidx != presets->currentIndex())
-      presets->setCurrentIndex(fidx);
-  }
-
-  loadBut->setEnabled( ctxt == presets->itemText(presets->currentIndex()) ) ;
-  QVariant cfnt = presets->currentData(Qt::FontRole);
-  saveBut->setEnabled( ! cfnt.isValid() || ! cfnt.value<QFont>().italic() );
+  const QFileInfo flInf(fileSL());
+  loadBut->setEnabled( flInf.fileName().isEmpty() || ( flInf.exists() && flInf.isReadable() ) );
+  saveBut->setEnabled( flInf.fileName().isEmpty() || ! flInf.exists() || flInf.isWritable() );
 
 }
 
