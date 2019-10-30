@@ -73,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent)  :
   connect(presets, SIGNAL(currentTextChanged(QString)), SLOT(onPresetChanged()));
   presets->installEventFilter(this);
   ui->statusBar->addPermanentWidget(presets);
-  QDir::setCurrent(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+  qDebug() << QDir::setCurrent(configDir);
 
 }
 
