@@ -8,7 +8,8 @@ add_library(qmotorstack SHARED
 )
 
 target_include_directories(qmotorstack
-  PUBLIC ../qcamotorgui
+  PRIVATE ${PROJECT_BINARY_DIR}/qcamotorgui
+  PRIVATE ../qcamotorgui 
 )
 
 target_link_libraries(qmotorstack

@@ -6,6 +6,11 @@
 
 #include "qcamotorgui.h"
 
+#ifndef override
+#define override
+#endif
+
+
 namespace Ui {
   class MotorStack;
 }
