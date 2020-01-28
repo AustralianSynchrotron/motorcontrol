@@ -266,6 +266,8 @@ private slots:
 
   void updateDialPosition(double ps);
 
+  void updateRawPosition(double ps);
+
   void updateStep(double stp);
   void updateStep();
 

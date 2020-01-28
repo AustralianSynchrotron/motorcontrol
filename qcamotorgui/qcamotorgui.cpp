@@ -294,7 +294,7 @@ void QCaMotorGUI::init() {
   ConnectMot(EncoderLoss, bool);
   ConnectMot(UserPosition, double);
   ConnectMot(DialPosition, double);
-  ConnectMotUi(RawPosition, sUi->userGoal, double);
+  ConnectMot(RawPosition, double);
   ConnectMotUi(UserGoal, sUi->userGoal, double);
   ConnectMotUi(DialGoal, sUi->dialGoal, double);
   ConnectMotUi(RawGoal, sUi->rawGoal, double);
@@ -745,6 +745,12 @@ void QCaMotorGUI::updateDialPosition(double ps) {
   updateGoButtonStyle();
 }
 
+void QCaMotorGUI::updateRawPosition(double ps) {
+  sUi->rawPosition->setValue(ps);
+  updateGoButtonStyle();
+}
+
+
 void QCaMotorGUI::updateStep(double stp) {
   sUi->step->setValue(stp);
   sUi->step->QDoubleSpinBox::setValue(stp); // needed to update it even if it has focus
@@ -1026,7 +1032,7 @@ void QCaMotorGUI::updateSuMode(QCaMotor::SuMode mode) {
   // needed to revert to the original values in the GUI.
   updateUserPosition(mot->getUserPosition());
   updateDialPosition(mot->getDialPosition());
-  sUi->rawPosition->setValue(mot->getRawPosition());
+  updateRawPosition(mot->getDialPosition());
   sUi->userGoal->setValue(mot->getUserGoal());
   sUi->dialGoal->setValue(mot->getDialGoal());
   sUi->rawGoal->setValue(mot->getRawGoal());

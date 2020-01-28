@@ -872,7 +872,7 @@ void QCaMotor::executeHomeRoutine(bool synch) {
         goLimit(NEGATIVE, STOPPED);
     goHome(STOPPED);
 
-    if (getRawPosition() != 0.0)
+    if (getRawPosition() == 0.0)
         goRawPosition(orig - lastPreHom, STOPPED);
     else
         emit error("Homing routine has failed.");

@@ -264,7 +264,6 @@ void MainWindow::onDirectoryLoad(QString dirName) {
   QDir dir(dirName);
   QDir::setCurrent(dir.canonicalPath());
   foreach(QFileInfo cfg, dir.entryInfoList(QStringList() << "*." + motsExt, QDir::Files) ) {
-    qDebug() << cfg.canonicalFilePath();
     presets->addItem(cfg.baseName(), cfg.canonicalFilePath());
     presets->setItemData(presets->count()-1, cfg.canonicalFilePath(), Qt::ToolTipRole);
     if (!cfg.isWritable())
