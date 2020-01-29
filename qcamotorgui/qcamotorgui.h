@@ -171,6 +171,8 @@ private slots:
   /// @param res new resolution.
   void setResolutionAndDirection(double res);
 
+  void setUserPosition(double pos); // depending on view mode may or may not alter the offMode.
+
   void recordCurrent();
 
   /// Catches the go-backward-by-step commands from GUIs.

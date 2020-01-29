@@ -250,7 +250,7 @@ void QCaMotorGUI::init() {
 
   connect(sUi->backlash, SIGNAL(valueEdited(double)), mot, SLOT(setBacklash(double)));
 
-  connect(sUi->userPosition, SIGNAL(valueEdited(double)), mot, SLOT(setUserPosition(double)));
+  connect(sUi->userPosition, SIGNAL(valueEdited(double)), SLOT(setUserPosition(double)));
   connect(sUi->rawPosition, SIGNAL(valueEdited(double)), mot, SLOT(setRawPosition(double)));
   connect(sUi->userVarGoal, SIGNAL(valueEdited(double)), SLOT(goUserPosition(double)));
   connect(sUi->userGoal, SIGNAL(valueEdited(double)), SLOT(goUserPosition(double)));
@@ -495,6 +495,33 @@ void QCaMotorGUI::setResolutionAndDirection(double res) {
   mot->setEncoderResolution(qAbs(res));
   mot->setDirection( res < 0 ? QCaMotor::NEGATIVE : QCaMotor::POSITIVE );
 }
+
+
+void QCaMotorGUI::setUserPosition(double pos) {
+
+  if (currentView == EPICS) {
+    mot->setUserPosition(pos);
+    return;
+  }
+
+  const QCaMotor::OffMode restore_offset = mot->getOffsetMode();
+  if (restore_offset != QCaMotor::VARIABLE) {
+    mot->setOffsetMode(QCaMotor::VARIABLE);
+    qtWait(mot, SIGNAL(changedOffsetMode(QCaMotor::OffMode)), 500);
+  }
+
+  if (mot->getOffsetMode() == QCaMotor::VARIABLE)
+    mot->setUserPosition(pos);
+  else
+    qDebug() << "ERROR! Could not set proper offset mode of the motor." << mot->getPv()
+             << " Will not change user position.";
+
+  mot->setOffsetMode(restore_offset);
+  return;
+
+}
+
+
 
 void QCaMotorGUI::setSpeedS(double spd) {
   if (spd<=0.0)
