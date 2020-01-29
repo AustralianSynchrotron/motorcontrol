@@ -589,6 +589,7 @@ void QCaMotor::updateMSTA(const QVariant & data) {
     emit changedSlipStall(isSplitStall());
     emit changedProblems(hasProblems());
     emit changedCommErr(commError());
+    emit changedPlugged(isPlugged());
 }
 
 void QCaMotor::updateKilled(const QVariant & data) {

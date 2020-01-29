@@ -291,7 +291,6 @@ private slots:
 
   void updateDeadBand(const QVariant & data);
 
-
   /// \brief Updates hi limit status (::hiLimitStatus)
   /// Used to catch the signal valueUpdated(QVariant) signal
   /// from the corresponding field (a member of ::motor).
@@ -1015,6 +1014,8 @@ public:
 
   inline bool commError() const {return msta & 0b0001000000000000;}
 
+  inline bool isPlugged() const {return (msta & 0b0010000000000100) != 0b0010000000000100 ;}
+
   inline bool isKilled() const {return iAmKilled;}
 
   inline bool amplifierIsFaulty() const {return ampIsFaulty;}
@@ -1122,6 +1123,8 @@ signals:
   /// @param mode new mode
   void changedSuMode(QCaMotor::SuMode mode);
 
+
+  void changedPlugged(bool);
 
 
   /// The signal is emitted whenever high limit status is changed.

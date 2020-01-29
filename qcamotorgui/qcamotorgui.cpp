@@ -320,7 +320,7 @@ void QCaMotorGUI::init() {
   ConnectMot(BacklashAcceleration, double);
   ConnectMot(Connected, bool);
   ConnectMot(Moving, bool);
-  ConnectMot(Status, bool);
+  ConnectMot(Plugged, bool);
   ConnectMot(Backlash, double);
   ConnectMotUi(DriveCurrent, sUi->driveCurrent, double);
   ConnectMotUi(HoldPerCent, sUi->holdPerCent, double);
@@ -1033,8 +1033,9 @@ void QCaMotorGUI::updateCommErr(bool commerr) {
   updateState(sUi->comErr, !commerr, "Controller OK", "Comm Err");
 }
 
-void QCaMotorGUI::updateStatus(bool sts) {
-  updateState(sUi->status, sts, "Status OK", "Status Err");
+void QCaMotorGUI::updatePlugged(bool plgd) {
+  updateState(sUi->plug, plgd, "Plugged", "Unplugged");
+  updateGoButtonStyle();
 }
 
 void QCaMotorGUI::updateAmplifierFault(bool ampFlt) {
@@ -1097,11 +1098,12 @@ void QCaMotorGUI::updateGoButtonStyle(){
 
   QString style;
 
-  if (mot->getLoLimitStatus())
+  if ( ! mot->isPlugged() )
     style = redStyle;
-  else if ( mot->getUserPosition() <= mot->getUserLoLimit() ||
-            mot->getDialPosition() <= mot->getDialLoLimit() )
+  else if ( mot->getUserPosition() <= mot->getUserLoLimit() )
     style = orgStyle;
+  else if ( mot->getLoLimitStatus() )
+    style = redStyle;
   else
     style = "";
   mUi->goM->setStyleSheet(style);
@@ -1111,11 +1113,12 @@ void QCaMotorGUI::updateGoButtonStyle(){
   sUi->goHomeM->setStyleSheet(style);
   sUi->jogM->setStyleSheet(style);
 
-  if (mot->getHiLimitStatus())
+  if ( ! mot->isPlugged() )
     style = redStyle;
-  else if ( mot->getUserPosition() >= mot->getUserHiLimit() ||
-            mot->getDialPosition() >= mot->getDialHiLimit() )
+  else if ( mot->getUserPosition() >= mot->getUserHiLimit() )
     style = orgStyle;
+  else if ( mot->getHiLimitStatus() )
+    style = redStyle;
   else
     style = "";
   mUi->goP->setStyleSheet(style);

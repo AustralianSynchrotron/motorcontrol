@@ -321,7 +321,7 @@ private slots:
 
   void updateHomeRef(QCaMotor::HomeReference hr);
 
-  void updateStatus(bool sts);
+  void updatePlugged(bool sts);
 
   void updateResolutionAndDirection();
 
