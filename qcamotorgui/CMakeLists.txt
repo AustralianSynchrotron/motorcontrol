@@ -11,7 +11,7 @@ add_library(qcamotorgui SHARED
 )
 
 target_include_directories(qcamotorgui
-  PUBLIC ../qcamotor
+  BEFORE PRIVATE ../qcamotor
 )
 
 target_link_libraries(qcamotorgui

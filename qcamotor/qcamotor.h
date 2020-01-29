@@ -1124,7 +1124,7 @@ signals:
   void changedSuMode(QCaMotor::SuMode mode);
 
 
-  void changedPlugged(bool);
+  void changedPlugged(bool plgd);
 
 
   /// The signal is emitted whenever high limit status is changed.

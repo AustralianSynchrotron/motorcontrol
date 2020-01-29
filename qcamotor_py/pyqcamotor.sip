@@ -111,6 +111,7 @@ public:
   bool isSplitStall() const;
   bool hasProblems() const;
   bool commError() const;
+  bool isPlugged() const;
   bool isKilled() const;
   bool amplifierIsFaulty() const;
   bool isInitialized() const;
@@ -200,6 +201,7 @@ signals:
   void changedOffsetMode(QCaMotor::OffMode mode);
   void changedDirection(QCaMotor::Direction dir);
   void changedSuMode(QCaMotor::SuMode mode);
+  void changedPlugged(bool plgd);
   void changedHiLimitStatus(bool status);
   void changedLoLimitStatus(bool status);
   void changedUserHiLimit(double limit);
