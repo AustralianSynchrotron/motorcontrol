@@ -1060,7 +1060,7 @@ void QCaMotorGUI::updateSuMode(QCaMotor::SuMode mode) {
   // needed to revert to the original values in the GUI.
   updateUserPosition(mot->getUserPosition());
   updateDialPosition(mot->getDialPosition());
-  updateRawPosition(mot->getDialPosition());
+  updateRawPosition(mot->getRawPosition());
   sUi->userGoal->setValue(mot->getUserGoal());
   sUi->dialGoal->setValue(mot->getDialGoal());
   sUi->rawGoal->setValue(mot->getRawGoal());
