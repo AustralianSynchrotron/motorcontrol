@@ -6,32 +6,23 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>102</width>
-    <height>49</height>
+    <width>126</width>
+    <height>54</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MotorMx</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/new/prefix1/Stepper_motor_1.png</normaloff>:/new/prefix1/Stepper_motor_1.png</iconset>
+   <iconset resource="motormx.qrc">
+    <normaloff>:/MotorControl.png</normaloff>:/MotorControl.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
      <number>1</number>
     </property>
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="margin">
      <number>0</number>
     </property>
    </layout>

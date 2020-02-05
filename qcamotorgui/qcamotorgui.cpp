@@ -542,7 +542,7 @@ void QCaMotorGUI::setAccelerationS(double acc) {
     acc = sUi->accelerationS->value();
   mot->setBacklashAcceleration(acc);
   mot->setAcceleration(acc);
-  if (acc)
+  if (acc > 0.0)
     mot->setJogAcceleration( motor()->getNormalSpeed() / acc );
 }
 
@@ -737,16 +737,43 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
 }
 
 void QCaMotorGUI::pressStop(){
-  if ( ! mot->isMoving() )
-    mot->undoLastMotion();
-  else if ( dynamic_cast<QAbstractButton*>(sender()) &&
-            dynamic_cast<QAbstractButton*>(sender())->text().contains("kill",Qt::CaseInsensitive) )
+
+  if ( ! health() ) { // attempt to recover
+
+    if (mot->isMoving()) {
+      mot->stop();
+      qtWait(mot, SIGNAL(changedMoving), 500);
+      if (health())
+        return;
+    }
+
     mot->kill();
-  else {
+    qtWait(500);
+    if (health())
+      return;
+
+    foreach(QWidget * wdg, states.keys())
+      if ( dynamic_cast<QAbstractButton*>(wdg)  &&  ! states[wdg] )
+        dynamic_cast<QAbstractButton*>(wdg)->click();
+
+  } else if ( ! mot->isMoving() ) {
+
+    mot->undoLastMotion();
+
+  } else if ( dynamic_cast<QAbstractButton*>(sender()) &&
+              dynamic_cast<QAbstractButton*>(sender())
+              ->text().contains("kill",Qt::CaseInsensitive) ) {
+
+    mot->kill();
+
+  }  else  {
+
     mUi->stop->setText("KILL");
     sUi->stop->setText("KILL");
     mot->stop();
+
   }
+
 }
 
 
@@ -987,6 +1014,14 @@ void QCaMotorGUI::updateDialLoLimit(double loL){
 }
 
 
+bool QCaMotorGUI::health(bool rpbl) const {
+  foreach(QWidget * wdg, states.keys())
+    if ( ( ! rpbl  ||  dynamic_cast<QAbstractButton*>(wdg) )
+         &&  ! states[wdg] )
+      return false;
+  return true;
+}
+
 
 void QCaMotorGUI::updateState(QWidget * wdg, bool good, QString goodMsg, QString badMsg) {
   if (!wdg)
@@ -1012,11 +1047,10 @@ void QCaMotorGUI::updateState(QWidget * wdg, bool good, QString goodMsg, QString
   }
 
   states[wdg] = good;
-  bool fine = true;
-  foreach(bool state, states)
-    fine &= state;
-  sUi->viewMode->setStyleSheet( fine ? "" : redStyle);
-  mUi->setup->setStyleSheet( fine ? "" : redStyle);
+  const QString stl = health() ? "" : redStyle;
+  sUi->viewMode->setStyleSheet(stl);
+  mUi->setup->setStyleSheet(stl);
+  updateStopButtonStyle();
 
 }
 
@@ -1133,30 +1167,44 @@ void QCaMotorGUI::updateGoButtonStyle(){
 
 void QCaMotorGUI::updateStopButtonStyle() {
 
+  QString stl;
+  QString txt;
+  QString ttp;
+  bool enableBut = true;
+
   if ( ! mot->isConnected() ) {
-    mUi->stop->setStyleSheet("");
-    sUi->stop->setStyleSheet("");
-    mUi->stop->setText("No link");
-    sUi->stop->setText("No link");
+    stl = "";
+    txt = "No link";
+    ttp = "Can't find at least some of the motor fields.";
+  } else if ( ! health(true) ) {
+    stl = redStyle;
+    txt = "RCVR";
+    ttp = "Try to recover from error";
+  } else if ( ! health() ) {
+    stl = redStyle;
+    txt = mot->isPlugged() ? "ERRR" : "UPLG" ;
+    ttp = mot->isPlugged() ? "Unrecoverable error. Check the motor." : "Motor is unplugged." ;
+    enableBut = false;
   } else if (mot->isMoving()) {
-    mUi->stop->setStyleSheet(redStyle);
-    sUi->stop->setStyleSheet(redStyle);
-    mUi->stop->setText("STOP");
-    sUi->stop->setText("STOP");
-    mUi->stop->setToolTip("Stop motion");
-    sUi->stop->setToolTip("Stop motion");
+    stl = redStyle;
+    txt = "STOP";
+    ttp = "Stop motion";
   } else {
-    mUi->stop->setStyleSheet("");
-    sUi->stop->setStyleSheet("");
-    mUi->stop->setText("UNDO");
-    sUi->stop->setText("UNDO");
-    double undo = - ( mot->getDirection() == QCaMotor::NEGATIVE ? -1.0 : 1.0) *
-        mot->getMotorResolution() * mot->getLastMotion();
-    const QString txt("Undo last motion ("
-                      + QString::number(undo) + mot->getUnits() + ")");
-    mUi->stop->setToolTip(txt);
-    sUi->stop->setToolTip(txt);
+    stl = "";
+    txt = "UNDO";
+    const double undo = - ( mot->getDirection() == QCaMotor::NEGATIVE ? -1.0 : 1.0)
+                  * mot->getMotorResolution() * mot->getLastMotion();
+    ttp = "Undo last motion (" + QString::number(undo) + mot->getUnits() + ")";
   }
+
+  mUi->stop->setStyleSheet(stl);
+  sUi->stop->setStyleSheet(stl);
+  mUi->stop->setText(txt);
+  sUi->stop->setText(txt);
+  mUi->stop->setToolTip(ttp);
+  sUi->stop->setToolTip(ttp);
+  mUi->stop->setEnabled(enableBut);
+  sUi->stop->setEnabled(enableBut);
 
 }
 
@@ -1200,10 +1248,6 @@ void QCaMotorGUI::updateAllElements(){
   sUi->configure     ->setEnabled(std);
   sUi->epics         ->setEnabled(std);
   sUi->generalSetup  ->setEnabled(std);
-
-}
-
-void QCaMotorGUI::correctResFieldsWidth() {
 
 }
 

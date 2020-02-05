@@ -63,6 +63,7 @@ private:
 
   QHash<QWidget*,bool> states;
   void updateState(QWidget * wdg, bool good,  QString goodMsg=QString(), QString badMsg=QString() );
+  bool health(bool rpbl=false) const;
 
 
 
@@ -324,8 +325,6 @@ private slots:
   void updatePlugged(bool sts);
 
   void updateResolutionAndDirection();
-
-  void correctResFieldsWidth();
 
 };
 

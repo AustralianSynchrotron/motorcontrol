@@ -1,9 +1,8 @@
 
 add_executable(motormx
-  motormx_mainwindow.h
-  motormx_mainwindow.ui
-  motormx_mainwindow.cpp
+  motormx.h
   motormx.cpp
+  motormx.ui
   motormx.qrc
 )
 

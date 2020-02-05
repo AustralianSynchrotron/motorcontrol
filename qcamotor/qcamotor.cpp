@@ -230,33 +230,40 @@ void QCaMotor::saveConfiguration(QTextStream & stream, bool params) const {
   stream << "# MOTORPV " << getPv() << "\n";
   stream << "#         " << getDescription() << "\n";
   stream << "caput " << getPv() << " " << getUserGoal() << "\n";
-  if (isConnected() && params)
-    foreach(QString fld, QStringList()
-      << ".OUT"
-      << ".DESC"
-      << ".PREC"
-      << ".EGU"
-      << ".MRES"
-      << ".RRES"
-      << ".ERES"
-      << ".UREV"
-      << ".SREV"
-      << ".DIR"
-      << ".OFF"
-      << ".LLM"
-      << ".HLM"
-      << ".VMAX"
-      << ".VELO"
-      << ".ACCL"
-      << ".JVEL"
-      << ".JAR"
-      << ".BVEL"
-      << ".BACC"
-      << ".BDST"
-      << ":HOLDPERCENTAGE"
-      << ":DRIVECURRENT"
-    ) stream << "echo caput " << getPv() << fld << " " << fields[fld]->get().toString() << "\n";
 
+  if ( ! isConnected() || ! params)
+    return;
+
+  foreach(QString fld, QStringList()
+    << ".OUT"
+    << ".DESC"
+    << ".EGU"
+    << ".PREC"
+    << ".MRES"
+    << ".RRES"
+    << ".ERES"
+    << ".UREV"
+    << ".SREV"
+    << ".DIR"
+    << ".OFF"
+    << ".LLM"
+    << ".HLM"
+    << ".VMAX"
+    << ".VELO"
+    << ".ACCL"
+    << ".JVEL"
+    << ".JAR"
+    << ".BVEL"
+    << ".BACC"
+    << ".BDST"
+    << ":HOLDPERCENTAGE"
+    << ":DRIVECURRENT"
+  ) {
+    const QVariant val = fields[fld]->get();
+    const QChar embr = ( val.type() == QVariant::Type::String ? '"' : ' ' ) ;
+    stream << "echo caput " << getPv() << fld << " "
+           << embr << fields[fld]->get().toString() << embr << "\n";
+  }
 
 }
 

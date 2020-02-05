@@ -800,7 +800,9 @@ public slots:
 
   /// Prints an error message to the stderr.
   /// @param err Error message.
-  inline void printError(const QString & err) const { qDebug() << "ERROR in QCaMotor!" << err; }
+  inline void printError(const QString & err) const {
+    qDebug().noquote() << "ERROR! In QCaMotor PV " << getPv() << ". " << err;
+  }
 
 
 public:
@@ -1128,12 +1130,12 @@ signals:
 
 
   /// The signal is emitted whenever high limit status is changed.
-  /// @param status new status
-  void changedHiLimitStatus(bool status);
+  /// @param sts new status
+  void changedHiLimitStatus(bool sts);
 
   /// The signal is emitted whenever lo limit status is changed.
-  /// @param status new status
-  void changedLoLimitStatus(bool status);
+  /// @param sts new status
+  void changedLoLimitStatus(bool sts);
 
   /// The signal is emitted whenever user high limit is changed.
   /// @param limit new limit
@@ -1221,12 +1223,12 @@ signals:
 
 
   /// The signal is emitted whenever "use readback" property is changed.
-  /// @param status new value
-  void changedUseReadback(bool status);
+  /// @param sts new value
+  void changedUseReadback(bool sts);
 
   /// The signal is emitted whenever "use encoder" property is changed.
-  /// @param status new value
-  void changedUseEncoder(bool status);
+  /// @param sts new value
+  void changedUseEncoder(bool sts);
 
   /// The signal is emitted whenever backlash distance is changed.
   /// @param dist new backlash
@@ -1304,8 +1306,8 @@ template <class num> void QCaMotor::updateNum(
   if (data.canConvert<num>())
     emit (this->*changedNum)(parameter = data.value<num>());
   else
-    emit error("Could not convert QVariant \"" + data.toString()
-                 + "\" to " + parameter_name + ".");
+    emit error("Could not convert QVariant \"" + data.toString() + "\""
+               " to the " + parameter_name + ".");
 }
 
 

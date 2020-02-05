@@ -42,6 +42,7 @@ private:
   void loadConfiguration(bool move, bool add, bool select);
   bool event(QEvent *ev) override;
   bool eventFilter(QObject *obj, QEvent *event) override;
+  void addPreset(const QFileInfo & cfg);
 
 private slots:
 
@@ -49,9 +50,9 @@ private slots:
   void onSelectiveSave();
   void onConfigSave();
   void onSelectiveConfigSave();
-  void onLoad();
-  void onListLoad();
-  void onMoveLoad();
+  void onRestore();
+  void onAdd();
+  void onRestoreAdd();
   void onDirectoryLoad(QString dirName = QString());
   void onDirectoryLoad(const QStringList & pths);
   void onPresetChanged();
