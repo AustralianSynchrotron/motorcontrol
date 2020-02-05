@@ -2,8 +2,7 @@
 Type=Application
 Name=Motor Contorl
 Comment=Raw motor access
-Path=@CMAKE_INSTALL_PREFIX@/bin
-Exec=LD_LIBRARY_PATH="@CMAKE_INSTALL_PREFIX@/lib:$LD_LIBRARY_PATH" motormx
+Exec=LD_LIBRARY_PATH="@CMAKE_INSTALL_PREFIX@/lib:$LD_LIBRARY_PATH" @CMAKE_INSTALL_PREFIX@/bin/motormx
 Icon=MotorControl
 Terminal=false
 Categories=Science;X-IMBL;

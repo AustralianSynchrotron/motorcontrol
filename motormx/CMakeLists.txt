@@ -21,7 +21,7 @@ target_link_libraries(motormx
   Qt5::Widgets
 )
 
-configure_file(MotorControl.desktop.in MotorControlTest.desktop)
+configure_file(MotorControl.desktop.in MotorControl.desktop @ONLY)
 
 
 install(TARGETS motormx
@@ -32,6 +32,7 @@ install(FILES MotorControl.png
     DESTINATION share/icons
 )
 
-install(FILES MotorControlTest.desktop
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MotorControl.desktop
     DESTINATION share/applications
 )
+
