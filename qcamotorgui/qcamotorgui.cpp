@@ -762,7 +762,7 @@ void QCaMotorGUI::pressStop(){
 
   } else if ( dynamic_cast<QAbstractButton*>(sender()) &&
               dynamic_cast<QAbstractButton*>(sender())
-              ->text().contains("kill",Qt::CaseInsensitive) ) {
+                ->text().contains("kill",Qt::CaseInsensitive) ) {
 
     mot->kill();
 
@@ -1014,10 +1014,9 @@ void QCaMotorGUI::updateDialLoLimit(double loL){
 }
 
 
-bool QCaMotorGUI::health(bool rpbl) const {
-  foreach(QWidget * wdg, states.keys())
-    if ( ( ! rpbl  ||  dynamic_cast<QAbstractButton*>(wdg) )
-         &&  ! states[wdg] )
+bool QCaMotorGUI::health() const {
+  foreach(bool state, states)
+    if (!state)
       return false;
   return true;
 }
@@ -1170,21 +1169,21 @@ void QCaMotorGUI::updateStopButtonStyle() {
   QString stl;
   QString txt;
   QString ttp;
-  bool enableBut = true;
+  bool enable = true;
 
   if ( ! mot->isConnected() ) {
     stl = "";
     txt = "No link";
     ttp = "Can't find at least some of the motor fields.";
-  } else if ( ! health(true) ) {
+  } else if ( ! mot->isPlugged() ) {
+    stl = redStyle;
+    txt = "UPLG";
+    ttp = "Motor cable is unplugged.";
+    enable = false;
+  } else if ( ! health() ) {
     stl = redStyle;
     txt = "RCVR";
     ttp = "Try to recover from error";
-  } else if ( ! health() ) {
-    stl = redStyle;
-    txt = mot->isPlugged() ? "ERRR" : "UPLG" ;
-    ttp = mot->isPlugged() ? "Unrecoverable error. Check the motor." : "Motor is unplugged." ;
-    enableBut = false;
   } else if (mot->isMoving()) {
     stl = redStyle;
     txt = "STOP";
@@ -1203,8 +1202,8 @@ void QCaMotorGUI::updateStopButtonStyle() {
   sUi->stop->setText(txt);
   mUi->stop->setToolTip(ttp);
   sUi->stop->setToolTip(ttp);
-  mUi->stop->setEnabled(enableBut);
-  sUi->stop->setEnabled(enableBut);
+  mUi->stop->setEnabled(enable);
+  sUi->stop->setEnabled(enable);
 
 }
 

@@ -63,7 +63,7 @@ private:
 
   QHash<QWidget*,bool> states;
   void updateState(QWidget * wdg, bool good,  QString goodMsg=QString(), QString badMsg=QString() );
-  bool health(bool rpbl=false) const;
+  bool health() const;
 
 
 
