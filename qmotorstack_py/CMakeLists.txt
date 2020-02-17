@@ -1,3 +1,5 @@
+include_directories(../qcamotor)
+include_directories(../qcamotorgui)
 include_directories(../qmotorstack)
 list(APPEND SIP_INCLUDES ../qcamotor_py)
 list(APPEND SIP_INCLUDES ../qcamotorgui_py)
