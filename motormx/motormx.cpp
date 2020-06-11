@@ -123,9 +123,11 @@ void MainWindow::saveConfiguration(bool params, bool select){
   }
 
   QString fileName = fileSL();
-  if (fileName.isEmpty())
+  if (fileName.isEmpty()) {
+    QString slct;
     fileName = QFileDialog::getSaveFileName(
-      0, "Save configuration", QDir::currentPath(), "(*."+motsExt+");;All files (*)");
+      0, "Save configuration", QDir::currentPath(), "(*."+motsExt+");;All files (*)", &slct);
+  }
   if (fileName.isEmpty() || ! ms->count() )
     return;
 

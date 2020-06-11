@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1059</width>
-    <height>1588</height>
+    <width>705</width>
+    <height>979</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,7 +26,16 @@
    <property name="sizeConstraint">
     <enum>QLayout::SetFixedSize</enum>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>2</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
     <number>2</number>
    </property>
    <item>
@@ -38,7 +47,16 @@
       </sizepolicy>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <property name="spacing">
@@ -136,7 +154,16 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>1</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -190,7 +217,16 @@ p, li { white-space: pre-wrap; }
       <property name="sizeConstraint">
        <enum>QLayout::SetMinAndMaxSize</enum>
       </property>
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <property name="spacing">
@@ -234,7 +270,16 @@ p, li { white-space: pre-wrap; }
          <bool>false</bool>
         </property>
         <layout class="QGridLayout" name="statuses">
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <property name="spacing">
@@ -449,7 +494,16 @@ p, li { white-space: pre-wrap; }
       </sizepolicy>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <property name="spacing">
@@ -655,7 +709,16 @@ p, li { white-space: pre-wrap; }
          <property name="sizeConstraint">
           <enum>QLayout::SetMinAndMaxSize</enum>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -749,7 +812,16 @@ p, li { white-space: pre-wrap; }
          <property name="sizeConstraint">
           <enum>QLayout::SetMinAndMaxSize</enum>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -777,7 +849,7 @@ p, li { white-space: pre-wrap; }
             <string>Stop the motor and forget the destination. The motor will not move while in this mode.</string>
            </property>
            <property name="text">
-            <string>Stop</string>
+            <string>S&amp;top</string>
            </property>
            <attribute name="buttonGroup">
             <string notr="true">spmgGroup</string>
@@ -796,7 +868,7 @@ p, li { white-space: pre-wrap; }
             <string>Stops the motion, but does not reset the destination: you can continue going switching to &quot;Move&quot; or &quot;Go&quot; modes. The motor will not move while in this mode.</string>
            </property>
            <property name="text">
-            <string>Pause</string>
+            <string>Pa&amp;use</string>
            </property>
            <attribute name="buttonGroup">
             <string notr="true">spmgGroup</string>
@@ -834,7 +906,7 @@ p, li { white-space: pre-wrap; }
             <string>Normal motion mode.</string>
            </property>
            <property name="text">
-            <string>Go</string>
+            <string>&amp;Go</string>
            </property>
            <attribute name="buttonGroup">
             <string notr="true">spmgGroup</string>
@@ -881,17 +953,19 @@ p, li { white-space: pre-wrap; }
          <property name="sizeConstraint">
           <enum>QLayout::SetMinAndMaxSize</enum>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="absLabel">
-        <property name="text">
-         <string>Move to:</string>
-        </property>
        </widget>
       </item>
       <item row="8" column="2">
@@ -944,7 +1018,16 @@ p, li { white-space: pre-wrap; }
          <property name="sizeConstraint">
           <enum>QLayout::SetMinAndMaxSize</enum>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
@@ -966,24 +1049,32 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
-       <widget class="QHistoryDSB" name="userVarGoal">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Move absolutely</string>
-        </property>
-        <property name="minimum">
-         <double>-2147483647.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>2147483647.000000000000000</double>
-        </property>
-       </widget>
+      <item row="2" column="0" colspan="4">
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <widget class="QLabel" name="absLabel">
+          <property name="text">
+           <string>Move to:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QHistoryDSB" name="userVarGoal">
+          <property name="toolTip">
+           <string>Move absolutely</string>
+          </property>
+          <property name="minimum">
+           <double>-2147483647.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>2147483647.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -994,7 +1085,16 @@ p, li { white-space: pre-wrap; }
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_6">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item row="6" column="3">
@@ -1044,7 +1144,16 @@ p, li { white-space: pre-wrap; }
          <property name="sizeConstraint">
           <enum>QLayout::SetMinAndMaxSize</enum>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
@@ -1114,7 +1223,16 @@ p, li { white-space: pre-wrap; }
            <property name="spacing">
             <number>0</number>
            </property>
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
           </layout>
@@ -1163,7 +1281,16 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
@@ -1178,7 +1305,16 @@ p, li { white-space: pre-wrap; }
          <property name="sizeConstraint">
           <enum>QLayout::SetMinAndMaxSize</enum>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
@@ -1249,7 +1385,16 @@ p, li { white-space: pre-wrap; }
          <property name="sizeConstraint">
           <enum>QLayout::SetMinAndMaxSize</enum>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
@@ -1268,7 +1413,16 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
@@ -1289,7 +1443,16 @@ p, li { white-space: pre-wrap; }
          <property name="sizeConstraint">
           <enum>QLayout::SetMinAndMaxSize</enum>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
@@ -1432,7 +1595,16 @@ p, li { white-space: pre-wrap; }
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <property name="spacing">
@@ -1514,7 +1686,16 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -1584,7 +1765,16 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -1648,7 +1838,16 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -1720,7 +1919,7 @@ p, li { white-space: pre-wrap; }
            <string>Negative user direction</string>
           </property>
           <property name="text">
-           <string>Neg.</string>
+           <string>Ne&amp;g.</string>
           </property>
           <attribute name="buttonGroup">
            <string notr="true">dirGroup</string>
@@ -1735,7 +1934,16 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -1770,7 +1978,16 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -1801,7 +2018,16 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -1868,7 +2094,16 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -1952,7 +2187,16 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -2034,7 +2278,16 @@ p, li { white-space: pre-wrap; }
          <property name="spacing">
           <number>0</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -2124,7 +2377,7 @@ p, li { white-space: pre-wrap; }
            <string>Variable offset</string>
           </property>
           <property name="text">
-           <string>Variabl</string>
+           <string>Variab&amp;l</string>
           </property>
           <attribute name="buttonGroup">
            <string notr="true">offGroup</string>
@@ -2137,7 +2390,7 @@ p, li { white-space: pre-wrap; }
            <string>Frozen offset</string>
           </property>
           <property name="text">
-           <string>Frozen</string>
+           <string>Fro&amp;zen</string>
           </property>
           <attribute name="buttonGroup">
            <string notr="true">offGroup</string>
@@ -2329,7 +2582,16 @@ p, li { white-space: pre-wrap; }
       <property name="spacing">
        <number>0</number>
       </property>
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
      </layout>
@@ -2371,8 +2633,8 @@ p, li { white-space: pre-wrap; }
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="spmgGroup"/>
-  <buttongroup name="dirGroup"/>
   <buttongroup name="offGroup"/>
+  <buttongroup name="dirGroup"/>
+  <buttongroup name="spmgGroup"/>
  </buttongroups>
 </ui>
