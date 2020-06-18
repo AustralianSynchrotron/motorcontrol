@@ -637,9 +637,9 @@ void QCaMotorGUI::setViewMode(ViewMode mode){
     sUi->label_3->setVisible(false);
     sUi->label_7->setVisible(false);
     sUi->label_21->setVisible(false);
-    sUi->layControlUser->insertWidget(0, sUi->absLabel);
+    sUi->layAbsLbl->insertWidget(0, sUi->absLabel);
     sUi->placeControlUser->setVisible(true);
-    sUi->layControlRaw->insertWidget(0, sUi->userVarGoal);
+    sUi->layUVG->insertWidget(0, sUi->userVarGoal);
     sUi->placeControlRaw->setVisible(true);
     sUi->layControlRel->insertWidget(0, sUi->callRelative);
     sUi->stepD2->setVisible(true);
