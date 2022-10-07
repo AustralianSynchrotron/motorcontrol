@@ -6,6 +6,7 @@
 #include <QTime>
 #include <QFile>
 #include <QtCore/qmath.h>
+#include <iostream>
 
 
 
@@ -50,6 +51,7 @@ QCaMotor::QCaMotor(QObject *parent) :
     useEncoder(false),
     useReadback(false),
     backlash(0),
+    iAmHoming(false),
     homeRef(NOHOM),
     status(false),
     driveCurrent(0),
@@ -99,6 +101,7 @@ QCaMotor::QCaMotor(const QString & _pv, QObject *parent) :
     useEncoder(false),
     useReadback(false),
     backlash(0),
+    iAmHoming(false),
     homeRef(NOHOM),
     status(false),
     driveCurrent(0),
@@ -624,20 +627,21 @@ void QCaMotor::updateStatus(const QVariant & data) {
 }
 
 
-
 void QCaMotor::updateHomeRef(const QVariant & data) {
     const QString dataStr = data.toString();
     HomeReference hr;
-    if      (dataStr.contains("Positive")) hr = POSLS;
-    else if (dataStr.contains("Negative")) hr = NEGLS;
+    if      (dataStr.contains("Positive") || dataStr.contains("High")) hr = POSLS;
+    else if (dataStr.contains("Negative") || dataStr.contains("Low")) hr = NEGLS;
     else if (dataStr.contains("Home")    ) hr = HOMLS;
     else                                   hr = NOHOM;
     emit changedHomeRef(homeRef = hr);
 }
 
 void QCaMotor::updateHoming(const QVariant &) {
-  emit changedHoming( iAmHoming =
-    fields[".HOMF"]->get().toBool() || fields[".HOMR"]->get().toBool() );
+  // Meaning of iAmHoming has changed to "I am in the homing routine".
+  // I leave this blank function to allow fast modification in the later stages.
+  //emit changedHoming( iAmHoming =
+  //  fields[".HOMF"]->get().toBool() || fields[".HOMR"]->get().toBool() );
 }
 
 void QCaMotor::updateSuMode(const QVariant & data) {
@@ -843,18 +847,22 @@ void QCaMotor::goHome(Direction direction, MotionExit ex) {
     finilizeMotion(ex, store_mode);
 }
 
+
 void QCaMotor::goHome(MotionExit ex) {
-    switch (getHomeRef()) {
-    case NEGLS:
-    case HOMLS:
-        goHome(POSITIVE, ex);
-        break;
-    case POSLS:
-        goHome(NEGATIVE, ex);
-        break;
-    default:
-        emit error("Auto homing cannot be complete due to unknown home reference.");
-    }
+    const HomeReference hr = getHomeRef();
+    if (hr == NOHOM)
+        return;
+    const Direction dr = getDirection();
+    Direction toGo;
+    if ( hr == HOMLS )
+        toGo = POSITIVE;
+    else if ( ( hr == NEGLS && dr == POSITIVE ) || ( hr == POSLS && dr == NEGATIVE ) )
+        toGo = POSITIVE;
+    else if ( ( hr == NEGLS && dr == NEGATIVE ) || ( hr == POSLS && dr == POSITIVE ) )
+        toGo = NEGATIVE;
+    else
+        emit error("Homing is inconsistent"); // can it ever happen?
+    goHome(toGo, ex);
 }
 
 void QCaMotor::executeHomeRoutine(bool synch) {
@@ -862,8 +870,12 @@ void QCaMotor::executeHomeRoutine(bool synch) {
     if (!synch) {
         QTimer::singleShot(0, this, SLOT(executeHomeRoutine()));
         return;
+    }    
+    if (iAmHoming) {
+      stop(STOPPED);
+      iAmHoming = false;
+      return;
     }
-
     if ( ! isConnected() || isMoving() )
         return;
     const HomeReference hr = getHomeRef();
@@ -871,19 +883,48 @@ void QCaMotor::executeHomeRoutine(bool synch) {
         emit error("Homing routine cannot be complete due to unknown home reference.");
         return;
     }
+    iAmHoming = true;
+    emit changedHoming(iAmHoming);
 
-    const double orig = getRawPosition();
-
-    if (hr == POSLS)
+    double rawTravel = getRawPosition();
+    double origLm;
+    if (hr == POSLS) {
+        origLm = getUserHiLimit();
+        setUserHiLimit(999999999);
         goLimit(POSITIVE, STOPPED);
-    else if (hr == NEGLS)
+    } else if (hr == NEGLS) {
+        origLm = getUserLoLimit();
+        setUserLoLimit(-999999999);
         goLimit(NEGATIVE, STOPPED);
-    goHome(STOPPED);
+    }
+    rawTravel -= getRawPosition();
+    if (!iAmHoming)
+      goto onHomingComplete;
 
-    if (getRawPosition() == 0.0)
-        goRawPosition(orig - lastPreHom, STOPPED);
-    else
-        emit error("Homing routine has failed.");
+    initializeMortor(true);
+    if (!iAmHoming)
+      goto onHomingComplete;
+
+    resetWrongLimits(true);
+    if (!iAmHoming)
+      goto onHomingComplete;
+
+    goHome(STOPPED);
+    if (!iAmHoming)
+      goto onHomingComplete;
+
+onHomingComplete:
+    if (hr == POSLS)
+        setUserHiLimit(origLm);
+    else if (hr == NEGLS)
+        setUserLoLimit(origLm);
+    if (getRawPosition()!=0.0)
+        emit error("Homing procedure was aborted or has failed.");
+
+    goRawPosition(getRawPosition()+rawTravel);
+    iAmHoming = false;
+    emit changedHoming(iAmHoming);
+    return;
 
 }
 
@@ -905,8 +946,8 @@ void QCaMotor::undoLastMotion(MotionExit ex) {
 }
 
 void QCaMotor::stop(MotionExit ex) {
-    if (fields[":ABORT_HOME"]->isConnected())
-        setField(":ABORT_HOME", 1);
+    //if (fields[":ABORT_HOME"]->isConnected())
+    //    setField(":ABORT_HOME", 1);
     setField(".STOP", 1, (bool) ex );
     if ( ex == STOPPED )
         wait_stop();
@@ -1060,7 +1101,7 @@ void QCaMotor::resetWrongLimits(bool synch) {
 void QCaMotor::initializeMortor(bool synch) {
     setField(":INIT.PROC", 1);
     if (synch)
-        qtWait(this, SIGNAL(changedInitializedFault(bool)), 5000);
+        qtWait(this, SIGNAL(changedInitialized(bool)), 5000);
 }
 
 void QCaMotor::setDriveCurrent(double curr) {

@@ -322,6 +322,8 @@ private slots:
 
   void updateHomeRef(QCaMotor::HomeReference hr);
 
+  void updateHoming(bool imhm);
+
   void updatePlugged(bool sts);
 
   void updateResolutionAndDirection();

@@ -13,6 +13,7 @@
 #include <QStringListModel>
 #include <QClipboard>
 #include <QMessageBox>
+#include <iostream>
 
 
 static const QString redStyle =
@@ -305,6 +306,7 @@ void QCaMotorGUI::init() {
   ConnectMot(Direction, QCaMotor::Direction);
   ConnectMot(SpmgMode, QCaMotor::SpmgMode);
   ConnectMot(HomeRef, QCaMotor::HomeReference);
+  ConnectMot(Homing, bool);
   ConnectMot(DialHiLimit, double);
   ConnectMot(DialLoLimit, double);
   ConnectMot(UserHiLimit, double);
@@ -324,6 +326,7 @@ void QCaMotorGUI::init() {
   ConnectMot(Backlash, double);
   ConnectMotUi(DriveCurrent, sUi->driveCurrent, double);
   ConnectMotUi(HoldPerCent, sUi->holdPerCent, double);
+
   connect(mot, SIGNAL(changedUseReadback(bool)),
           sUi->useReadback, SLOT(setChecked(bool)));
   connect(mot, SIGNAL(changedUseEncoder(bool)),
@@ -865,16 +868,24 @@ void QCaMotorGUI::updateHomeRef(QCaMotor::HomeReference hr) {
   QFont font;
 
   font = sUi->goHomeP->font();
-  font.setUnderline( hr == QCaMotor::HOMLS || hr == QCaMotor::NEGLS);
+  font.setUnderline( hr == QCaMotor::HOMLS || hr == QCaMotor::POSLS );
   sUi->goHomeP->setFont(font);
 
   font = sUi->goHomeM->font();
-  font.setUnderline( hr == QCaMotor::HOMLS || hr == QCaMotor::POSLS);
+  font.setUnderline( hr == QCaMotor::HOMLS || hr == QCaMotor::NEGLS );
   sUi->goHomeM->setFont(font);
 
-  sUi->goHome->setEnabled( hr != QCaMotor::NOHOM );
+  sUi->goHome->setEnabled( hr != QCaMotor::NOHOM  ||  mot->isHoming() );
 
 }
+
+
+void QCaMotorGUI::updateHoming(bool imhm) {
+   sUi->goHome->setText(imhm ? "Abort homing" : "Find home");
+   sUi->goHome->setStyleSheet(imhm ? redStyle : "");
+   updateMoving(mot->isMoving());
+}
+
 
 
 void QCaMotorGUI::updateResolutionAndDirection() {
@@ -1048,7 +1059,7 @@ void QCaMotorGUI::updateState(QWidget * wdg, bool good, QString goodMsg, QString
   states[wdg] = good;
   const QString stl = health() ? "" : redStyle;
   sUi->viewMode->setStyleSheet(stl);
-  mUi->setup->setStyleSheet(stl);
+  mUi->setup->setStyleSheet("text-align: left; " + stl);
   updateStopButtonStyle();
 
 }
@@ -1227,7 +1238,7 @@ void QCaMotorGUI::updateAllElements(){
   sUi->goLimitM      ->setEnabled(std);
   sUi->goLimitP      ->setEnabled(std);
   sUi->goHomeM       ->setEnabled(std);
-  sUi->goHomeP       ->setEnabled(std);
+  sUi->goHomeP       ->setEnabled(std);  
   sUi->goM           ->setEnabled(std);
   sUi->goP           ->setEnabled(std);
   sUi->jogM          ->setEnabled(cn && ( ! mv || sUi->jogM->isDown()) );

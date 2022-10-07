@@ -619,7 +619,7 @@ public slots:
   /// (waiting is Qt-aware).
   ///
   void goHome(MotionExit ex=IMMIDIATELY);
-
+  
   /// Executes whole homing routine: if HomeRef is one of the limit then drives motor
   /// into it and calls goHome.
   ///
