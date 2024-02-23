@@ -78,6 +78,7 @@ public:
   QCaMotorGUI(QCaMotor * _mot, QWidget *parent=0);
 
   inline QCaMotor * motor() {return mot;}
+  inline const QCaMotor * motor() const {return mot;}
 
 
   /// Destructor.
