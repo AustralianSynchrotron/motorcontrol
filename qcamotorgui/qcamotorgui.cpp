@@ -408,9 +408,9 @@ void QCaMotorGUI::pastePv() {
 void QCaMotorGUI::updatePv(const QString & newpv){
   sUi->pv->setText(newpv);
   updateDescription( newpv.isEmpty() ? "SETUP" : newpv);
-  foreach(QAction* act, mUi->setup->findChildren<QAction*>())
+  foreach(QAction* act, mUi->setup->actions())
       if (!act->text().contains("Paste Pv"))
-        act->setEnabled(!newpv.isEmpty());
+        act->setDisabled(newpv.isEmpty());
 }
 
 QPushButton * QCaMotorGUI::setupButton() {
@@ -1141,7 +1141,6 @@ void QCaMotorGUI::updateAccelerations() {
 void QCaMotorGUI::updateGoButtonStyle(){
 
   QString style;
-
   if ( ! mot->isPlugged() )
     style = redStyle;
   else if ( mot->getUserPosition() <= mot->getUserLoLimit() )
@@ -1238,7 +1237,7 @@ void QCaMotorGUI::updateAllElements(){
   sUi->goLimitM      ->setEnabled(std);
   sUi->goLimitP      ->setEnabled(std);
   sUi->goHomeM       ->setEnabled(std);
-  sUi->goHomeP       ->setEnabled(std);  
+  sUi->goHomeP       ->setEnabled(std);
   sUi->goM           ->setEnabled(std);
   sUi->goP           ->setEnabled(std);
   sUi->jogM          ->setEnabled(cn && ( ! mv || sUi->jogM->isDown()) );
